@@ -31,6 +31,8 @@ Route::middleware('auth.sso')->group(function () {
     Route::get('/dashboard', function () {
         return view('admin.pages.admin.dashboard');
     })->name('admin.dashboard');
+    Route::get('/api/dashboard/chart-data', [App\Http\Controllers\Admin\DashboardController::class, 'getChartData'])->name('admin.chart.data');
+
 
     //    Route::get('/department', [DepartmentController::class, 'index'])->name('admin.department.index')->middleware('permission:department.index');
     // Route::get('/graduation', [GraduationController::class, 'index'])->name('admin.graduation.index');
