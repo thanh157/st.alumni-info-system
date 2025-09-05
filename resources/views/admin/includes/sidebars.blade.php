@@ -20,7 +20,12 @@
             transition: all 0.3s ease;
             overflow: hidden;
         }
-
+        .sidebar .nav-link i {
+            width: 1.25rem;
+            margin-right: 0.5rem;
+            text-align: center;
+            vertical-align: middle;
+        }
         /* Chỉ lấp lánh khi có class active-section */
         .nav-item-header.active-section::before {
             content: '';
