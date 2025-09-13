@@ -77,8 +77,19 @@ class ClassController extends Controller
         $classes = $this->studentService->get("/api/v1/external/classes/faculty/{$facultyId}", [
             'access_token' => Arr::get($token, 'access_token'),
         ]);
+         $response = $this->studentService->get("/api/v1/external/classes/faculty/{$facultyId}", [
+            'access_token' => Arr::get($token, 'access_token'),
+        ]);
 
-        $filtered = collect($classes['data'] ?? [])->filter(function ($class) use ($khoa) {
+         if ($response->successful()) {
+             $classes = $response->json('data.data', []);
+
+             return response()->json([
+                'total_classes' => count($classes)
+            ]);
+        }
+
+         $filtered = collect($classes['data'] ?? [])->filter(function ($class) use ($khoa) {
             return Str::startsWith($class['code'], $khoa);
         })->values();
 
@@ -96,7 +107,7 @@ class ClassController extends Controller
                 'access_token' => Arr::get($token, 'access_token'),
             ]);
             $class['student_count'] = count($studentResponse['data'] ?? []);
-        
+
         }
 
         $perPage = 6;
@@ -205,4 +216,6 @@ class ClassController extends Controller
             'class_detail' => $classDetail,
         ]);
     }
+
+
 }

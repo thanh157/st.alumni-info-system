@@ -21,7 +21,7 @@
                             <div class="d-flex justify-content-between align-items-start">
                                 <div>
                                     <p class="fw-semibold text-muted mb-1 small text-uppercase">PHIẾU ĐÃ KHẢO SÁT</p>
-                                    <h4 class="mb-0">280</h4>
+                                    <h4 class="mb-0">{{ $totalResponses  }}</h4>
                                 </div>
                                 <span class="kpi-icon kpi-blue"><i class="fa-solid fa-file-circle-check"></i></span>
                             </div>
@@ -34,7 +34,7 @@
                             <div class="d-flex justify-content-between align-items-start">
                                 <div>
                                     <p class="fw-semibold text-muted mb-1 small text-uppercase">TỶ LỆ CÓ VIỆC LÀM</p>
-                                    <h4 class="mb-0">88%</h4>
+                                    <h4 class="mb-0">{{$employmentRate  }}%</h4>
                                 </div>
                                 <span class="kpi-icon kpi-green"><i class="fa-solid fa-briefcase"></i></span>
                             </div>
@@ -47,7 +47,7 @@
                             <div class="d-flex justify-content-between align-items-start">
                                 <div>
                                     <p class="fw-semibold text-muted mb-1 small text-uppercase">LỚP HỌC</p>
-                                    <h4 class="mb-0">15</h4>
+                                    <h4 class="mb-0">{{  $totalClasses }}</h4>
                                 </div>
                                 <span class="kpi-icon kpi-purple"><i class="fa-solid fa-users-line"></i></span>
                             </div>
@@ -60,7 +60,7 @@
                             <div class="d-flex justify-content-between align-items-start">
                                 <div>
                                     <p class="fw-semibold text-muted mb-1 small text-uppercase">ĐỢT TỐT NGHIỆP</p>
-                                    <h4 class="mb-0">6</h4>
+                                    <h4 class="mb-0">{{$totalGraduations}}</h4>
                                 </div>
                                 <span class="kpi-icon kpi-amber"><i class="fa-solid fa-calendar-check"></i></span>
                             </div>

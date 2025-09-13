@@ -22,15 +22,15 @@ Route::post('/logout', [AuthenticateController::class, 'logout'])->name('handleL
 Route::get('/auth/redirect', [AuthenticateController::class, 'redirectToSSO'])->name('sso.redirect');
 Route::get('/auth/callback', [AuthenticateController::class, 'handleCallback'])->name('sso.callback');
 
+Route::get('/api/classes/count', [\App\Http\Controllers\System\ClassController::class, 'countClassesApi'])->name('api.classes.count');
 
 Route::middleware('auth.sso')->group(function () {
     Route::get('/', function () {
         return view('welcome');
     })->name('client.home');
 
-    Route::get('/dashboard', function () {
-        return view('admin.pages.admin.dashboard');
-    })->name('admin.dashboard');
+    Route::get('/dashboard', [App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('admin.dashboard');
+
     Route::get('/api/dashboard/chart-data', [App\Http\Controllers\Admin\DashboardController::class, 'getChartData'])->name('admin.chart.data');
 
 
