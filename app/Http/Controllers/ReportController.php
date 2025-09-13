@@ -12,6 +12,7 @@ use App\Services\StudentService;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ReportController extends Controller
 {
@@ -291,5 +292,10 @@ class ReportController extends Controller
             'r2' => !empty($r2) ? $r2 : [],
             'r1' => $r1,
         ]);
+
+    }
+    private function exportSurvey(){
+        return Excel::download(new SurveyExport, 'survey_responses.xlsx');
+
     }
 }

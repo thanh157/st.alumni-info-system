@@ -28,10 +28,13 @@ Route::middleware('auth.sso')->group(function () {
     Route::get('/', function () {
         return view('welcome');
     })->name('client.home');
+    Route::get('',function(){
+        return redirect()->route('admin.dashboard');
 
-    Route::get('/dashboard', [App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('admin.dashboard');
+    });
+    Route::get('dashboard', [App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('admin.dashboard');
 
-    Route::get('/api/dashboard/chart-data', [App\Http\Controllers\Admin\DashboardController::class, 'getChartData'])->name('admin.chart.data');
+    Route::get('dashboard/chart-data', [App\Http\Controllers\Admin\DashboardController::class, 'getChartData'])->name('admin.chart.data');
 
 
     //    Route::get('/department', [DepartmentController::class, 'index'])->name('admin.department.index')->middleware('permission:department.index');
@@ -254,3 +257,4 @@ Route::post('/api/get-dot-tot-nghiep', [SurveyController::class, 'getDotTotNghie
 
 Route::get('ket-qua/{id}', [SurveyResultController::class, 'show'])->name('result_detail_v2');
 Route::any('exportPdf_v2/{resultId}', [SurveyResultController::class, 'exportPdf'])->name('export_pdf_v2');
+Route::get('/export-survey', [ReportController::class, 'exportSurvey'])->name('survey.export');
