@@ -257,4 +257,4 @@ Route::post('/api/get-dot-tot-nghiep', [SurveyController::class, 'getDotTotNghie
 
 Route::get('ket-qua/{id}', [SurveyResultController::class, 'show'])->name('result_detail_v2');
 Route::any('exportPdf_v2/{resultId}', [SurveyResultController::class, 'exportPdf'])->name('export_pdf_v2');
-Route::get('/export-survey', [ReportController::class, 'exportSurvey'])->name('survey.export');
+Route::get('/export-survey', [ReportController::class, 'exportSurvey'])->name('surveys.export');

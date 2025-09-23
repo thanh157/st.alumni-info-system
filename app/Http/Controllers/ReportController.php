@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\SurveyExport;
 use App\Models\EmploymentSurveyResponse;
 use App\Models\GraduationStudent;
 use App\Models\Student;
 use App\Models\Survey;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use App\Services\StudentService;
 use Illuminate\Support\Arr;
@@ -21,7 +23,8 @@ class ReportController extends Controller
     public function index(Request $request)
     {
         $facultyId = $this->studentService->getFacultyId();
-
+        $surveyId = $request->input('survey_id');
+        $selectedGraduationId = $request->input('graduation_id');
 
         // 2. Lấy access token từ cache hoặc gọi mới
         $token = cache()->remember('token_client1', 300, fn() => $this->studentService->post('/oauth/token', [
@@ -291,11 +294,17 @@ class ReportController extends Controller
             'studentTab2' => $studentTab2,
             'r2' => !empty($r2) ? $r2 : [],
             'r1' => $r1,
+            'surveyId' => $surveyId,
+            'graduationId' => $selectedGraduationId,
         ]);
 
     }
-    private function exportSurvey(){
-        return Excel::download(new SurveyExport, 'survey_responses.xlsx');
+    public function exportSurvey(Request $request)
+    {
+        $surveyId = $request->input('survey_id');
+        $graduationId = $request->input('graduation_id');
+        $fileName = 'bao_cao_khao_sat_' . Carbon::now()->format('Y-m-d') . '.xlsx';
 
+        return Excel::download(new SurveyExport($surveyId, $graduationId), $fileName);
     }
 }

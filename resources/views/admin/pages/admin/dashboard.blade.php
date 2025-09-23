@@ -253,7 +253,7 @@
 
                 async function boot(){
                     try{
-                        const res = await fetch("{{ route('admin.chart.data') }}", { cache: "no-store" });
+                        const res = await fetch("{{  url('dashboard/chart-data') }}", { cache: "no-store" });
                         if(!res.ok) throw new Error("Server error " + res.status);
                         DATASETS = await res.json();
 

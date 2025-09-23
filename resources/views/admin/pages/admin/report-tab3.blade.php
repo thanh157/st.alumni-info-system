@@ -5,7 +5,7 @@
                 <a href="#" class="btn btn-primary me-2">
                     <i class="bi bi-eye"></i> Xem trước
                 </a>
-                <a href="#" class="btn btn-success">
+                <a href="{{ route('surveys.export', ['survey_id' => $surveyId, 'graduation_id' => $graduationId]) }}" class="btn btn-success">
                     <i class="bi bi-download"></i> Tải xuống báo cáo
                 </a>
             </div>
