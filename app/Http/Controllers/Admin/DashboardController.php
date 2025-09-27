@@ -1,101 +1,126 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
-use App\Exports\SurveyExport;
-use Illuminate\Http\Request;
-use Illuminate\Support\Carbon;
+use App\Http\Controllers\Controller;
+use App\Models\Graduation;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
-use App\Services\StudentService;
-use Illuminate\Support\Arr;
-use Maatwebsite\Excel\Facades\Excel;
+use Carbon\Carbon;
 
-class ReportController extends Controller
+class DashboardController extends Controller
 {
-    public function __construct(private StudentService $studentService) {}
-
-    public function index(Request $request)
+    /** Hiển thị dashboard */
+    public function index(): View
     {
-        // =================================================================
-        // PHẦN 1: LẤY FILTER VÀ DỮ LIỆU PHỤ (GIỮ NGUYÊN)
-        // =================================================================
-        $facultyId = $this->studentService->getFacultyId();
-        $surveyId = $request->input('survey_id');
-        $selectedGraduationId = $request->input('graduation_id');
+        $totalResponses = (int) DB::table('employment_survey_responses_v2')->count();
 
-        // (Code lấy token, danh sách đợt tốt nghiệp, danh sách ngành học của bạn giữ nguyên)
-        // ...
-        $graduations = collect([]); // Giả sử đã lấy được $graduations
-        $industries = collect([]);  // Giả sử đã lấy được $industries
+        $totalEmployed  = (int) DB::table('employment_survey_responses_v2')
+            ->where('employment_status', 1)
+            ->count();
 
-        // =================================================================
-        // PHẦN 2: TRUY VẤN TỔNG HỢP DỮ LIỆU BÁO CÁO (VIẾT LẠI)
-        // =================================================================
-        $reportQuery = DB::table('graduation as g')
+        $employmentRate = $totalResponses > 0
+            ? (int) round(($totalEmployed / $totalResponses) * 100)
+            : 0;
+
+        $totalGraduations = (int) Graduation::count();
+
+        $totalClasses = 15;
+
+        return view('admin.pages.admin.dashboard', compact(
+            'totalResponses',
+            'employmentRate',
+            'totalGraduations',
+            'totalClasses'
+        ));
+    }
+
+    public function getChartData(): JsonResponse
+    {
+        // Truy vấn theo đợt tốt nghiệp graduation -> student(lấy mã sv)-> response->đếm+gom nhóm+ sắp xếp
+        $rows = DB::table('graduation as g')
             ->join('graduation_student as gs', 'g.id', '=', 'gs.graduation_id')
             ->join('student as s', 'gs.student_id', '=', 's.id')
             ->leftJoin('employment_survey_responses_v2 as esr', 's.code', '=', 'esr.code_student')
-            ->leftJoin('training_industries as ti', 's.training_industry_id', '=', 'ti.id') // Join để lấy tên ngành
             ->select(
-                'ti.name as ten_nganh',
-                'ti.code as training_industry_id',
-                DB::raw('COUNT(DISTINCT s.id) as sv_tot_nghiep'),
-                DB::raw('COUNT(DISTINCT CASE WHEN s.gender = "female" THEN s.id END) as sv_nu_tot_nghiep'),
-                DB::raw('COUNT(esr.id) as tong_phan_hoi'),
-                DB::raw('COUNT(CASE WHEN esr.gender = "female" THEN esr.id END) as nu_phan_hoi'),
-                DB::raw('SUM(CASE WHEN esr.employment_status = 1 THEN 1 ELSE 0 END) as co_viec_lam'),
-                DB::raw('SUM(CASE WHEN esr.employment_status = 2 THEN 1 ELSE 0 END) as tiep_tuc_hoc'),
-                DB::raw('SUM(CASE WHEN esr.employment_status = 3 THEN 1 ELSE 0 END) as chua_co_viec'),
-                DB::raw('SUM(CASE WHEN esr.employment_status = 1 AND esr.trained_field IN (1, 2) THEN 1 ELSE 0 END) as viec_lam_lien_quan'),
-                DB::raw('SUM(CASE WHEN esr.employment_status = 1 AND esr.trained_field = 3 THEN 1 ELSE 0 END) as viec_lam_khong_lien_quan'),
-                DB::raw("SUM(CASE WHEN esr.employment_status = 1 AND esr.work_area = '1' THEN 1 ELSE 0 END) as lam_viec_nha_nuoc"),
-                DB::raw("SUM(CASE WHEN esr.employment_status = 1 AND esr.work_area = '2' THEN 1 ELSE 0 END) as lam_viec_tu_nhan"),
-                DB::raw("SUM(CASE WHEN esr.employment_status = 1 AND esr.work_area = '3' THEN 1 ELSE 0 END) as tu_tao_viec_lam"),
-                DB::raw("SUM(CASE WHEN esr.employment_status = 1 AND esr.work_area = '4' THEN 1 ELSE 0 END) as yeu_to_nuoc_ngoai")
+                'g.id',
+                'g.certification_date',
+                DB::raw('SUM(CASE WHEN esr.employment_status = 1 THEN 1 ELSE 0 END) as employed_count'),
+                DB::raw('SUM(CASE WHEN esr.employment_status != 1 OR esr.employment_status IS NULL THEN 1 ELSE 0 END) as unemployed_count'),
+                DB::raw('SUM(CASE WHEN esr.employment_status = 1 AND esr.trained_field IN (1,2) THEN 1 ELSE 0 END) as related_field_count'),
+                DB::raw('SUM(CASE WHEN esr.employment_status = 1 AND esr.trained_field = 3 THEN 1 ELSE 0 END) as unrelated_field_count'),
+                DB::raw("SUM(CASE WHEN esr.employment_status = 1 AND esr.work_area IN ('1','2','3') THEN 1 ELSE 0 END) as domestic_count"),
+                DB::raw("SUM(CASE WHEN esr.employment_status = 1 AND esr.work_area = '4' THEN 1 ELSE 0 END) as foreign_count")
             )
-            ->groupBy('ti.name', 'ti.code')
-            ->orderBy('ti.name');
+            ->groupBy('g.id', 'g.certification_date')
+            ->orderBy('g.certification_date')
+            ->get();
 
-        // Áp dụng filter vào câu truy vấn
-        if ($surveyId) {
-            $reportQuery->where('esr.survey_period_id', $surveyId);
+        $totals = [
+            'employed'   => 0,
+            'unemployed' => 0,
+            'related'    => 0,
+            'unrelated'  => 0,
+            'domestic'   => 0,
+            'foreign'    => 0,
+        ];
+
+        $bar = [];
+
+        foreach ($rows as $r) {
+            // Cast an toàn
+            $employed   = (int) ($r->employed_count ?? 0);
+            $unemployed = (int) ($r->unemployed_count ?? 0);
+            $related    = (int) ($r->related_field_count ?? 0);
+            $unrelated  = (int) ($r->unrelated_field_count ?? 0);
+            $domestic   = (int) ($r->domestic_count ?? 0);
+            $foreign    = (int) ($r->foreign_count ?? 0);
+
+            // Tổng
+            $totals['employed']   += $employed;
+            $totals['unemployed'] += $unemployed;
+            $totals['related']    += $related;
+            $totals['unrelated']  += $unrelated;
+            $totals['domestic']   += $domestic;
+            $totals['foreign']    += $foreign;
+
+            // Dòng bar
+            $bar[] = [
+                'term'       => 'Đợt ' . Carbon::parse($r->certification_date)->format('m/Y'),
+                'employed'   => $employed,
+                'unemployed' => $unemployed,
+                'related'    => $related,
+                'unrelated'  => $unrelated,
+                'domestic'   => $domestic,
+                'foreign'    => $foreign,
+            ];
         }
-        if ($selectedGraduationId) {
-            $reportQuery->where('g.id', $selectedGraduationId);
-        }
 
-        $report1 = $reportQuery->get()->map(function ($row) {
-            // Tính toán các tỷ lệ %
-            $row->ty_le_co_viec_phan_hoi = $row->tong_phan_hoi > 0 ? round($row->co_viec_lam / $row->tong_phan_hoi * 100, 2) : 0;
-            $row->ty_le_co_viec_tot_nghiep = $row->sv_tot_nghiep > 0 ? round($row->co_viec_lam / $row->sv_tot_nghiep * 100, 2) : 0;
-            return $row;
-        });
+        $data = [
+            // 3 bộ pie (theo chế độ)
+            'employed' => [
+                'pie' => [
+                    ['category' => 'Có việc làm',       'value' => $totals['employed']],
+                    ['category' => 'Chưa có việc làm',  'value' => $totals['unemployed']],
+                ],
+            ],
+            'location' => [
+                'pie' => [
+                    ['category' => 'Trong nước', 'value' => $totals['domestic']],
+                    ['category' => 'Nước ngoài', 'value' => $totals['foreign']],
+                ],
+            ],
+            'field' => [
+                'pie' => [
+                    ['category' => 'Đúng ngành', 'value' => $totals['related']],
+                    ['category' => 'Trái ngành', 'value' => $totals['unrelated']],
+                ],
+            ],
+            // dữ liệu bar theo từng đợt (dùng chung)
+            'bar' => $bar,
+        ];
 
-        // =================================================================
-        // PHẦN 3: TRUY VẤN DANH SÁCH SINH VIÊN CHI TIẾT (NẾU CẦN)
-        // =================================================================
-        // Phần này có thể được tối ưu tương tự nếu cần hiển thị bảng danh sách sinh viên chi tiết
-        $students = collect([]); // Tạm thời để trống hoặc viết query tương tự
-
-        // =================================================================
-        // PHẦN 4: TRẢ VỀ VIEW
-        // =================================================================
-        return view('admin.pages.admin.report', [
-            'report1' => $report1,
-            'students' => $students,
-            'graduations' => $graduations,
-            // ... các biến khác
-            'surveyId' => $surveyId,
-            'graduationId' => $selectedGraduationId,
-        ]);
-    }
-
-    public function exportSurvey(Request $request)
-    {
-        $surveyId = $request->input('survey_id');
-        $graduationId = $request->input('graduation_id');
-        $fileName = 'bao_cao_khao_sat_' . Carbon::now()->format('Y-m-d') . '.xlsx';
-
-        return Excel::download(new SurveyExport($surveyId, $graduationId), $fileName);
+        return response()->json($data);
     }
 }
