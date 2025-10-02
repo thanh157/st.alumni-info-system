@@ -1,8 +1,3 @@
-Các đầu việc sẽ thực hiện (Dự kiến bàn giao: tối t3 or t4 tuần sau)
-
-- không cần cọc, demo ok thì chuyển khoản, xong gửi code
-
-
 ### 1. Cập nhật khảo sát sang 23 câu cố định
 
 Bỏ form tạo động
