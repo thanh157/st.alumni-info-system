@@ -9,7 +9,7 @@ class SurveyResponse extends Model
 {
     use HasFactory;
 
-    protected $table = 'survey_responses';
+    protected $table = 'employment_survey_responses_v2';
 
     protected $fillable = [
         'survey_id',
@@ -20,6 +20,7 @@ class SurveyResponse extends Model
         'phone',
         'student_info',
         'submitted_at',
+        'employment_status'
     ];
 
     protected $casts = [
