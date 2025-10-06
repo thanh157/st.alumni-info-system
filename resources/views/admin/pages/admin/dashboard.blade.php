@@ -191,14 +191,15 @@
                 rootBar.setThemes([am5themes_Animated.new(rootBar)]);
                 const barChart = rootBar.container.children.push(am5xy.XYChart.new(rootBar, {
                     panX: false, panY: false, wheelX: "panX", wheelY: "zoomX",
-                    paddingLeft: 0, paddingBottom: 50, layout: rootBar.verticalLayout
+                    paddingLeft: 30, paddingBottom: 50, layout: rootBar.verticalLayout
                 }));
                 barChart.set("cursor", am5xy.XYCursor.new(rootBar, {}));
 
                 const xRenderer = am5xy.AxisRendererX.new(rootBar, { minGridDistance: 30 });
-                xRenderer.labels.template.setAll({ rotation: -45, centerY: am5.p50, centerX: am5.p100, paddingRight: 10 });
+                xRenderer.labels.template.setAll({  centerY: am5.p50, centerX: am5.p50 });
                 const xAxis = barChart.xAxes.push(am5xy.CategoryAxis.new(rootBar, {
-                    categoryField: "term", renderer: xRenderer, tooltip: am5.Tooltip.new(rootBar, {})
+                    categoryField: "term", renderer: xRenderer, tooltip: am5.Tooltip.new(rootBar, {}),
+
                 }));
                 const yAxis = barChart.yAxes.push(am5xy.ValueAxis.new(rootBar, {
                     min: 0, renderer: am5xy.AxisRendererY.new(rootBar, {})
@@ -220,8 +221,8 @@
 
                 const seriesMap = {
                     employed: [
-                        createSeries("Có việc làm", "employed", 0x3b82f6),
-                        createSeries("Chưa có việc làm", "unemployed", 0xef4444),
+                        createSeries("Có việc làm", "employed", 0x10b981),
+                        createSeries("Chưa có việc làm", "unemployed", 0xf97316),
                     ],
                     location: [
                         createSeries("Trong nước", "domestic", 0x10b981),

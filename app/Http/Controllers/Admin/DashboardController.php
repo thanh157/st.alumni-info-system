@@ -38,14 +38,9 @@ class DashboardController extends Controller
 
     public function getChartData(): JsonResponse
     {
-        // Truy vấn theo đợt tốt nghiệp graduation -> student(lấy mã sv)-> response->đếm+gom nhóm+ sắp xếp
-        $rows = DB::table('graduation as g')
-            ->join('graduation_student as gs', 'g.id', '=', 'gs.graduation_id')
-            ->join('student as s', 'gs.student_id', '=', 's.id')
-            ->leftJoin('employment_survey_responses_v2 as esr', 's.code', '=', 'esr.code_student')
+         $rows = DB::table('employment_survey_responses_v2 as esr')
             ->select(
-                'g.id',
-                'g.certification_date',
+                'esr.survey_period_id',
                 DB::raw('SUM(CASE WHEN esr.employment_status = 1 THEN 1 ELSE 0 END) as employed_count'),
                 DB::raw('SUM(CASE WHEN esr.employment_status != 1 OR esr.employment_status IS NULL THEN 1 ELSE 0 END) as unemployed_count'),
                 DB::raw('SUM(CASE WHEN esr.employment_status = 1 AND esr.trained_field IN (1,2) THEN 1 ELSE 0 END) as related_field_count'),
@@ -53,8 +48,8 @@ class DashboardController extends Controller
                 DB::raw("SUM(CASE WHEN esr.employment_status = 1 AND esr.work_area IN ('1','2','3') THEN 1 ELSE 0 END) as domestic_count"),
                 DB::raw("SUM(CASE WHEN esr.employment_status = 1 AND esr.work_area = '4' THEN 1 ELSE 0 END) as foreign_count")
             )
-            ->groupBy('g.id', 'g.certification_date')
-            ->orderBy('g.certification_date')
+            ->groupBy('esr.survey_period_id')
+            ->orderBy('esr.survey_period_id')
             ->get();
 
         $totals = [
@@ -86,8 +81,8 @@ class DashboardController extends Controller
             $totals['foreign']    += $foreign;
 
             // Dòng bar
-            $bar[] = [
-                'term'       => 'Đợt ' . Carbon::parse($r->certification_date)->format('m/Y'),
+             $bar[] = [
+                 'term'       => 'Đợt Khảo Sát ' . $r->survey_period_id,
                 'employed'   => $employed,
                 'unemployed' => $unemployed,
                 'related'    => $related,

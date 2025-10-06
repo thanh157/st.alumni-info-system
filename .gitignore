@@ -22,3 +22,4 @@ yarn-error.log
 /.vscode
 /.zed
 storage/logs/laravel.log
+resources/views/admin/pages/admin/charts.blade.php

@@ -10,12 +10,12 @@ use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 class ReportExport implements FromView, WithTitle, ShouldAutoSize
 {
     // Khai báo các thuộc tính để lưu trữ dữ liệu
-    protected $report1, $students, $report3, $schoolYear, $r1, $r1_trained_field, $r1_work_area, $r2, $studentTab2;
+    protected $report1, $students, $report3, $schoolYear, $r1, $r1_trained_field, $r1_work_area, $r2, $studentTab2,$type;
 
     /**
      * Hàm khởi tạo để nhận tất cả dữ liệu cần thiết từ Controller.
      */
-    public function __construct($report1, $students, $report3, $schoolYear, $r1, $r1_trained_field, $r1_work_area, $r2, $studentTab2)
+    public function __construct($report1, $students, $report3, $schoolYear, $r1, $r1_trained_field, $r1_work_area, $r2, $studentTab2, string $type)
     {
         $this->report1 = $report1;
         $this->students = $students;
@@ -26,6 +26,7 @@ class ReportExport implements FromView, WithTitle, ShouldAutoSize
         $this->r1_work_area = $r1_work_area;
         $this->r2 = $r2;
         $this->studentTab2 = $studentTab2;
+        $this->type = $type;
     }
 
     /**
@@ -34,7 +35,7 @@ class ReportExport implements FromView, WithTitle, ShouldAutoSize
     public function view(): View
     {
         // Truyền tất cả dữ liệu đã nhận vào view template
-        return view('admin.pages.admin.exports.report_excel', [
+        return view('admin.pages.survey.report_excel', [
             'report1' => $this->report1,
             'students' => $this->students,
             'report3' => $this->report3,
