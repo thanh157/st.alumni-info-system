@@ -46,7 +46,7 @@ class StudentDetailController extends Controller
 
         dd(1); 
 
-        // ✅ Truyền đúng biến
+        // Truyền đúng biến
         return view('admin.pages.admin.student-info', compact('student'));
     }
 }

@@ -93,7 +93,7 @@
                                     </button>
 
                                     <a href="{{ route('admin.survey.form', ['id' => $item->id]) }}"
-                                        class="btn btn-sm btn-outline-primary" title="Show form"
+                                        class="btn btn-sm btn-outline-primary" title="Xem trước form"
                                         style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;">
                                         <i class="bi bi-list-nested"></i>
                                     </a>
