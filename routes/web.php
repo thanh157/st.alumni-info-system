@@ -28,9 +28,8 @@ Route::middleware('auth.sso')->group(function () {
     Route::get('/', function () {
         return view('welcome');
     })->name('client.home');
-    Route::get('',function(){
+    Route::get('', function () {
         return redirect()->route('admin.dashboard');
-
     });
     Route::get('dashboard', [App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('admin.dashboard');
 

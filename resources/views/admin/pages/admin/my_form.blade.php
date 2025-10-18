@@ -164,252 +164,261 @@
                         @php $tinh_trang = config('config.tinh_trang'); @endphp
                         @foreach ($tinh_trang as $index => $value)
                             <div class="form-check mb-2">
-                                <input class="form-check-input" type="radio" name="employment_status" required
-                                    id="tt_{{ $index }}" value="{{ $index }}">
+                                <input class="form-check-input employment-status-radio" type="radio"
+                                    name="employment_status" required id="tt_{{ $index }}"
+                                    value="{{ $index }}">
                                 <label class="form-check-label fw-normal"
                                     for="tt_{{ $index }}">{{ $value }}</label>
                             </div>
                         @endforeach
                     </div>
 
-                    <div class="mb-3">
-                        <label class="form-label">11. Tên đơn vị tuyển dụng</label>
-                        <input type="text" class="form-control" placeholder="Nhập tên công ty / tổ chức"
-                            name="recruit_partner_name" required>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">12. Địa chỉ đơn vị</label>
-                        <div class="form-text mb-3">vd: Khu 2 Hoàng Khương, Thanh Ba, Phú Thọ</div>
-                        <input type="text" class="form-control mb-1" placeholder="Nhập địa chỉ cụ thể"
-                            name="recruit_partner_address" required>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">13. Thời gian tuyển dụng</label>
-                        <input type="date" class="form-control" placeholder="Nhập năm tuyển dụng (vd: 2025)"
-                            name="recruit_partner_date" required>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">14. Chức vụ, vị trí việc làm</label>
-                        <input type="text" class="form-control"
-                            placeholder="VD: Nhân viên kinh doanh, Trưởng phòng sale..." name="recruit_partner_position"
-                            required>
-                    </div>
-                </div>
-
-                {{-- PHẦN II: NỘI DUNG KHẢO SÁT --}}
-                <h6 class="mb-4 fw-bold">Phần II: Nội dung khảo sát</h6>
-
-                <!-- 15. Khu vực làm việc -->
-                <div class="mb-4">
-                    <label class="form-label fw-bold">15. Đơn vị Anh/Chị đang làm việc thuộc khu vực nào?</label>
-                    @foreach (config('config.work_area') as $key => $item)
-                        <div class="form-check mb-2">
-                            <input class="form-check-input" type="radio" name="work_area" required
-                                id="kv_{{ $key }}" value="{{ $key }}">
-                            <label class="form-check-label fw-normal"
-                                for="kv_{{ $key }}">{{ $item }}</label>
+                    <div class="employment-details">
+                        <div class="mb-3">
+                            <label class="form-label">11. Tên đơn vị tuyển dụng</label>
+                            <input type="text" class="form-control" placeholder="Nhập tên công ty / tổ chức"
+                                name="recruit_partner_name" required>
                         </div>
-                    @endforeach
-                </div>
 
-                <!-- 16. Thời gian có việc sau tốt nghiệp -->
-                <div class="mb-4">
-                    <label class="form-label fw-bold">16. Sau khi tốt nghiệp, Anh/Chị có việc làm từ khi nào?</label>
-                    @foreach (config('config.employed_since') as $key => $item)
-                        <div class="form-check mb-2">
-                            <input class="form-check-input" type="radio" name="employed_since" required
-                                id="tg_{{ $key }}" value="{{ $key }}">
-                            <label class="form-check-label fw-normal"
-                                for="tg_{{ $key }}">{{ $item }}</label>
+                        <div class="mb-3">
+                            <label class="form-label">12. Địa chỉ đơn vị</label>
+                            <div class="form-text mb-3">vd: Khu 2 Hoàng Khương, Thanh Ba, Phú Thọ</div>
+                            <input type="text" class="form-control mb-1" placeholder="Nhập địa chỉ cụ thể"
+                                name="recruit_partner_address" required>
                         </div>
-                    @endforeach
-                </div>
 
-                <!-- 17. Công việc có phù hợp với ngành đào tạo -->
-                <div class="mb-4">
-                    <label class="form-label fw-bold">17. Công việc Anh/Chị đang làm có phù hợp với ngành đào tạo
-                        không?</label>
-                    @foreach (config('config.trained_field') as $key => $item)
-                        <div class="form-check mb-2">
-                            <input class="form-check-input" type="radio" name="trained_field" required
-                                id="nganh_{{ $key }}" value="{{ $key }}">
-                            <label class="form-check-label fw-normal"
-                                for="nganh_{{ $key }}">{{ $item }}</label>
+                        <div class="mb-3">
+                            <label class="form-label">13. Thời gian tuyển dụng</label>
+                            <input type="date" class="form-control" placeholder="Nhập năm tuyển dụng (vd: 2025)"
+                                name="recruit_partner_date" required>
                         </div>
-                    @endforeach
-                </div>
 
-                <!-- 18. Công việc có phù hợp với trình độ chuyên môn -->
-                <div class="mb-4">
-                    <label class="form-label fw-bold">18. Công việc Anh/Chị đang đảm nhận có phù hợp với trình độ chuyên
-                        môn không?</label>
-                    @foreach (config('config.professional_qualification_field') as $key => $item)
-                        <div class="form-check mb-2">
-                            <input class="form-check-input" type="radio" name="professional_qualification_field"
-                                required id="trinhdo_{{ $key }}" value="{{ $key }}">
-                            <label class="form-check-label fw-normal"
-                                for="trinhdo_{{ $key }}">{{ $item }}</label>
+                        <div class="mb-3">
+                            <label class="form-label">14. Chức vụ, vị trí việc làm</label>
+                            <input type="text" class="form-control"
+                                placeholder="VD: Nhân viên kinh doanh, Trưởng phòng sale..."
+                                name="recruit_partner_position" required>
                         </div>
-                    @endforeach
-                </div>
 
-                <!-- 19. Kiến thức kỹ năng từ trường có phù hợp công việc -->
-                <div class="mb-4">
-                    <label class="form-label fw-bold">19. Anh/Chị có học được kiến thức/kỹ năng cần thiết từ trường cho
-                        công việc không?</label>
-                    @foreach (config('config.level_knowledge_acquired') as $key => $item)
-                        <div class="form-check mb-2">
-                            <input class="form-check-input" type="radio" name="level_knowledge_acquired" required
-                                id="kt_{{ $key }}" value="{{ $key }}">
-                            <label class="form-check-label fw-normal"
-                                for="kt_{{ $key }}">{{ $item }}</label>
-                        </div>
-                    @endforeach
-                </div>
+                    {{-- PHẦN II: NỘI DUNG KHẢO SÁT --}}
+                    <h6 class="mb-4 fw-bold">Phần II: Nội dung khảo sát</h6>
 
-                <!-- 20. Mức lương khởi điểm -->
-                <div class="mb-4">
-                    <label class="form-label fw-bold">20. Mức lương khởi điểm (triệu đồng/tháng)</label>
-                    <input type="text" class="form-control" name="starting_salary" placeholder="10" required>
-                </div>
-
-                <!-- 21. Mức thu nhập hiện tại -->
-                <div class="mb-4">
-                    <label class="form-label fw-bold">21. Mức thu nhập bình quân/tháng hiện nay (triệu đồng)</label>
-                    @foreach (config('config.average_income') as $key => $item)
-                        <div class="form-check mb-2">
-                            <input class="form-check-input" type="radio" name="average_income" required
-                                id="tn_{{ $key }}" value="{{ $key }}">
-                            <label class="form-check-label fw-normal"
-                                for="tn_{{ $key }}">{{ $item }}</label>
-                        </div>
-                    @endforeach
-                </div>
-
-                <!-- 22. Hình thức tìm được việc làm -->
-                <div class="mb-4">
-                    <label class="form-label fw-bold">22. Anh/Chị tìm được việc làm thông qua những hình thức nào? <span
-                            class="fw-normal">(Có thể chọn nhiều lựa chọn)</span></label>
-                    @php $tim_viec = config('config.recruitment_type'); @endphp
-                    @foreach ($tim_viec as $index => $value)
-                        @if ($value == 'Khác')
+                    <!-- 15. Khu vực làm việc -->
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">15. Đơn vị Anh/Chị đang làm việc thuộc khu vực nào?</label>
+                        @foreach (config('config.work_area') as $key => $item)
                             <div class="form-check mb-2">
-                                <input class="form-check-input recruitment_type_other" type="checkbox"
-                                    name="recruitment_type[]" id="ht_{{ $index }}" value="{{ $index }}">
-                                <label class="form-check-label fw-normal" for="ht_{{ $index }}">Khác</label>
-                            </div>
-                        @else
-                            <div class="form-check mb-2">
-                                <input class="form-check-input" type="checkbox" name="recruitment_type[]"
-                                    id="ht_{{ $index }}" value="{{ $index }}">
+                                <input class="form-check-input" type="radio" name="work_area" required
+                                    id="kv_{{ $key }}" value="{{ $key }}">
                                 <label class="form-check-label fw-normal"
-                                    for="ht_{{ $index }}">{{ $value }}</label>
+                                    for="kv_{{ $key }}">{{ $item }}</label>
                             </div>
-                        @endif
-                    @endforeach
-                    {{-- Input ghi chú nếu chọn "Khác" --}}
-                    <div id="recruitment_type_other_wrapper" style="display: none;" class="mt-2">
-                        <input type="text" name="recruitment_type_other" id="recruitment_type_other"
-                            class="form-control" placeholder="Nhập ghi chú cụ thể...">
+                        @endforeach
                     </div>
 
-                    <div id="recruitment_type_error" class="text-danger small d-none"></div>
-                </div>
-
-                <!-- 23. Hình thức tuyển -->
-                <div class="mb-4">
-                    <label class="form-label fw-bold">23. Anh/Chị được tuyển theo hình thức nào?</label>
-                    @foreach (config('config.job_search_method') as $key => $item)
-                        @if ($item == 'Khác')
+                    <!-- 16. Thời gian có việc sau tốt nghiệp -->
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">16. Sau khi tốt nghiệp, Anh/Chị có việc làm từ khi nào?</label>
+                        @foreach (config('config.employed_since') as $key => $item)
                             <div class="form-check mb-2">
-                                <input class="form-check-input job_search_method_other" type="checkbox"
-                                    name="job_search_method[]" id="ht23_{{ $key }}"
-                                    value="{{ $key }}">
-                                <label class="form-check-label fw-normal" for="ht23_{{ $key }}">Khác</label>
-                            </div>
-                        @else
-                            <div class="form-check mb-2">
-                                <input class="form-check-input" type="checkbox" name="job_search_method[]"
-                                    id="ht23_{{ $key }}" value="{{ $key }}">
+                                <input class="form-check-input" type="radio" name="employed_since" required
+                                    id="tg_{{ $key }}" value="{{ $key }}">
                                 <label class="form-check-label fw-normal"
-                                    for="ht23_{{ $key }}">{{ $item }}</label>
+                                    for="tg_{{ $key }}">{{ $item }}</label>
                             </div>
-                        @endif
-                    @endforeach
-                    {{-- Input ghi chú nếu chọn "Khác" --}}
-                    <div id="job_search_method_other_wrapper" style="display: none;" class="mt-2">
-                        <input type="text" name="job_search_method_other" id="job_search_method_other"
-                            class="form-control" placeholder="">
+                        @endforeach
                     </div>
-                    <div id="job_search_method_error" class="text-danger small d-none"></div>
+
+                    <!-- 17. Công việc có phù hợp với ngành đào tạo -->
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">17. Công việc Anh/Chị đang làm có phù hợp với ngành đào tạo
+                            không?</label>
+                        @foreach (config('config.trained_field') as $key => $item)
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="radio" name="trained_field" required
+                                    id="nganh_{{ $key }}" value="{{ $key }}">
+                                <label class="form-check-label fw-normal"
+                                    for="nganh_{{ $key }}">{{ $item }}</label>
+                            </div>
+                        @endforeach
+                    </div>
+
+                    <!-- 18. Công việc có phù hợp với trình độ chuyên môn -->
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">18. Công việc Anh/Chị đang đảm nhận có phù hợp với trình độ
+                            chuyên
+                            môn không?</label>
+                        @foreach (config('config.professional_qualification_field') as $key => $item)
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="radio" name="professional_qualification_field"
+                                    required id="trinhdo_{{ $key }}" value="{{ $key }}">
+                                <label class="form-check-label fw-normal"
+                                    for="trinhdo_{{ $key }}">{{ $item }}</label>
+                            </div>
+                        @endforeach
+                    </div>
+
+                    <!-- 19. Kiến thức kỹ năng từ trường có phù hợp công việc -->
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">19. Anh/Chị có học được kiến thức/kỹ năng cần thiết từ trường cho
+                            công việc không?</label>
+                        @foreach (config('config.level_knowledge_acquired') as $key => $item)
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="radio" name="level_knowledge_acquired" required
+                                    id="kt_{{ $key }}" value="{{ $key }}">
+                                <label class="form-check-label fw-normal"
+                                    for="kt_{{ $key }}">{{ $item }}</label>
+                            </div>
+                        @endforeach
+                    </div>
+
+                    <!-- 20. Mức lương khởi điểm -->
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">20. Mức lương khởi điểm (triệu đồng/tháng)</label>
+                        <input type="text" class="form-control" name="starting_salary" placeholder="10" required>
+                    </div>
+
+                    <!-- 21. Mức thu nhập hiện tại -->
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">21. Mức thu nhập bình quân/tháng hiện nay (triệu đồng)</label>
+                        @foreach (config('config.average_income') as $key => $item)
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="radio" name="average_income" required
+                                    id="tn_{{ $key }}" value="{{ $key }}">
+                                <label class="form-check-label fw-normal"
+                                    for="tn_{{ $key }}">{{ $item }}</label>
+                            </div>
+                        @endforeach
+                    </div>
+
+                    <!-- 22. Hình thức tìm được việc làm -->
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">22. Anh/Chị tìm được việc làm thông qua những hình thức nào?
+                            <span class="fw-normal">(Có thể chọn nhiều lựa chọn)</span></label>
+                        @php $tim_viec = config('config.recruitment_type'); @endphp
+                        @foreach ($tim_viec as $index => $value)
+                            @if ($value == 'Khác')
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input recruitment_type_other" type="checkbox"
+                                        name="recruitment_type[]" id="ht_{{ $index }}"
+                                        value="{{ $index }}">
+                                    <label class="form-check-label fw-normal" for="ht_{{ $index }}">Khác</label>
+                                </div>
+                            @else
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="checkbox" name="recruitment_type[]"
+                                        id="ht_{{ $index }}" value="{{ $index }}">
+                                    <label class="form-check-label fw-normal"
+                                        for="ht_{{ $index }}">{{ $value }}</label>
+                                </div>
+                            @endif
+                        @endforeach
+                        {{-- Input ghi chú nếu chọn "Khác" --}}
+                        <div id="recruitment_type_other_wrapper" style="display: none;" class="mt-2">
+                            <input type="text" name="recruitment_type_other" id="recruitment_type_other"
+                                class="form-control" placeholder="Nhập ghi chú cụ thể...">
+                        </div>
+
+                        <div id="recruitment_type_error" class="text-danger small d-none"></div>
+                    </div>
+
+                    <!-- 23. Hình thức tuyển -->
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">23. Anh/Chị được tuyển theo hình thức nào?</label>
+                        @foreach (config('config.job_search_method') as $key => $item)
+                            @if ($item == 'Khác')
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input job_search_method_other" type="checkbox"
+                                        name="job_search_method[]" id="ht23_{{ $key }}"
+                                        value="{{ $key }}">
+                                    <label class="form-check-label fw-normal" for="ht23_{{ $key }}">Khác</label>
+                                </div>
+                            @else
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="checkbox" name="job_search_method[]"
+                                        id="ht23_{{ $key }}" value="{{ $key }}">
+                                    <label class="form-check-label fw-normal"
+                                        for="ht23_{{ $key }}">{{ $item }}</label>
+                                </div>
+                            @endif
+                        @endforeach
+                        {{-- Input ghi chú nếu chọn "Khác" --}}
+                        <div id="job_search_method_other_wrapper" style="display: none;" class="mt-2">
+                            <input type="text" name="job_search_method_other" id="job_search_method_other"
+                                class="form-control" placeholder="">
+                        </div>
+                        <div id="job_search_method_error" class="text-danger small d-none"></div>
+                    </div>
+
+                    <!-- 24. Kỹ năng mềm -->
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">24. Trong quá trình làm việc, Anh/Chị cần những kỹ năng mềm nào
+                            sau
+                            đây? <span class="fw-normal">(Có thể chọn nhiều lựa chọn)</span></label>
+                        @php $ky_nang = config('config.soft_skills_required'); @endphp
+                        @foreach ($ky_nang as $index => $value)
+                            @if ($value == 'Khác')
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input soft_skills_required_other" type="checkbox"
+                                        name="soft_skills_required[]" id="ht_{{ $index }}"
+                                        value="{{ $index }}">
+                                    <label class="form-check-label fw-normal" for="ht_{{ $index }}">Khác</label>
+                                </div>
+                            @else
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="checkbox" name="soft_skills_required[]"
+                                        id="kn_{{ $index }}" value="{{ $index }}">
+                                    <label class="form-check-label fw-normal"
+                                        for="kn_{{ $index }}">{{ $value }}</label>
+                                </div>
+                            @endif
+                        @endforeach
+                        {{-- Input ghi chú nếu chọn "Khác" --}}
+                        <div id="soft_skills_required_other_wrapper" style="display: none;" class="mt-2">
+                            <input type="text" name="soft_skills_required_other" id="soft_skills_required_other"
+                                class="form-control" placeholder="Nhập ghi chú cụ thể...">
+                        </div>
+                        <div id="soft_skills_required_error" class="text-danger small d-none"></div>
+                    </div>
+
+                    <!-- 25. Khóa học nâng cao -->
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">25. Sau khi được tuyển dụng, Anh/Chị có phải tham gia khóa học
+                            nâng
+                            cao nào dưới đây để đáp ứng công việc không? <span class="fw-normal">(Có thể chọn nhiều lựa
+                                chọn)</span></label>
+                        @php $nang_cao = config('config.must_attended_courses'); @endphp
+                        @foreach ($nang_cao as $index => $value)
+                            @if ($value == 'Khác')
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input must_attended_courses_other" type="checkbox"
+                                        name="must_attended_courses[]" id="ht_{{ $index }}"
+                                        value="{{ $index }}">
+                                    <label class="form-check-label fw-normal" for="ht_{{ $index }}">Khác</label>
+                                </div>
+                            @else
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="checkbox" name="must_attended_courses[]"
+                                        id="nc_{{ $index }}" value="{{ $index }}">
+                                    <label class="form-check-label fw-normal"
+                                        for="nc_{{ $index }}">{{ $value }}</label>
+                                </div>
+                            @endif
+                        @endforeach
+                        <div id="must_attended_courses_other_wrapper" style="display: none;" class="mt-2">
+                            <input type="text" name="must_attended_courses_other" id="must_attended_courses_other"
+                                class="form-control" placeholder="Nhập ghi chú cụ thể...">
+                        </div>
+                        <div id="must_attended_courses_error" class="text-danger small d-none"></div>
+                    </div>
+
                 </div>
 
-                <!-- 24. Kỹ năng mềm -->
-                <div class="mb-4">
-                    <label class="form-label fw-bold">24. Trong quá trình làm việc, Anh/Chị cần những kỹ năng mềm nào sau
-                        đây? <span class="fw-normal">(Có thể chọn nhiều lựa chọn)</span></label>
-                    @php $ky_nang = config('config.soft_skills_required'); @endphp
-                    @foreach ($ky_nang as $index => $value)
-                        @if ($value == 'Khác')
-                            <div class="form-check mb-2">
-                                <input class="form-check-input soft_skills_required_other" type="checkbox"
-                                    name="soft_skills_required[]" id="ht_{{ $index }}"
-                                    value="{{ $index }}">
-                                <label class="form-check-label fw-normal" for="ht_{{ $index }}">Khác</label>
-                            </div>
-                        @else
-                            <div class="form-check mb-2">
-                                <input class="form-check-input" type="checkbox" name="soft_skills_required[]"
-                                    id="kn_{{ $index }}" value="{{ $index }}">
-                                <label class="form-check-label fw-normal"
-                                    for="kn_{{ $index }}">{{ $value }}</label>
-                            </div>
-                        @endif
-                    @endforeach
-                    {{-- Input ghi chú nếu chọn "Khác" --}}
-                    <div id="soft_skills_required_other_wrapper" style="display: none;" class="mt-2">
-                        <input type="text" name="soft_skills_required_other" id="soft_skills_required_other"
-                            class="form-control" placeholder="Nhập ghi chú cụ thể...">
-                    </div>
-                    <div id="soft_skills_required_error" class="text-danger small d-none"></div>
-                </div>
-
-                <!-- 25. Khóa học nâng cao -->
-                <div class="mb-4">
-                    <label class="form-label fw-bold">25. Sau khi được tuyển dụng, Anh/Chị có phải tham gia khóa học nâng
-                        cao nào dưới đây để đáp ứng công việc không? <span class="fw-normal">(Có thể chọn nhiều lựa
-                            chọn)</span></label>
-                    @php $nang_cao = config('config.must_attended_courses'); @endphp
-                    @foreach ($nang_cao as $index => $value)
-                        @if ($value == 'Khác')
-                            <div class="form-check mb-2">
-                                <input class="form-check-input must_attended_courses_other" type="checkbox"
-                                    name="must_attended_courses[]" id="ht_{{ $index }}"
-                                    value="{{ $index }}">
-                                <label class="form-check-label fw-normal" for="ht_{{ $index }}">Khác</label>
-                            </div>
-                        @else
-                            <div class="form-check mb-2">
-                                <input class="form-check-input" type="checkbox" name="must_attended_courses[]"
-                                    id="nc_{{ $index }}" value="{{ $index }}">
-                                <label class="form-check-label fw-normal"
-                                    for="nc_{{ $index }}">{{ $value }}</label>
-                            </div>
-                        @endif
-                    @endforeach
-                    <div id="must_attended_courses_other_wrapper" style="display: none;" class="mt-2">
-                        <input type="text" name="must_attended_courses_other" id="must_attended_courses_other"
-                            class="form-control" placeholder="Nhập ghi chú cụ thể...">
-                    </div>
-                    <div id="must_attended_courses_error" class="text-danger small d-none"></div>
-                </div>
 
                 <!-- 26. Giải pháp nâng tỷ lệ có việc làm -->
-                <div class="mb-4">
-                    <label class="form-label fw-bold">26. Theo Anh/Chị, những giải pháp nào sau đây giúp tăng tỷ lệ có việc
+                <div class="mb-4" id="question-26">
+                    <label class="form-label fw-bold">26. Theo Anh/Chị, những giải pháp nào sau đây giúp tăng tỷ lệ có
+                        việc
                         làm đúng ngành của sinh viên tốt nghiệp từ chương trình đào tạo mà Anh/Chị đã học? <span
                             class="fw-normal">(Có thể chọn nhiều lựa chọn)</span></label>
                     @php $giai_phap = config('config.solutions_get_job'); @endphp
@@ -674,7 +683,7 @@
 
                             $('#p2').find(
                                 'input[type=radio], input[type=checkbox], input[type=text], textarea'
-                                ).prop('checked', false).val('');
+                            ).prop('checked', false).val('');
                         } else {
                             $totalError.text(res.message || 'Không hợp lệ').removeClass(
                                 'd-none');
@@ -832,6 +841,34 @@
                     e.preventDefault();
                 }
             });
+        });
+
+        $(document).ready(function() {
+            function toggleEmploymentDetails() {
+                // Lấy value thực tế của đáp án "Đã có việc làm"
+                var employedValue =
+                    '{{ array_key_first(config('config.tinh_trang')) }}'; // Nếu "Đã có việc làm" là phần tử đầu
+                var selected = $('input[name="employment_status"]:checked').val();
+                if (selected == employedValue) {
+                    $('.employment-details').show();
+                    $('#question-26').show();
+                } else if (selected) {
+                    $('.employment-details').hide();
+                    $('#question-26').show();
+                } else {
+                    $('.employment-details').hide();
+                    $('#question-26').hide();
+                }
+            }
+
+            $('.employment-details').hide();
+            $('#question-26').hide();
+
+            $(document).on('change', '.employment-status-radio', function() {
+                toggleEmploymentDetails();
+            });
+
+            toggleEmploymentDetails();
         });
     </script>
 @endpush

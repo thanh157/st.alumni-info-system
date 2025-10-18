@@ -197,11 +197,20 @@ class StudentController extends Controller
     public function listStudent()
     {
         $keyword = request('keyword');
+        $filter = request('filter'); // thêm dòng này để lấy trạng thái lọc
+
         $student = Student::query()->with(['graduation']);
+
         if ($keyword) {
             $student->where('code', $keyword)->orWhere('full_name', 'like', "%$keyword%");
         }
-        $student = $student->paginate(20);
+
+        // ⚡ Nếu chọn "Đã khảo sát" thì hiển thị toàn bộ, không phân trang
+        if ($filter === 'surveyed') {
+            $student = $student->get();
+        } else {
+            $student = $student->paginate(20);
+        }
 
         $viewData = [
             'student' => $student
