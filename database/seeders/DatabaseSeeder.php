@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Schema;
 
 class DatabaseSeeder extends Seeder
 {
@@ -12,11 +12,25 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Chạy các seeder theo thứ tự
+        Schema::disableForeignKeyConstraints();
+
         $this->call([
-            PermissionTableSeeder::class,
-            RoleTableSeeder::class,
-            UserTableSeeder::class,
+            UsersSeeder::class,
+            RolesSeeder::class,
+            PermissionsSeeder::class,
+            RolePermissionsSeeder::class,
+            MajorSeeder::class,
+            SurveySeeder::class,
+            StudentSeeder::class,
+            GraduationSeeder::class,
+            GraduationStudentSeeder::class,
+            GraduationSurveySeeder::class,
+            ContactSurveysSeeder::class,
+            ContactSurveyGraduationSeeder::class,
+            AlumniContactSurveysSeeder::class,
+            EmploymentSurveyResponsesV2Seeder::class,
         ]);
+
+        Schema::enableForeignKeyConstraints();
     }
 }
