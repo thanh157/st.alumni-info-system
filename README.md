@@ -7,18 +7,7 @@
 1. Clone project
 2. Create .env file, copy content from .env.example to .env file and config your database in .env:
 
-``` bash
-    APP_DEBUG=false
-    APP_URL=domain
-	
-	DB_CONNECTION=mysql
-	DB_HOST=database_server_ip
-	DB_PORT=3306
-	DB_DATABASE=database_name
-	DB_USERNAME=username
-	DB_PASSWORD=password
-
-```
+ 
 
 3. Run
 
