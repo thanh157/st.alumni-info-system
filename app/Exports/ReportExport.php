@@ -1,59 +1,132 @@
 <?php
 
 namespace App\Exports;
+use App\Models\Major;
+use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 
-use Illuminate\Contracts\View\View;
-use Maatwebsite\Excel\Concerns\FromView;
-use Maatwebsite\Excel\Concerns\WithTitle;
-use Maatwebsite\Excel\Concerns\ShouldAutoSize;
-
-class ReportExport implements FromView, WithTitle, ShouldAutoSize
+class ReportExport implements WithMultipleSheets
 {
-    // Khai báo các thuộc tính để lưu trữ dữ liệu
-    protected $report1, $students, $report3, $schoolYear, $r1, $r1_trained_field, $r1_work_area, $r2, $studentTab2,$type;
+    protected $schoolYear;
+    protected $r1;
+    protected $r1_trained_field;
+    protected $r1_work_area;
+    protected $r2;
+    protected $studentTab2;
+    protected $alumniData;
+    protected $type;
+    protected $majors;
+    protected $graduationData;
+    protected $responsesByCode;
 
-    /**
-     * Hàm khởi tạo để nhận tất cả dữ liệu cần thiết từ Controller.
-     */
-    public function __construct($report1, $students, $report3, $schoolYear, $r1, $r1_trained_field, $r1_work_area, $r2, $studentTab2, string $type)
-    {
-        $this->report1 = $report1;
-        $this->students = $students;
-        $this->report3 = $report3;
+
+    public function __construct(
+        $schoolYear,
+        $r1,
+        $r1_trained_field,
+        $r1_work_area,
+        $r2,
+        $studentTab2,
+        $alumniData,
+        $type = 'all'
+    ) {
         $this->schoolYear = $schoolYear;
         $this->r1 = $r1;
         $this->r1_trained_field = $r1_trained_field;
         $this->r1_work_area = $r1_work_area;
         $this->r2 = $r2;
         $this->studentTab2 = $studentTab2;
+        $this->alumniData = $alumniData;
         $this->type = $type;
+
+        // --- BẮT ĐẦU SỬA: Thêm logic chuẩn bị data dùng chung ---
+
+        // Lấy dữ liệu dùng chung cho Tab 2 và Tab 3
+        // (Chỉ chạy khi cần export các tab này)
+        if (in_array($type, ['all', 'tab2', 'tab3'])) {
+            $this->majors = Major::all()->keyBy('id');
+            // $r2 đã có sẵn từ $this->r2
+            $this->responsesByCode = $r2->keyBy('code_student');
+        }
+
+        // Lấy dữ liệu dùng chung cho Tab 2
+        // (Chỉ chạy khi cần export tab 2)
+        if (in_array($type, ['all', 'tab2'])) {
+            $studentIdsForGraduation = $studentTab2->pluck('id');
+            $this->graduationData = DB::table('graduation_student')
+                ->join('graduation', 'graduation_student.graduation_id', '=', 'graduation.id')
+                ->whereIn('graduation_student.student_id', $studentIdsForGraduation)
+                ->select('graduation_student.student_id', 'graduation.certification', 'graduation.certification_date')
+                ->get()
+                ->keyBy('student_id');
+        }
+        // --- KẾT THÚC SỬA ---
     }
 
-    /**
-     * Trả về view sẽ được dùng để render ra file Excel.
-     */
-    public function view(): View
+    public function sheets(): array
     {
-        // Truyền tất cả dữ liệu đã nhận vào view template
-        return view('admin.pages.survey.report_excel', [
-            'report1' => $this->report1,
-            'students' => $this->students,
-            'report3' => $this->report3,
-            'schoolYear' => $this->schoolYear,
-            'r1' => $this->r1,
-            'r1_trained_field' => $this->r1_trained_field,
-            'r1_work_area' => $this->r1_work_area,
-            'r2' => $this->r2,
-            'studentTab2' => $this->studentTab2,
-        ]);
-    }
+        $sheets = [];
 
-    /**
-     * Đặt tên cho sheet trong file Excel.
-     */
-    public function title(): string
-    {
-        return 'Bao_cao_tong_hop_viec_lam';
+        switch ($this->type) {
+            case 'tab1':
+                $sheets[] = new ReportSheet1(
+                    $this->schoolYear,
+                    $this->r1,
+                    $this->r1_trained_field,
+                    $this->r1_work_area,
+                    $this->r2
+                );
+                break;
+
+            case 'tab2':
+                // SỬA DÒNG NÀY: Truyền thêm 3 biến
+                $sheets[] = new ReportSheet2(
+                    $this->schoolYear,
+                    $this->studentTab2,
+                    $this->responsesByCode,
+                    $this->graduationData,
+                    $this->majors
+                );
+                break;
+
+            case 'tab3':
+                $sheets[] = new ReportSheet3(
+                    $this->schoolYear,
+                    $this->r2,
+                    $this->majors
+                );
+                break;
+
+            case 'tab4':
+                $sheets[] = new ReportSheet4($this->alumniData);
+                break;
+
+            case 'all':
+            default:
+                $sheets[] = new ReportSheet1(
+                    $this->schoolYear,
+                    $this->r1,
+                    $this->r1_trained_field,
+                    $this->r1_work_area,
+                    $this->r2
+                );
+                // SỬA DÒNG NÀY
+                $sheets[] = new ReportSheet2(
+                    $this->schoolYear,
+                    $this->studentTab2,
+                    $this->responsesByCode,
+                    $this->graduationData,
+                    $this->majors
+                );
+                // SỬA DÒNG NÀY
+                $sheets[] = new ReportSheet3(
+                    $this->schoolYear,
+                    $this->r2,
+                    $this->majors
+                );
+                $sheets[] = new ReportSheet4($this->alumniData);
+                break;
+        }
+
+        return $sheets;
     }
 }
-

@@ -72,9 +72,18 @@
                 </div>
             </div>
 
-            {{-- Charts --}}
-            <div style="max-width: 1100px; margin: 30px auto;">
+             
+            <div style="max-width: 1100px; margin: 30px auto; position: relative;">
                 <h3 class="charts-title">Thống kê việc làm sinh viên theo đợt tốt nghiệp</h3>
+
+                 <a href = "{{route('admin.charts.index')}}"
+                   class="btn btn-outline-primary btn-sm"
+                   style="position: absolute; top: 0; right: 0; font-weight: 600;">
+                    <i class="fa-solid fa-table-list me-1"></i>
+                    Xem chi tiết
+                </a>
+           
+
 
                 <div class="text-center mb-3">
                     <select id="chartTypeSelect" class="select">
@@ -90,7 +99,8 @@
                 </div>
 
                 <div class="d-none" id="chartContainer">
-                    <div class="d-flex justify-content-between gap-4 flex-wrap">
+                    {{-- THAY ĐỔI 3: Đổi "justify-content-between" thành "justify-content-center" --}}
+                    <div class="d-flex justify-content-center gap-4 flex-wrap">
                         <div class="panel flex-fill" style="max-width: 380px;">
                             <h4 class="panel-title">Biểu đồ tròn tổng hợp</h4>
                             <div id="pieChart" class="chart-box"></div>
