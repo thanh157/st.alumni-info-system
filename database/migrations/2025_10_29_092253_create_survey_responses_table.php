@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('email')->nullable();
             $table->string('phone')->nullable();
             $table->json('student_info')->nullable();
-            $table->timestamp('submitted_at')->nullable();
+            $table->dateTime('submitted_at')->nullable();
             $table->timestamps();
         });
     }
