@@ -4,7 +4,7 @@
 
 @section('content')
     @php
-         $currentSurveyId = request('survey_id');
+        $currentSurveyId = request('survey_id');
     @endphp
     <style>
         .custom-select {
@@ -31,6 +31,7 @@
             font-weight: 500;
             color: #6c757d;
         }
+
         .nav-tabs .nav-link.active {
             font-weight: 700;
             color: #0d6efd;
@@ -92,7 +93,8 @@
             <form method="GET" action="{{ route('admin.report.index') }}" class="ms-0 ms-md-auto">
                 <div class="d-flex align-items-center gap-2">
                     <label for="survey_id" class="col-form-label fw-semibold mb-0">Khảo sát:</label>
-                    <select name="survey_id" id="survey_id" class="form-select custom-select" onchange="this.form.submit()">
+                    <select style="width: 450px;" name="survey_id" id="survey_id" class="form-select custom-select"
+                        onchange="this.form.submit()">
                         <option value="">-- Chọn khảo sát --</option>
                         @php
                             // Lấy danh sách survey một lần duy nhất
@@ -129,10 +131,11 @@
                 <a href="{{ route('admin.charts.index') }}" class="btn btn-primary">
                     <i class="bi bi-eye"></i> Xem biểu đồ thống kê
                 </a>
-                
+
                 {{-- Dropdown xuất báo cáo --}}
                 <div class="btn-group">
-                    <button type="button" class="btn btn-success dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                    <button type="button" class="btn btn-success dropdown-toggle" data-bs-toggle="dropdown"
+                        aria-expanded="false">
                         <i class="bi bi-download"></i> Tải xuống báo cáo
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end">
@@ -140,28 +143,35 @@
                             <h6 class="dropdown-header">Chọn loại báo cáo</h6>
                         </li>
                         <li>
-                            <a class="dropdown-item" href="{{ route('surveys.export', array_merge(request()->all(), ['type' => 'tab1'])) }}">
+                            <a class="dropdown-item"
+                                href="{{ route('surveys.export', array_merge(request()->all(), ['type' => 'tab1'])) }}">
                                 <i class="bi bi-file-earmark-text"></i> Mẫu báo cáo 1
                             </a>
                         </li>
                         <li>
-                            <a class="dropdown-item" href="{{ route('surveys.export', array_merge(request()->all(), ['type' => 'tab2'])) }}">
+                            <a class="dropdown-item"
+                                href="{{ route('surveys.export', array_merge(request()->all(), ['type' => 'tab2'])) }}">
                                 <i class="bi bi-file-earmark-spreadsheet"></i> Mẫu báo cáo 2
                             </a>
                         </li>
                         <li>
-                            <a class="dropdown-item" href="{{ route('surveys.export', array_merge(request()->all(), ['type' => 'tab3'])) }}">
+                            <a class="dropdown-item"
+                                href="{{ route('surveys.export', array_merge(request()->all(), ['type' => 'tab3'])) }}">
                                 <i class="bi bi-file-earmark-bar-graph"></i> Mẫu báo cáo 3
                             </a>
                         </li>
                         <li>
-                            <a class="dropdown-item" href="{{ route('surveys.export', array_merge(request()->all(), ['type' => 'tab4'])) }}">
+                            <a class="dropdown-item"
+                                href="{{ route('surveys.export', array_merge(request()->all(), ['type' => 'tab4'])) }}">
                                 <i class="bi bi-file-earmark-person"></i> Mẫu báo cáo 4
                             </a>
                         </li>
-                        <li><hr class="dropdown-divider"></li>
                         <li>
-                            <a class="dropdown-item fw-bold text-primary" href="{{ route('surveys.export', array_merge(request()->all(), ['type' => 'all'])) }}">
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li>
+                            <a class="dropdown-item fw-bold text-primary"
+                                href="{{ route('surveys.export', array_merge(request()->all(), ['type' => 'all'])) }}">
                                 <i class="bi bi-file-earmark-zip"></i> Tải tất cả (4 báo cáo)
                             </a>
                         </li>
@@ -180,55 +190,66 @@
                             </h5>
                         </div>
                         <div class="table-responsive">
-                            <table class="table table-bordered text-center align-middle" style="font-size: 12px; min-width: 2000px;">
+                            <table class="table table-bordered text-center align-middle"
+                                style="font-size: 12px; min-width: 2000px;">
                                 <thead class="align-middle">
-                                <tr>
-                                    <th rowspan="3">TT</th>
-                                    <th rowspan="3">Mã ngành<br><small>(Ghi bằng số theo mã ngành tuyển sinh)</small></th>
-                                    <th rowspan="3">Tên ngành đào tạo</th>
-                                    <th colspan="2" rowspan="2">(4)<br>Số sinh viên tốt nghiệp</th>
-                                    <th colspan="2" rowspan="2">(5)<br>Số sinh viên phản hồi</th>
-                                    <th colspan="5">Tình hình việc làm</th>
-                                    <th rowspan="3">Tỷ lệ có việc làm / phản hồi</th>
-                                    <th rowspan="3">Tỷ lệ có việc làm / tốt nghiệp</th>
-                                    <th colspan="4" rowspan="2">Khu vực làm việc</th>
-                                    <th rowspan="3">Nơi làm việc<br>(Tỉnh/TP)</th>
-                                </tr>
-                                <tr>
-                                    <th colspan="3">Có việc làm</th>
-                                    <th rowspan="2">Tiếp tục học</th>
-                                    <th rowspan="2">Chưa có việc làm</th>
-                                </tr>
-                                <tr>
-                                    <th>Tổng số</th><th>Nữ</th>
-                                    <th>Tổng số</th><th>Nữ</th>
-                                    <th>Đúng ngành</th><th>Liên quan</th><th>Không liên quan</th>
-                                    <th>Nhà nước</th><th>Tư nhân</th><th>Tự tạo</th><th>Nước ngoài</th>
-                                </tr>
+                                    <tr>
+                                        <th rowspan="3">TT</th>
+                                        <th rowspan="3">Mã ngành<br><small>(Ghi bằng số theo mã ngành tuyển sinh)</small></th>
+                                        <th rowspan="3">Tên ngành đào tạo</th>
+                                        <th colspan="2" rowspan="2">(4)<br>Số sinh viên tốt nghiệp</th>
+                                        <th colspan="2" rowspan="2">(5)<br>Số sinh viên phản hồi</th>
+                                        <th colspan="5">Tình hình việc làm</th>
+                                        <th rowspan="3">Tỷ lệ có việc làm / phản hồi</th>
+                                        <th rowspan="3">Tỷ lệ có việc làm / tốt nghiệp</th>
+                                        <th colspan="4" rowspan="2">Khu vực làm việc</th>
+                                        <th rowspan="3">Nơi làm việc<br>(Tỉnh/TP)</th>
+                                    </tr>
+                                    <tr>
+                                        <th colspan="3">Có việc làm</th>
+                                        <th rowspan="2">Tiếp tục học</th>
+                                        <th rowspan="2">Chưa có việc làm</th>
+                                    </tr>
+                                    <tr>
+                                        <th>Tổng số</th>
+                                        <th>Nữ</th>
+                                        <th>Tổng số</th>
+                                        <th>Nữ</th>
+                                        <th>Đúng ngành</th>
+                                        <th>Liên quan</th>
+                                        <th>Không liên quan</th>
+                                        <th>Nhà nước</th>
+                                        <th>Tư nhân</th>
+                                        <th>Tự tạo</th>
+                                        <th>Nước ngoài</th>
+                                    </tr>
                                 </thead>
                                 <tbody>
-                                <tr>
-                                    <td>1</td>
-                                    <td></td>
-                                    <td>Tổng hợp</td>
-                                    <td>{{ $r1['total_student'] }}</td>
-                                    <td>{{ $r1['total_nu'] }}</td>
-                                    <td>{{ $r1['total_res'] }}</td>
-                                    <td>{{ $r1['total_res_nu'] }}</td>
-                                    <td>{{ $r1_trained_field->dung_nganh + $r1_trained_field->lien_quan + $r1_trained_field->khong_lien_quan }}</td>
-                                    <td>{{ $r1_trained_field->dung_nganh }}</td>
-                                    <td>{{ $r1_trained_field->lien_quan }}</td>
-                                    <td>{{ $r1_trained_field->khong_lien_quan }}</td>
-                                    <td>{{ $r2->where('employment_status', 2)->count() }}</td>
-                                    <td>{{ $r2->where('employment_status', 3)->count() }}</td>
-                                    <td>{{ $r1['total_res'] > 0 ? round(($r1_trained_field->dung_nganh + $r1_trained_field->lien_quan + $r1_trained_field->khong_lien_quan) / $r1['total_res'] * 100, 2) . '%' : '0%' }}</td>
-                                    <td>{{ $r1['total_student'] > 0 ? round(($r1_trained_field->dung_nganh + $r1_trained_field->lien_quan + $r1_trained_field->khong_lien_quan) / $r1['total_student'] * 100, 2) . '%' : '0%' }}</td>
-                                    <td>{{ $r1_work_area->nha_nuoc }}</td>
-                                    <td>{{ $r1_work_area->tu_nhan }}</td>
-                                    <td>{{ $r1_work_area->tu_tao }}</td>
-                                    <td>{{ $r1_work_area->nuoc_ngoai }}</td>
-                                    <td></td>
-                                </tr>
+                                    <tr>
+                                        <td>1</td>
+                                        <td></td>
+                                        <td>Tổng hợp</td>
+                                        <td>{{ $r1['total_student'] }}</td>
+                                        <td>{{ $r1['total_nu'] }}</td>
+                                        <td>{{ $r1['total_res'] }}</td>
+                                        <td>{{ $r1['total_res_nu'] }}</td>
+                                        <td>{{ $r1_trained_field->dung_nganh + $r1_trained_field->lien_quan + $r1_trained_field->khong_lien_quan }}
+                                        </td>
+                                        <td>{{ $r1_trained_field->dung_nganh }}</td>
+                                        <td>{{ $r1_trained_field->lien_quan }}</td>
+                                        <td>{{ $r1_trained_field->khong_lien_quan }}</td>
+                                        <td>{{ $r2->where('employment_status', 2)->count() }}</td>
+                                        <td>{{ $r2->where('employment_status', 3)->count() }}</td>
+                                        <td>{{ $r1['total_res'] > 0 ? round(($r1_trained_field->dung_nganh + $r1_trained_field->lien_quan + $r1_trained_field->khong_lien_quan) / $r1['total_res'] * 100, 2) . '%' : '0%' }}
+                                        </td>
+                                        <td>{{ $r1['total_student'] > 0 ? round(($r1_trained_field->dung_nganh + $r1_trained_field->lien_quan + $r1_trained_field->khong_lien_quan) / $r1['total_student'] * 100, 2) . '%' : '0%' }}
+                                        </td>
+                                        <td>{{ $r1_work_area->nha_nuoc }}</td>
+                                        <td>{{ $r1_work_area->tu_nhan }}</td>
+                                        <td>{{ $r1_work_area->tu_tao }}</td>
+                                        <td>{{ $r1_work_area->nuoc_ngoai }}</td>
+                                        <td></td>
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>
@@ -240,44 +261,62 @@
                         <div class="text-center mb-4">
                             <h6 class="text-uppercase mb-1">HỌC VIỆN NÔNG NGHIỆP VIỆT NAM</h6>
                             <h6 class="mb-3">BAN QUẢN LÝ ĐÀO TẠO</h6>
-                            <h5 class="fw-bold text-decoration-underline mb-0">DANH SÁCH SINH VIÊN TỐT NGHIỆP NĂM {{ $schoolYear }}</h5>
+                            <h5 class="fw-bold text-decoration-underline mb-0">DANH SÁCH SINH VIÊN TỐT NGHIỆP NĂM
+                                {{ $schoolYear }}</h5>
                         </div>
                         <div class="table-responsive mb-4">
-                            <table class="table table-bordered text-center align-middle mb-0" style="font-size: 13px; min-width: 1500px;">
+                            <table class="table table-bordered text-center align-middle mb-0"
+                                style="font-size: 13px; min-width: 1500px;">
                                 <thead class="align-middle">
-                                <tr>
-                                    <th rowspan="2">Mã sinh viên</th><th rowspan="2">Họ và tên</th><th rowspan="2">Nữ</th><th rowspan="2">Số thẻ CCCD/CMND</th>
-                                    <th rowspan="2">Mã ngành đào tạo<br><small>(Ghi bằng số theo mã ngành tuyển sinh của Bộ Giáo dục và Đào tạo)</small></th>
-                                    <th colspan="2">Quyết định tốt nghiệp</th><th colspan="2">Thông tin liên hệ</th>
-                                    <th rowspan="2">Hình thức khảo sát<br>(Online, điện thoại, email …)</th><th rowspan="2">Có phản hồi</th><th rowspan="2">Ngành</th><th rowspan="2">Khóa học</th>
-                                </tr>
-                                <tr><th>Số Quyết định</th><th>Ngày ký Quyết định</th><th>Điện thoại</th><th>Email</th></tr>
+                                    <tr>
+                                        <th rowspan="2">Mã sinh viên</th>
+                                        <th rowspan="2">Họ và tên</th>
+                                        <th rowspan="2">Nữ</th>
+                                        <th rowspan="2">Số thẻ CCCD/CMND</th>
+                                        <th rowspan="2">Mã ngành đào tạo<br><small>(Ghi bằng số theo mã ngành tuyển sinh của Bộ
+                                                Giáo dục và Đào tạo)</small></th>
+                                        <th colspan="2">Quyết định tốt nghiệp</th>
+                                        <th colspan="2">Thông tin liên hệ</th>
+                                        <th rowspan="2">Hình thức khảo sát<br>(Online, điện thoại, email …)</th>
+                                        <th rowspan="2">Có phản hồi</th>
+                                        <th rowspan="2">Ngành</th>
+                                        <th rowspan="2">Khóa học</th>
+                                    </tr>
+                                    <tr>
+                                        <th>Số Quyết định</th>
+                                        <th>Ngày ký Quyết định</th>
+                                        <th>Điện thoại</th>
+                                        <th>Email</th>
+                                    </tr>
                                 </thead>
                                 <tbody>
-                                @forelse ($studentTab2 as $item)
-                                    @php
-                                        $graduation = $graduationData->get($item->id);
-                                        $res = $responsesByCode->get($item->code);
-                                        $major = $majors->get($item->training_industry_id);
-                                    @endphp
-                                    <tr>
-                                        <td>{{ $item->code }}</td>
-                                        <td>{{ $item->full_name }}</td>
-                                        <td>{{ $item->gender == 'female' ? 'x' : '' }}</td>
-                                        <td>{{ $item->citizen_identification }}</td>
-                                        <td>{{ optional($major)->code }}</td>
-                                        <td>{{ optional($graduation)->certification }}</td>
-                                        <td>{{ optional($graduation)->certification_date ? date('d-m-Y', strtotime($graduation->certification_date)) : '' }}</td>
-                                        <td>{{ $item->phone }}</td>
-                                        <td>{{ $item->email }}</td>
-                                        <td></td>
-                                        <td>{{ $res ? 'Có' : 'Không' }}</td>
-                                        <td>{{ optional($major)->name }}</td>
-                                        <td>{{-- Khóa học cần thêm trường dữ liệu --}}</td>
-                                    </tr>
-                                @empty
-                                    <tr><td colspan="13" class="text-center">Không có dữ liệu sinh viên cho đợt khảo sát này.</td></tr>
-                                @endforelse
+                                    @forelse ($studentTab2 as $item)
+                                        @php
+                                            $graduation = $graduationData->get($item->id);
+                                            $res = $responsesByCode->get($item->code);
+                                            $major = $majors->get($item->training_industry_id);
+                                        @endphp
+                                        <tr>
+                                            <td>{{ $item->code }}</td>
+                                            <td>{{ $item->full_name }}</td>
+                                            <td>{{ $item->gender == 'female' ? 'x' : '' }}</td>
+                                            <td>{{ $item->citizen_identification }}</td>
+                                            <td>{{ optional($major)->code }}</td>
+                                            <td>{{ optional($graduation)->certification }}</td>
+                                            <td>{{ optional($graduation)->certification_date ? date('d-m-Y', strtotime($graduation->certification_date)) : '' }}
+                                            </td>
+                                            <td>{{ $item->phone }}</td>
+                                            <td>{{ $item->email }}</td>
+                                            <td></td>
+                                            <td>{{ $res ? 'Có' : 'Không' }}</td>
+                                            <td>{{ optional($major)->name }}</td>
+                                        </tr>
+                                    @empty
+                                        <tr>
+                                            <td colspan="13" class="text-center">Không có dữ liệu sinh viên cho đợt khảo sát này.
+                                            </td>
+                                        </tr>
+                                    @endforelse
                                 </tbody>
                             </table>
                         </div>
@@ -289,172 +328,228 @@
                         <div class="text-center mb-4">
                             <h6 class="text-uppercase mb-1">HỌC VIỆN NÔNG NGHIỆP VIỆT NAM</h6>
                             <h6 class="mb-3">BAN QUẢN LÝ ĐÀO TẠO</h6>
-                            <h5 class="fw-bold text-decoration-underline mb-0">DANH SÁCH SINH VIÊN TỐT NGHIỆP NĂM {{ $schoolYear }} PHẢN HỒI VỀ TÌNH HÌNH VIỆC LÀM</h5>
+                            <h5 class="fw-bold text-decoration-underline mb-0">DANH SÁCH SINH VIÊN TỐT NGHIỆP NĂM
+                                {{ $schoolYear }} PHẢN HỒI VỀ TÌNH HÌNH VIỆC LÀM</h5>
                         </div>
                         <div class="table-responsive mb-4">
-                            <table class="table table-bordered text-center align-middle mb-0" style="font-size: 13px; min-width: 3400px;">
+                            <table class="table table-bordered text-center align-middle mb-0"
+                                style="font-size: 13px; min-width: 3400px;">
                                 <thead>
-                                <tr>
-                                    <th rowspan="3">Mã sinh viên</th><th rowspan="3">Họ và tên</th><th rowspan="3">Ngày sinh</th><th rowspan="3">Giới tính</th>
-                                    <th rowspan="3">Số thẻ CCCD/CMND</th><th rowspan="3">Mã ngành đào tạo<br><small>(Ghi bằng số theo mã ngành tuyển sinh)</small></th>
-                                    <th rowspan="3">Điện thoại</th><th rowspan="3">Email</th><th colspan="5">Tình hình việc làm</th>
-                                    <th colspan="4">Khu vực làm việc</th><th rowspan="3">Nơi làm việc (Tỉnh/ Tp)<br>Ghi bằng mã số tỉnh</th>
-                                    <th colspan="4">Thời gian có việc làm sau tốt nghiệp</th><th colspan="4">Thu nhập bình quân/1 tháng</th>
-                                    <th colspan="3">Kiến thức, kỹ năng từ nhà trường</th><th colspan="5">Hình thức tìm việc làm</th>
-                                    <th colspan="8">Kỹ năng mềm cần thiết cho công việc</th><th colspan="7">Khóa học đã tham gia sau khi tốt nghiệp</th>
-                                    <th colspan="7">Giải pháp nâng cao tỷ lệ việc làm đúng ngành đào tạo</th>
-                                </tr>
-                                <tr>
-                                    <th colspan="3">Có việc làm</th><th rowspan="2">Tiếp tục học</th><th rowspan="2">Chưa có việc làm</th>
-                                    <th>Khu vực nhà nước</th><th>Khu vực tư nhân</th><th>Có yếu tố nước ngoài</th><th>Tự tạo việc làm</th>
-                                    <th>Dưới 3 tháng</th><th>Từ 3 tháng đến 6 tháng</th><th>Từ 6 tháng đến 12 tháng</th><th>Trên 12 tháng</th>
-                                    <th>Dưới 5 triệu đồng</th><th>Từ 5 triệu đến 10 triệu đồng</th><th>Từ trên 10 triệu đến 15 triệu đồng</th><th>Trên 15 triệu đồng</th>
-                                    <th>Đã học được</th><th>Chỉ học được một phần</th><th>Không học được</th>
-                                    <th>Do Học viện/khoa giới thiệu</th><th>Bạn bè, người quen giới thiệu</th><th>Tự tìm việc làm</th><th>Tự tạo việc làm</th><th>Hình thức khác</th>
-                                    <th>Kỹ năng giao tiếp</th><th>Kỹ năng lãnh đạo</th><th>Kỹ năng thuyết trình</th><th>Kỹ năng Tiếng Anh</th>
-                                    <th>Kỹ năng làm việc nhóm</th><th>Kỹ năng tin học</th><th>Kỹ năng viết báo cáo tài liệu</th><th>Khác</th>
-                                    <th>Nâng cao kiến thức chuyên môn</th><th>Nâng cao kỹ năng chuyên môn nghiệp vụ</th><th>Nâng cao về kỹ năng công nghệ thông tin</th>
-                                    <th>Nâng cao kỹ năng ngoại ngữ</th><th>Phát triển kỹ năng quản lý</th><th>Tiếp tục học lên cao</th><th>Khác</th>
-                                    <th>Học viện tổ chức các buổi trao đổi</th><th>Học viện tổ chức chương trình chia sẻ từ cựu sinh viên</th>
-                                    <th>Học viện tổ chức trao đổi với nhà tuyển dụng</th><th>Đơn vị tuyển dụng tham gia đào tạo</th>
-                                    <th>Chương trình đào tạo được cập nhật</th><th>Tăng cường thực hành tại cơ sở</th><th>Khác</th>
-                                </tr>
-                                <tr><th>Đúng ngành đào tạo</th><th>Liên quan đến ngành đào tạo</th><th>Không liên quan đến ngành đào tạo</th></tr>
+                                    <tr>
+                                        <th rowspan="3">Mã sinh viên</th>
+                                        <th rowspan="3">Họ và tên</th>
+                                        <th rowspan="3">Ngày sinh</th>
+                                        <th rowspan="3">Giới tính</th>
+                                        <th rowspan="3">Số thẻ CCCD/CMND</th>
+                                        <th rowspan="3">Mã ngành đào tạo<br><small>(Ghi bằng số theo mã ngành tuyển
+                                                sinh)</small></th>
+                                        <th rowspan="3">Điện thoại</th>
+                                        <th rowspan="3">Email</th>
+                                        <th colspan="5">Tình hình việc làm</th>
+                                        <th colspan="4">Khu vực làm việc</th>
+                                        <th rowspan="3">Nơi làm việc (Tỉnh/ Tp)<br>Ghi bằng mã số tỉnh</th>
+                                        <th colspan="4">Thời gian có việc làm sau tốt nghiệp</th>
+                                        <th colspan="4">Thu nhập bình quân/1 tháng</th>
+                                        <th colspan="3">Kiến thức, kỹ năng từ nhà trường</th>
+                                        <th colspan="5">Hình thức tìm việc làm</th>
+                                        <th colspan="8">Kỹ năng mềm cần thiết cho công việc</th>
+                                        <th colspan="7">Khóa học đã tham gia sau khi tốt nghiệp</th>
+                                        <th colspan="7">Giải pháp nâng cao tỷ lệ việc làm đúng ngành đào tạo</th>
+                                    </tr>
+                                    <tr>
+                                        <th colspan="3">Có việc làm</th>
+                                        <th rowspan="2">Tiếp tục học</th>
+                                        <th rowspan="2">Chưa có việc làm</th>
+                                        <th>Khu vực nhà nước</th>
+                                        <th>Khu vực tư nhân</th>
+                                        <th>Có yếu tố nước ngoài</th>
+                                        <th>Tự tạo việc làm</th>
+                                        <th>Dưới 3 tháng</th>
+                                        <th>Từ 3 tháng đến 6 tháng</th>
+                                        <th>Từ 6 tháng đến 12 tháng</th>
+                                        <th>Trên 12 tháng</th>
+                                        <th>Dưới 5 triệu đồng</th>
+                                        <th>Từ 5 triệu đến 10 triệu đồng</th>
+                                        <th>Từ trên 10 triệu đến 15 triệu đồng</th>
+                                        <th>Trên 15 triệu đồng</th>
+                                        <th>Đã học được</th>
+                                        <th>Chỉ học được một phần</th>
+                                        <th>Không học được</th>
+                                        <th>Do Học viện/khoa giới thiệu</th>
+                                        <th>Bạn bè, người quen giới thiệu</th>
+                                        <th>Tự tìm việc làm</th>
+                                        <th>Tự tạo việc làm</th>
+                                        <th>Hình thức khác</th>
+                                        <th>Kỹ năng giao tiếp</th>
+                                        <th>Kỹ năng lãnh đạo</th>
+                                        <th>Kỹ năng thuyết trình</th>
+                                        <th>Kỹ năng Tiếng Anh</th>
+                                        <th>Kỹ năng làm việc nhóm</th>
+                                        <th>Kỹ năng tin học</th>
+                                        <th>Kỹ năng viết báo cáo tài liệu</th>
+                                        <th>Khác</th>
+                                        <th>Nâng cao kiến thức chuyên môn</th>
+                                        <th>Nâng cao kỹ năng chuyên môn nghiệp vụ</th>
+                                        <th>Nâng cao về kỹ năng công nghệ thông tin</th>
+                                        <th>Nâng cao kỹ năng ngoại ngữ</th>
+                                        <th>Phát triển kỹ năng quản lý</th>
+                                        <th>Tiếp tục học lên cao</th>
+                                        <th>Khác</th>
+                                        <th>Học viện tổ chức các buổi trao đổi</th>
+                                        <th>Học viện tổ chức chương trình chia sẻ từ cựu sinh viên</th>
+                                        <th>Học viện tổ chức trao đổi với nhà tuyển dụng</th>
+                                        <th>Đơn vị tuyển dụng tham gia đào tạo</th>
+                                        <th>Chương trình đào tạo được cập nhật</th>
+                                        <th>Tăng cường thực hành tại cơ sở</th>
+                                        <th>Khác</th>
+                                    </tr>
+                                    <tr>
+                                        <th>Đúng ngành đào tạo</th>
+                                        <th>Liên quan đến ngành đào tạo</th>
+                                        <th>Không liên quan đến ngành đào tạo</th>
+                                    </tr>
                                 </thead>
                                 <tbody>
-                                @forelse ($r2 as $item)
-                                    <tr>
-                                        <td>{{ $item->code_student }}</td><td>{{ $item->full_name }}</td><td>{{ !empty($item->dob) ? date('d-m-Y', strtotime($item->dob)) : '' }}</td>
-                                        <td>{{ $item->gender == 'male' ? 'Nam' : 'Nữ' }}</td><td>{{ $item->identification_card_number }}</td><td>{{ optional($majors->get($item->training_industry_id))->code }}</td>
-                                        <td>{{ $item->phone_number }}</td><td>{{ $item->email }}</td>
-                                        <td>{{ $item->trained_field == 1 ? 'x' : '' }}</td><td>{{ $item->trained_field == 2 ? 'x' : '' }}</td><td>{{ $item->trained_field == 3 ? 'x' : '' }}</td>
-                                        <td>{{ $item->employment_status == 2 ? 'x' : '' }}</td><td>{{ $item->employment_status == 3 ? 'x' : '' }}</td>
-                                        <td>{{ $item->work_area == '1' ? 'x' : '' }}</td><td>{{ $item->work_area == '2' ? 'x' : '' }}</td>
-                                        <td>{{ $item->work_area == '4' ? 'x' : '' }}</td><td>{{ $item->work_area == '3' ? 'x' : '' }}</td>
-                                        <td>{{ $item->city_work_id }}</td>
-                                        @foreach (config('config.employed_since', []) as $k => $v) <td>{{ $k == $item->employed_since ? 'x' : '' }}</td> @endforeach
-                                        @foreach (config('config.average_income', []) as $k => $v) <td>{{ $k == $item->average_income ? 'x' : '' }}</td> @endforeach
-                                        @foreach (config('config.level_knowledge_acquired', []) as $k => $v) <td>{{ $k == $item->level_knowledge_acquired ? 'x' : '' }}</td> @endforeach
-                                        @foreach (config('config.recruitment_type', []) as $k => $v) @php $data = json_decode($item->recruitment_type, true); @endphp <td>{{ in_array($k, data_get($data, 'value', [])) ? 'x' : '' }}</td> @endforeach
-                                        @foreach (config('config.soft_skills_required', []) as $k => $v) @php $data = json_decode($item->soft_skills_required, true); @endphp <td>{{ in_array($k, data_get($data, 'value', [])) ? 'x' : '' }}</td> @endforeach
-                                        @foreach (config('config.must_attended_courses', []) as $k => $v) @php $data = json_decode($item->must_attended_courses, true); @endphp <td>{{ in_array($k, data_get($data, 'value', [])) ? 'x' : '' }}</td> @endforeach
-                                        @foreach (config('config.solutions_get_job', []) as $k => $v) @php $data = json_decode($item->solutions_get_job, true); @endphp <td>{{ in_array($k, data_get($data, 'value', [])) ? 'x' : '' }}</td> @endforeach
-                                    </tr>
-                                @empty
-                                    <tr><td colspan="45" class="text-center">Không có sinh viên nào phản hồi.</td></tr>
-                                @endforelse
+                                    @forelse ($r2 as $item)
+                                        <tr>
+                                            <td>{{ $item->code_student }}</td>
+                                            <td>{{ $item->full_name }}</td>
+                                            <td>{{ !empty($item->dob) ? date('d-m-Y', strtotime($item->dob)) : '' }}</td>
+                                            <td>{{ $item->gender == 'male' ? 'Nam' : 'Nữ' }}</td>
+                                            <td>{{ $item->identification_card_number }}</td>
+                                            <td>{{ optional($majors->get($item->training_industry_id))->code }}</td>
+                                            <td>{{ $item->phone_number }}</td>
+                                            <td>{{ $item->email }}</td>
+                                            <td>{{ $item->trained_field == 1 ? 'x' : '' }}</td>
+                                            <td>{{ $item->trained_field == 2 ? 'x' : '' }}</td>
+                                            <td>{{ $item->trained_field == 3 ? 'x' : '' }}</td>
+                                            <td>{{ $item->employment_status == 2 ? 'x' : '' }}</td>
+                                            <td>{{ $item->employment_status == 3 ? 'x' : '' }}</td>
+                                            <td>{{ $item->work_area == '1' ? 'x' : '' }}</td>
+                                            <td>{{ $item->work_area == '2' ? 'x' : '' }}</td>
+                                            <td>{{ $item->work_area == '4' ? 'x' : '' }}</td>
+                                            <td>{{ $item->work_area == '3' ? 'x' : '' }}</td>
+                                            <td>{{ $item->city_work_id }}</td>
+                                            @foreach (config('config.employed_since', []) as $k => $v) <td>
+                                            {{ $k == $item->employed_since ? 'x' : '' }}</td> @endforeach
+                                            @foreach (config('config.average_income', []) as $k => $v) <td>
+                                            {{ $k == $item->average_income ? 'x' : '' }}</td> @endforeach
+                                            @foreach (config('config.level_knowledge_acquired', []) as $k => $v) <td>
+                                            {{ $k == $item->level_knowledge_acquired ? 'x' : '' }}</td> @endforeach
+                                            @foreach (config('config.recruitment_type', []) as $k => $v)
+                                                @php $data = json_decode($item->recruitment_type, true); @endphp <td>
+                                            {{ in_array($k, data_get($data, 'value', [])) ? 'x' : '' }}</td> @endforeach
+                                            @foreach (config('config.soft_skills_required', []) as $k => $v)
+                                                @php $data = json_decode($item->soft_skills_required, true); @endphp <td>
+                                            {{ in_array($k, data_get($data, 'value', [])) ? 'x' : '' }}</td> @endforeach
+                                            @foreach (config('config.must_attended_courses', []) as $k => $v)
+                                                @php $data = json_decode($item->must_attended_courses, true); @endphp <td>
+                                            {{ in_array($k, data_get($data, 'value', [])) ? 'x' : '' }}</td> @endforeach
+                                            @foreach (config('config.solutions_get_job', []) as $k => $v)
+                                                @php $data = json_decode($item->solutions_get_job, true); @endphp <td>
+                                            {{ in_array($k, data_get($data, 'value', [])) ? 'x' : '' }}</td> @endforeach
+                                        </tr>
+                                    @empty
+                                        <tr>
+                                            <td colspan="45" class="text-center">Không có sinh viên nào phản hồi.</td>
+                                        </tr>
+                                    @endforelse
                                 </tbody>
                             </table>
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="tab-pane fade" id="tab4">
-    <div class="border rounded p-3" style="max-height: 800px; overflow-y: auto;">
-        <div class="text-center mb-4">
-            <h5 class="fw-bold text-uppercase mb-0">
-                THÔNG TIN CỰU SINH VIÊN KHOA CÔNG NGHỆ THÔNG TIN
-            </h5>
-        </div>
-        <div class="table-responsive mb-4">
-            {{-- Đã cập nhật min-width cho bảng mới nhiều cột hơn --}}
-            <table class="table table-bordered text-center align-middle mb-0" style="font-size: 13px; min-width: 4500px;">
-                <thead class="align-middle">
-                    <tr>
-                        <th rowspan="2">STT</th>
-                        <th rowspan="2">Mã SV</th>
-                        <th rowspan="2">Họ và Tên</th>
-                        <th rowspan="2">Ngày sinh</th>
-                        <th rowspan="2">Giới tính</th>
-                        <th rowspan="2">Dân tộc</th>
-                        <th rowspan="2">Nơi ở hiện tại</th>
-                        <th rowspan="2">Quốc tịch</th>
-                        <th rowspan="2">Tên lớp</th>
-                        <th rowspan="2">Khóa học, niên khoá</th>
-                        <th rowspan="2">Tên khoa</th>
-                        <th rowspan="2">Ngành học</th>
-                        <th rowspan="2">Hệ đào tạo</th>
-                        <th colspan="5">Các bậc đã học tại Học viện</th>
-                        <th rowspan="2">SĐT đang dùng</th>
-                        <th rowspan="2">Email (Nếu có)</th>
-                        <th colspan="2">Tình trạng công việc hiện tại</th>
-                        <th rowspan="2">Đơn vị công tác hiện tại</th>
-                        <th rowspan="2">Chức vụ, chức danh hiện tại</th>
-                        <th rowspan="2">Phần thưởng, giải thưởng, bằng khen</th>
-                        <th colspan="2">Tình trạng kết nối với cá nhân, tập thể, đơn vị thuộc Học viện Nông nghiệp Việt Nam</th>
-                    </tr>
-                    <tr>
-                        <th>Trung cấp</th>
-                        <th>Cao đẳng</th>
-                        <th>Đại học</th>
-                        <th>Thạc sĩ</th>
-                        <th>Tiến sĩ</th>
-                        
-                        <th>Đang công tác</th>
-                        <th>Nghỉ hưu</th>
+                    <div class="border rounded p-3" style="max-height: 800px; overflow-y: auto;">
+                        <div class="text-center mb-4">
+                            <h5 class="fw-bold text-uppercase mb-0">
+                                THÔNG TIN CỰU SINH VIÊN KHOA CÔNG NGHỆ THÔNG TIN
+                            </h5>
+                        </div>
+                        <div class="table-responsive mb-4">
+                            <table class="table table-bordered text-center align-middle mb-0"
+                                style="font-size: 13px; min-width: 4500px;">
+                                <thead class="align-middle">
+                                    <tr>
+                                        <th rowspan="2">STT</th>
+                                        <th rowspan="2">Mã SV</th>
+                                        <th rowspan="2">Họ và Tên</th>
+                                        <th rowspan="2">Ngày sinh</th>
+                                        <th rowspan="2">Giới tính</th>
+                                        <th rowspan="2">Dân tộc</th>
+                                        <th rowspan="2">Nơi ở hiện tại</th>
+                                        <th rowspan="2">Quốc tịch</th>
+                                        <th rowspan="2">Tên lớp</th>
+                                        <th rowspan="2">Khóa học, niên khoá</th>
+                                        <th rowspan="2">Tên khoa</th>
+                                        <th rowspan="2">Ngành học</th>
+                                        <th rowspan="2">Hệ đào tạo</th>
+                                        <th colspan="5">Các bậc đã học tại Học viện</th>
+                                        <th rowspan="2">SĐT đang dùng</th>
+                                        <th rowspan="2">Email (Nếu có)</th>
+                                        <th colspan="2">Tình trạng công việc hiện tại</th>
+                                        <th rowspan="2">Đơn vị công tác hiện tại</th>
+                                        <th rowspan="2">Chức vụ, chức danh hiện tại</th>
+                                        <th rowspan="2">Phần thưởng, giải thưởng, bằng khen</th>
+                                        <th colspan="2">Tình trạng kết nối với cá nhân, tập thể, đơn vị thuộc Học viện Nông
+                                            nghiệp Việt Nam</th>
+                                    </tr>
+                                    <tr>
+                                        <th>Trung cấp</th>
+                                        <th>Cao đẳng</th>
+                                        <th>Đại học</th>
+                                        <th>Thạc sĩ</th>
+                                        <th>Tiến sĩ</th>
 
-                        <th>Chưa kết nối</th>
-                        <th>Đã kết nối theo nhóm lớp, khoá, khoa, Học viện</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {{-- 
-                        LƯU Ý QUAN TRỌNG: 
-                        Các biến $item->... dưới đây đượcsuy đoán dựa trên tên cột mới.
-                        Bạn PHẢI cập nhật lại cho đúng với các trường trong $alumniData của bạn.
-                    --}}
-                    @forelse ($alumniData as $index => $item)
-                        <tr>
-                            <td>{{ $index + 1 }}</td>
-                            <td>{{ $item->student_code ?? '' }}</td>
-                            <td>{{ $item->full_name ?? '' }}</td>
-                            <td>{{ $item->date_of_birth ? date('d/m/Y', strtotime($item->date_of_birth)) : '' }}</td>
-                            <td>{{ $item->gender == 'male' ? 'Nam' : ($item->gender == 'female' ? 'Nữ' : '') }}</td>
-                            
-                            {{-- Các cột mới (Dữ liệu mẫu - CẦN SỬA) --}}
-                            <td>{{ $item->ethnicity ?? '' }}</td> {{-- Dân tộc --}}
-                            <td>{{ $item->address ?? '' }}</td> {{-- Nơi ở hiện tại --}}
-                            <td>{{ $item->nationality ?? 'Việt Nam' }}</td> {{-- Quốc tịch --}}
-                            <td>{{ $item->class_name ?? '' }}</td> {{-- Tên lớp --}}
-                            <td>{{ $item->course ?? '' }}</td> {{-- Khóa học, niên khoá --}}
-                            <td>{{ $item->faculty_name ?? '' }}</td> {{-- Tên khoa --}}
-                            <td>{{ $item->major_name ?? '' }}</td> {{-- Ngành học --}}
-                            <td>{{ $item->training_system ?? '' }}</td> {{-- Hệ đào tạo --}}
+                                        <th>Đang công tác</th>
+                                        <th>Nghỉ hưu</th>
 
-                            <td>{{-- $item->has_vocational ? 'x' : '' --}}</td>
-                            <td>{{-- $item->has_college ? 'x' : '' --}}</td>
-                            <td>{{-- $item->has_university ? 'x' : '' --}}</td>
-                            <td>{{-- $item->has_masters ? 'x' : '' --}}</td>
-                            <td>{{-- $item->has_phd ? 'x' : '' --}}</td>
+                                        <th>Chưa kết nối</th>
+                                        <th>Đã kết nối theo nhóm lớp, khoá, khoa, Học viện</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
 
-                            <td>{{ $item->phone ?? '' }}</td> {{-- SĐT --}}
-                            <td>{{ $item->email ?? '' }}</td> {{-- Email --}}
+                                    @forelse ($alumniData as $index => $item)
+                                        <tr>
+                                            <td>{{ $index + 1 }}</td>
+                                            <td>{{ $item->student_code ?? '' }}</td>
+                                            <td>{{ $item->full_name ?? '' }}</td>
+                                            <td>{{ $item->date_of_birth ? date('d/m/Y', strtotime($item->date_of_birth)) : '' }}
+                                            </td>
+                                            <td>{{ $item->gender == 'male' ? 'Nam' : ($item->gender == 'female' ? 'Nữ' : '') }}</td>
 
-                            <td>{{-- $item->is_working ? 'x' : '' --}}</td>
-                            <td>{{-- $item->is_retired ? 'x' : '' --}}</td>
+                                            <td>{{ $item->ethnicity ?? '' }}</td> {{-- Dân tộc --}}
+                                            <td>{{ $item->address ?? '' }}</td> {{-- Nơi ở hiện tại --}}
+                                            <td>{{ $item->nationality ?? 'Việt Nam' }}</td> {{-- Quốc tịch --}}
+                                            <td>{{ $item->class_name ?? '' }}</td> {{-- Tên lớp --}}
+                                            <td>{{ $item->course ?? '' }}</td> {{-- Khóa học, niên khoá --}}
+                                            <td>{{ $item->faculty_name ?? '' }}</td> {{-- Tên khoa --}}
+                                            <td>{{ $item->major_name ?? '' }}</td> {{-- Ngành học --}}
+                                            <td>{{ $item->training_system ?? '' }}</td> {{-- Hệ đào tạo --}}
 
-                            <td>{{ $item->company_name ?? '' }}</td> {{-- Đơn vị công tác --}}
-                            <td>{{ $item->position ?? '' }}</td> {{-- Chức vụ --}}
-                            <td>{{ $item->awards ?? '' }}</td> {{-- Phần thưởng --}}
 
-                            <td>{{-- $item->is_connected == false ? 'x' : '' --}}</td>
-                            <td>{{-- $item->is_connected == true ? 'x' : '' --}}</td>
-                        </tr>
-                    @empty
-                        <tr>
-                            {{-- Cập nhật colspan_mới (27) --}}
-                            <td colspan="27" class="text-center py-4">
-                                <i class="bi bi-inbox text-muted" style="font-size: 3rem;"></i>
-                                <p class="text-muted mt-2 mb-0">Chưa có dữ liệu cựu sinh viên.</p>
-                            </td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
-    </div>
-</div>
-                
+                                            <td>{{ $item->phone ?? '' }}</td> {{-- SĐT --}}
+                                            <td>{{ $item->email ?? '' }}</td> {{-- Email --}}
+                                            <td>{{ $item->company_name ?? '' }}</td>
+                                            <td>{{ $item->position ?? '' }}</td>
+                                            <td>{{ $item->awards ?? '' }}</td>
+                                        </tr>
+                                    @empty
+                                        <tr>
+                                            <td colspan="27" class="text-center py-4">
+                                                <i class="bi bi-inbox text-muted" style="font-size: 3rem;"></i>
+                                                <p class="text-muted mt-2 mb-0">Chưa có dữ liệu cựu sinh viên.</p>
+                                            </td>
+                                        </tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         @else
             <div class="alert alert-info mt-5">Vui lòng chọn một cuộc khảo sát để xem báo cáo.</div>
@@ -462,10 +557,10 @@
     </div>
 
     <script>
-         document.addEventListener("DOMContentLoaded", function() {
+        document.addEventListener("DOMContentLoaded", function () {
             const tabLinks = document.querySelectorAll('.nav-link[data-bs-toggle="tab"]');
             tabLinks.forEach(link => {
-                link.addEventListener('click', function() {
+                link.addEventListener('click', function () {
                     localStorage.setItem('activeReportTab', this.getAttribute('href'));
                 });
             });
@@ -476,5 +571,5 @@
             }
         });
     </script>
-    
+
 @endsection
