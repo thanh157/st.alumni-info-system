@@ -10,9 +10,7 @@
             <th colspan="27"></th> {{-- Dòng trống --}}
         </tr>
 
-        {{-- Header của bảng --}}
         <tr style="font-weight: bold;">
-            {{-- ĐÃ SỬA LỖI: rowspan_2" thành rowspan="2" --}}
             <th rowspan="2" style="text-align: center; vertical-align: middle;">STT</th>
             <th rowspan="2" style="text-align: center; vertical-align: middle;">Mã SV</th>
             <th rowspan="2" style="text-align: center; vertical-align: middle;">Họ và Tên</th>
@@ -57,7 +55,6 @@
                 <td>{{ $item->date_of_birth ? date('d/m/Y', strtotime($item->date_of_birth)) : '' }}</td>
                 <td>{{ $item->gender == 'male' ? 'Nam' : ($item->gender == 'female' ? 'Nữ' : '') }}</td>
 
-                {{-- Bạn cần thay thế các 'item->...' cho đúng với cột DB của bạn --}}
                 <td>{{ $item->ethnicity ?? '' }}</td>
                 <td>{{ $item->address ?? '' }}</td>
                 <td>{{ $item->nationality ?? 'Việt Nam' }}</td>
@@ -67,27 +64,18 @@
                 <td>{{ $item->major_name ?? '' }}</td>
                 <td>{{ $item->training_system ?? '' }}</td>
 
-                {{-- Các bậc đã học (CẦN SỬA) --}}
-                <td>{{-- $item->has_vocational ? 'x' : '' --}}</td>
-                <td>{{-- $item->has_college ? 'x' : '' --}}</td>
-                <td>{{-- $item->has_university ? 'x' : '' --}}</td>
-                <td>{{-- $item->has_masters ? 'x' : '' --}}</td>
-                <td>{{-- $item->has_phd ? 'x' : '' --}}</td>
+
 
                 <td>{{ $item->phone ?? '' }}</td>
                 <td>{{ $item->email ?? '' }}</td>
 
-                {{-- Tình trạng công việc (CẦN SỬA) --}}
-                <td>{{-- $item->is_working ? 'x' : '' --}}</td>
-                <td>{{-- $item->is_retired ? 'x' : '' --}}</td>
+
 
                 <td>{{ $item->company_name ?? '' }}</td>
                 <td>{{ $item->position ?? '' }}</td>
                 <td>{{ $item->awards ?? '' }}</td>
 
-                {{-- Tình trạng kết nối (CẦN SỬA) --}}
-                <td>{{-- $item->is_connected == false ? 'x' : '' --}}</td>
-                <td>{{-- $item->is_connected == true ? 'x' : '' --}}</td>
+            
             </tr>
         @empty
             <tr>

@@ -1,6 +1,5 @@
 <table>
     <thead>
-        {{-- Tiêu đề --}}
         <tr>
             <th colspan="13" style="font-weight: bold; text-align: center; font-size: 14px;">HỌC VIỆN NÔNG NGHIỆP VIỆT
                 NAM</th>
@@ -15,10 +14,9 @@
             </th>
         </tr>
         <tr>
-            <th colspan="13"></th> {{-- Dòng trống --}}
+            <th colspan="13"></th>
         </tr>
 
-        {{-- Header của bảng --}}
         <tr style="font-weight: bold;">
             <th rowspan="2" style="text-align: center; vertical-align: middle;">Mã sinh viên</th>
             <th rowspan="2" style="text-align: center; vertical-align: middle;">Họ và tên</th>
@@ -52,17 +50,15 @@
                 <td>{{ $item->code }}</td>
                 <td>{{ $item->full_name }}</td>
                 <td>{{ $item->gender == 'female' ? 'x' : '' }}</td>
-                <td>'{{ $item->citizen_identification }}</td> {{-- Thêm ' để Excel hiểu là text --}}
+                <td>'{{ $item->citizen_identification }}</td>
                 <td>{{ optional($major)->code }}</td>
                 <td>{{ optional($graduation)->certification }}</td>
                 <td>{{ optional($graduation)->certification_date ? date('d-m-Y', strtotime($graduation->certification_date)) : '' }}
                 </td>
                 <td>{{ $item->phone }}</td>
                 <td>{{ $item->email }}</td>
-                <td></td> {{-- Hình thức khảo sát --}}
                 <td>{{ $res ? 'Có' : 'Không' }}</td>
                 <td>{{ optional($major)->name }}</td>
-                <td>{{-- Khóa học cần thêm trường dữ liệu --}}</td>
             </tr>
         @empty
             <tr>

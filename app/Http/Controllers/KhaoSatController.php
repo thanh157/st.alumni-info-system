@@ -174,8 +174,7 @@ class KhaoSatController extends Controller
                 return redirect()->back()->with('error', 'Thông tin xác thực không khớp: ' . implode(',', $invalidFields))->withInput();
             }
 
-            // ✅ Lưu vào session
-            $id = $surveyId;
+             $id = $surveyId;
             session()->put("verified_{$id}", true);
             session()->put("student_code_{$id}", $student->code);
             session()->put("email_{$id}", $student->email);

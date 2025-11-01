@@ -327,18 +327,18 @@
                                         <td>{{ $item->code_student }}</td><td>{{ $item->full_name }}</td><td>{{ !empty($item->dob) ? date('d-m-Y', strtotime($item->dob)) : '' }}</td>
                                         <td>{{ $item->gender == 'male' ? 'Nam' : 'Nữ' }}</td><td>{{ $item->identification_card_number }}</td><td>{{ optional($majors->get($item->training_industry_id))->code }}</td>
                                         <td>{{ $item->phone_number }}</td><td>{{ $item->email }}</td>
-                                        <td>{{ $item->trained_field == 1 ? 1 : 0 }}</td><td>{{ $item->trained_field == 2 ? 1 : 0 }}</td><td>{{ $item->trained_field == 3 ? 1 : 0 }}</td>
-                                        <td>{{ $item->employment_status == 2 ? 1 : 0 }}</td><td>{{ $item->employment_status == 3 ? 1 : 0 }}</td>
-                                        <td>{{ $item->work_area == '1' ? 1 : 0 }}</td><td>{{ $item->work_area == '2' ? 1 : 0 }}</td>
-                                        <td>{{ $item->work_area == '4' ? 1 : 0 }}</td><td>{{ $item->work_area == '3' ? 1 : 0 }}</td>
+                                        <td>{{ $item->trained_field == 1 ? 'x' : '' }}</td><td>{{ $item->trained_field == 2 ? 'x' : '' }}</td><td>{{ $item->trained_field == 3 ? 'x' : '' }}</td>
+                                        <td>{{ $item->employment_status == 2 ? 'x' : '' }}</td><td>{{ $item->employment_status == 3 ? 'x' : '' }}</td>
+                                        <td>{{ $item->work_area == '1' ? 'x' : '' }}</td><td>{{ $item->work_area == '2' ? 'x' : '' }}</td>
+                                        <td>{{ $item->work_area == '4' ? 'x' : '' }}</td><td>{{ $item->work_area == '3' ? 'x' : '' }}</td>
                                         <td>{{ $item->city_work_id }}</td>
-                                        @foreach (config('config.employed_since', []) as $k => $v) <td>{{ $k == $item->employed_since ? 1 : 0 }}</td> @endforeach
-                                        @foreach (config('config.average_income', []) as $k => $v) <td>{{ $k == $item->average_income ? 1 : 0 }}</td> @endforeach
-                                        @foreach (config('config.level_knowledge_acquired', []) as $k => $v) <td>{{ $k == $item->level_knowledge_acquired ? 1 : 0 }}</td> @endforeach
-                                        @foreach (config('config.recruitment_type', []) as $k => $v) @php $data = json_decode($item->recruitment_type, true); @endphp <td>{{ in_array($k, data_get($data, 'value', [])) ? 1 : 0 }}</td> @endforeach
-                                        @foreach (config('config.soft_skills_required', []) as $k => $v) @php $data = json_decode($item->soft_skills_required, true); @endphp <td>{{ in_array($k, data_get($data, 'value', [])) ? 1 : 0 }}</td> @endforeach
-                                        @foreach (config('config.must_attended_courses', []) as $k => $v) @php $data = json_decode($item->must_attended_courses, true); @endphp <td>{{ in_array($k, data_get($data, 'value', [])) ? 1 : 0 }}</td> @endforeach
-                                        @foreach (config('config.solutions_get_job', []) as $k => $v) @php $data = json_decode($item->solutions_get_job, true); @endphp <td>{{ in_array($k, data_get($data, 'value', [])) ? 1 : 0 }}</td> @endforeach
+                                        @foreach (config('config.employed_since', []) as $k => $v) <td>{{ $k == $item->employed_since ? 'x' : '' }}</td> @endforeach
+                                        @foreach (config('config.average_income', []) as $k => $v) <td>{{ $k == $item->average_income ? 'x' : '' }}</td> @endforeach
+                                        @foreach (config('config.level_knowledge_acquired', []) as $k => $v) <td>{{ $k == $item->level_knowledge_acquired ? 'x' : '' }}</td> @endforeach
+                                        @foreach (config('config.recruitment_type', []) as $k => $v) @php $data = json_decode($item->recruitment_type, true); @endphp <td>{{ in_array($k, data_get($data, 'value', [])) ? 'x' : '' }}</td> @endforeach
+                                        @foreach (config('config.soft_skills_required', []) as $k => $v) @php $data = json_decode($item->soft_skills_required, true); @endphp <td>{{ in_array($k, data_get($data, 'value', [])) ? 'x' : '' }}</td> @endforeach
+                                        @foreach (config('config.must_attended_courses', []) as $k => $v) @php $data = json_decode($item->must_attended_courses, true); @endphp <td>{{ in_array($k, data_get($data, 'value', [])) ? 'x' : '' }}</td> @endforeach
+                                        @foreach (config('config.solutions_get_job', []) as $k => $v) @php $data = json_decode($item->solutions_get_job, true); @endphp <td>{{ in_array($k, data_get($data, 'value', [])) ? 'x' : '' }}</td> @endforeach
                                     </tr>
                                 @empty
                                     <tr><td colspan="45" class="text-center">Không có sinh viên nào phản hồi.</td></tr>
