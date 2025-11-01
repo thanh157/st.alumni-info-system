@@ -24,84 +24,85 @@ Route::get('/auth/callback', [AuthenticateController::class, 'handleCallback'])-
 
 Route::get('/api/classes/count', [\App\Http\Controllers\System\ClassController::class, 'countClassesApi'])->name('api.classes.count');
 
-Route::get('/', function () {
-    return view('welcome');
-})->name('client.home');
-Route::get('', function () {
-    return redirect()->route('admin.dashboard');
-});
-Route::get('dashboard', [App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('admin.dashboard');
+Route::middleware('auth.sso')->group(function () {
+    Route::get('/', function () {
+        return view('welcome');
+    })->name('client.home');
+    Route::get('', function () {
+        return redirect()->route('admin.dashboard');
+    });
+    Route::get('dashboard', [App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('admin.dashboard');
 
-Route::get('dashboard/chart-data', [App\Http\Controllers\Admin\DashboardController::class, 'getChartData'])->name('admin.chart.data');
-
-
-//    Route::get('/department', [DepartmentController::class, 'index'])->name('admin.department.index')->middleware('permission:department.index');
-// Route::get('/graduation', [GraduationController::class, 'index'])->name('admin.graduation.index');
-// Route::get('/graduation', [GraduationController::class, 'index'])->name('admin.graduation.index');
-//    Route::get('/graduation/create', [GraduationController::class, 'create'])->name('admin.graduation.create');
-//    Route::post('/graduation', [GraduationController::class, 'store'])->name('admin.graduation.store');
-//    Route::get('/graduation/{id}/edit', [GraduationController::class, 'edit'])->name('admin.graduation.edit');
-//    Route::put('/graduation/{id}', [GraduationController::class, 'update'])->name('admin.graduation.update');
-//    Route::delete('/graduation/{id}', [GraduationController::class, 'destroy'])->name('admin.graduation.destroy');
-//    Route::get('/graduation/{graduationId}/students/create', [GraduationStudentController::class, 'create'])->name('admin.graduation-student.create');
-// Xử lý lưu
-//    Route::post('/graduation/{graduationId}/students', [GraduationStudentController::class, 'store'])->name('admin.graduation-student.store');
-
-Route::get('/create-department', function () {
-    return view('admin.pages.admin.create-department');
-})->name('admin.department.create-department');
-
-// Route::get('/major', [MajorController::class, 'index'])->name('admin.major.index');
-Route::get('/admin/majors', [MajorController::class, 'index'])->name('admin.major.index');
-Route::get('/admin/department', [DepartmentController::class, 'index'])->name('admin.department.index');
-// Route::prefix('admin/class')->group(function () {
-//     Route::get('/', [ClassController::class, 'index'])->name('admin.class.index');
-//     Route::get('/{id}/detail', [ClassController::class, 'detail'])->name('admin.class.class-detail');
-// });
-// web.php
-Route::prefix('admin')->middleware(['auth'])->name('admin.')->group(function () {
-    Route::get('/classes', [ClassController::class, 'index'])->name('class.index');
-    Route::get('/classes/{id}', [ClassController::class, 'show'])->name('class.class-detail');
-    // Route::get('/admin/class/{code}/students', [ClassController::class, 'students'])->name('admin.class.students');
-    Route::get('/class/student/{id}', [ClassController::class, 'showStudentDetail'])->name('class.student-detail');
-    Route::get('/admin/class/{khoa}/list', [ClassController::class, 'showClassByKhoa'])->name('admin.class.by-khoa');
-});
-Route::get('/class/khoa/{khoa}', [ClassController::class, 'showByKhoa'])
-    ->name('admin.class.by-khoa');
-Route::get('/class/{code}/students', [ClassController::class, 'showStudents'])->name('admin.class.students');
-Route::get('/admin/class/khoa/{khoa}', [\App\Http\Controllers\System\ClassController::class, 'showByKhoa'])->name('admin.class-by-khoa');
-
-Route::prefix('admin')->middleware(['auth'])->name('admin.')->group(function () {
-    Route::get('/classes', [ClassController::class, 'index'])->name('class.index');
-    Route::get('/classes/{id}', [ClassController::class, 'show'])->name('class.class-detail');
-});
+    Route::get('dashboard/chart-data', [App\Http\Controllers\Admin\DashboardController::class, 'getChartData'])->name('admin.chart.data');
 
 
-Route::get('/report', [ReportController::class, 'index'])->name('admin.report.index');
-Route::any('/charts', [ChartStatisticController::class, 'index'])->name('admin.charts.index');
-Route::get('/charts/data', [ChartStatisticController::class, 'getChartData;'])->name('admin.charts.data');
+    //    Route::get('/department', [DepartmentController::class, 'index'])->name('admin.department.index')->middleware('permission:department.index');
+    // Route::get('/graduation', [GraduationController::class, 'index'])->name('admin.graduation.index');
+    // Route::get('/graduation', [GraduationController::class, 'index'])->name('admin.graduation.index');
+    //    Route::get('/graduation/create', [GraduationController::class, 'create'])->name('admin.graduation.create');
+    //    Route::post('/graduation', [GraduationController::class, 'store'])->name('admin.graduation.store');
+    //    Route::get('/graduation/{id}/edit', [GraduationController::class, 'edit'])->name('admin.graduation.edit');
+    //    Route::put('/graduation/{id}', [GraduationController::class, 'update'])->name('admin.graduation.update');
+    //    Route::delete('/graduation/{id}', [GraduationController::class, 'destroy'])->name('admin.graduation.destroy');
+    //    Route::get('/graduation/{graduationId}/students/create', [GraduationStudentController::class, 'create'])->name('admin.graduation-student.create');
+    // Xử lý lưu
+    //    Route::post('/graduation/{graduationId}/students', [GraduationStudentController::class, 'store'])->name('admin.graduation-student.store');
 
-Route::name('admin.')->group(function () {
-    Route::get('graduation', [GraduationController::class, 'index'])->name('graduation.index');
-    Route::get('graduation/{id}/students', [GraduationController::class, 'showStudents'])->name('graduation-student.show');
+    Route::get('/create-department', function () {
+        return view('admin.pages.admin.create-department');
+    })->name('admin.department.create-department');
 
-    Route::prefix('survey')->name('survey.')->group(function () {
-        Route::get('/', [SurveyController::class, 'index'])->name('index');
-        Route::get('create', [SurveyController::class, 'create'])->name('create');
-        Route::post('store', [SurveyController::class, 'store'])->name('store');
-        Route::get('/{id}/edit', [SurveyController::class, 'edit'])->name('edit');
-        Route::put('update/{id}', [SurveyController::class, 'update'])->name('update');
-        Route::delete('delete/{id}', [SurveyController::class, 'destroy'])->name('destroy');
-        Route::get('/{id}/form', [SurveyController::class, 'showForm'])->name('form');
-        Route::get('/khao-sat/{id}/ket-qua', [SurveyResultController::class, 'index'])->name('result');
-        Route::get('/khao-sat/{id}/ket-qua-chi-tiet', [SurveyResultController::class, 'show'])->name('result_detail');
-        Route::get('exportPdf/{resultId}', [SurveyResultController::class, 'exportPdf'])->name('export_pdf');
+    // Route::get('/major', [MajorController::class, 'index'])->name('admin.major.index');
+    Route::get('/admin/majors', [MajorController::class, 'index'])->name('admin.major.index');
+    Route::get('/admin/department', [DepartmentController::class, 'index'])->name('admin.department.index');
+    // Route::prefix('admin/class')->group(function () {
+    //     Route::get('/', [ClassController::class, 'index'])->name('admin.class.index');
+    //     Route::get('/{id}/detail', [ClassController::class, 'detail'])->name('admin.class.class-detail');
+    // });
+    // web.php
+    Route::prefix('admin')->middleware(['auth'])->name('admin.')->group(function () {
+        Route::get('/classes', [ClassController::class, 'index'])->name('class.index');
+        Route::get('/classes/{id}', [ClassController::class, 'show'])->name('class.class-detail');
+        // Route::get('/admin/class/{code}/students', [ClassController::class, 'students'])->name('admin.class.students');
+        Route::get('/class/student/{id}', [ClassController::class, 'showStudentDetail'])->name('class.student-detail');
+        Route::get('/admin/class/{khoa}/list', [ClassController::class, 'showClassByKhoa'])->name('admin.class.by-khoa');
+    });
+    Route::get('/class/khoa/{khoa}', [ClassController::class, 'showByKhoa'])
+        ->name('admin.class.by-khoa');
+    Route::get('/class/{code}/students', [ClassController::class, 'showStudents'])->name('admin.class.students');
+    Route::get('/admin/class/khoa/{khoa}', [\App\Http\Controllers\System\ClassController::class, 'showByKhoa'])->name('admin.class-by-khoa');
+
+    Route::prefix('admin')->middleware(['auth'])->name('admin.')->group(function () {
+        Route::get('/classes', [ClassController::class, 'index'])->name('class.index');
+        Route::get('/classes/{id}', [ClassController::class, 'show'])->name('class.class-detail');
+    });
+
+
+    Route::get('/report', [ReportController::class, 'index'])->name('admin.report.index');
+    Route::any('/charts', [ChartStatisticController::class, 'index'])->name('admin.charts.index');
+    Route::get('/charts/data', [ChartStatisticController::class, 'getChartData;'])->name('admin.charts.data');
+
+    Route::name('admin.')->group(function () {
+        Route::get('graduation', [GraduationController::class, 'index'])->name('graduation.index');
+        Route::get('graduation/{id}/students', [GraduationController::class, 'showStudents'])->name('graduation-student.show');
+
+        Route::prefix('survey')->name('survey.')->group(function () {
+            Route::get('/', [SurveyController::class, 'index'])->name('index');
+            Route::get('create', [SurveyController::class, 'create'])->name('create');
+            Route::post('store', [SurveyController::class, 'store'])->name('store');
+            Route::get('/{id}/edit', [SurveyController::class, 'edit'])->name('edit');
+            Route::put('update/{id}', [SurveyController::class, 'update'])->name('update');
+            Route::delete('delete/{id}', [SurveyController::class, 'destroy'])->name('destroy');
+            Route::get('/{id}/form', [SurveyController::class, 'showForm'])->name('form');
+            Route::get('/khao-sat/{id}/ket-qua', [SurveyResultController::class, 'index'])->name('result');
+            Route::get('/khao-sat/{id}/ket-qua-chi-tiet', [SurveyResultController::class, 'show'])->name('result_detail');
+            Route::get('exportPdf/{resultId}', [SurveyResultController::class, 'exportPdf'])->name('export_pdf');
+        });
     });
 });
 
-
 // Thu thập thông tin cựu sinh viên
-Route::middleware('')->prefix('admin')->name('admin.')->group(function () {
+Route::middleware('auth.sso')->prefix('admin')->name('admin.')->group(function () {
     Route::prefix('contact-survey')->name('contact-survey.')->group(function () {
         Route::get('/', [ContactSurveyController::class, 'index'])->name('index');
         Route::get('/create', [ContactSurveyController::class, 'create'])->name('create');
@@ -254,6 +255,6 @@ Route::post('/api/get-dot-tot-nghiep', [SurveyController::class, 'getDotTotNghie
 
 
 Route::get('ket-qua/{id}', [SurveyResultController::class, 'show'])->name('result_detail_v2');
-
+Route::any('exportPdf_v2/{resultId}', [SurveyResultController::class, 'exportPdf'])->name('export_pdf_v2');
+Route::get('/export-survey', [ReportController::class, 'export'])->name('surveys.export');
 Route::get('/report/export', [ReportController::class, 'export'])->name('surveys.export');
-
