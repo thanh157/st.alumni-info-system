@@ -14,9 +14,9 @@
             </th>
         </tr>
         <tr>
-            <th colspan="45"></th>  
+            <th colspan="45"></th>
         </tr>
- 
+
         <tr style="font-weight: bold;">
             <th rowspan="3" style="text-align: center; vertical-align: middle;">Mã sinh viên</th>
             <th rowspan="3" style="text-align: center; vertical-align: middle;">Họ và tên</th>
@@ -103,7 +103,7 @@
                 <td>{{ $item->full_name }}</td>
                 <td>{{ !empty($item->dob) ? date('d-m-Y', strtotime($item->dob)) : '' }}</td>
                 <td>{{ $item->gender == 'male' ? 'Nam' : 'Nữ' }}</td>
-                <td>'{{ $item->identification_card_number }}</td>  
+                <td>'{{ $item->identification_card_number }}</td>
                 <td>{{ optional($majors->get($item->training_industry_id))->code }}</td>
                 <td>{{ $item->phone_number }}</td>
                 <td>{{ $item->email }}</td>
@@ -122,19 +122,44 @@
                 @foreach (config('config.average_income', []) as $k => $v) <td>{{ $k == $item->average_income ? 'x' : '' }}
                 </td> @endforeach
                 @foreach (config('config.level_knowledge_acquired', []) as $k => $v) <td>
-                {{ $k == $item->level_knowledge_acquired ? 'x' : '' }}</td> @endforeach
+                    {{ $k == $item->level_knowledge_acquired ? 'x' : '' }}</td> @endforeach
+
+                {{--kiểm tra is_string() và !empty() cho recruitment_type --}}
                 @foreach (config('config.recruitment_type', []) as $k => $v)
-                    @php $data = json_decode($item->recruitment_type, true); @endphp <td>
-                {{ in_array($k, data_get($data, 'value', [])) ? 'x' : '' }}</td> @endforeach
-                @foreach (config('config.soft_skills_required', []) as $k => $v)
-                    @php $data = json_decode($item->soft_skills_required, true); @endphp <td>
-                {{ in_array($k, data_get($data, 'value', [])) ? 'x' : '' }}</td> @endforeach
-                @foreach (config('config.must_attended_courses', []) as $k => $v)
-                    @php $data = json_decode($item->must_attended_courses, true); @endphp <td>
-                {{ in_array($k, data_get($data, 'value', [])) ? 'x' : '' }}</td> @endforeach
-                @foreach (config('config.solutions_get_job', []) as $k => $v)
-                    @php $data = json_decode($item->solutions_get_job, true); @endphp <td>
-                {{ in_array($k, data_get($data, 'value', [])) ? 'x' : '' }}</td> @endforeach
+                    @php
+                        $data = (is_string($item->recruitment_type) && !empty($item->recruitment_type))
+                                ? json_decode($item->recruitment_type, true)
+                                : null;
+                    @endphp
+                    <td>{{ in_array($k, data_get($data, 'value', [])) ? 'x' : '' }}</td>
+                @endforeach
+
+                 @foreach (config('config.soft_skills_required', []) as $k => $v)
+                    @php
+                        $data = (is_string($item->soft_skills_required) && !empty($item->soft_skills_required))
+                                ? json_decode($item->soft_skills_required, true)
+                                : null;
+                    @endphp
+                    <td>{{ in_array($k, data_get($data, 'value', [])) ? 'x' : '' }}</td>
+                @endforeach
+
+                 @foreach (config('config.must_attended_courses', []) as $k => $v)
+                    @php
+                        $data = (is_string($item->must_attended_courses) && !empty($item->must_attended_courses))
+                                ? json_decode($item->must_attended_courses, true)
+                                : null;
+                    @endphp
+                    <td>{{ in_array($k, data_get($data, 'value', [])) ? 'x' : '' }}</td>
+                @endforeach
+
+                 @foreach (config('config.solutions_get_job', []) as $k => $v)
+                    @php
+                        $data = (is_string($item->solutions_get_job) && !empty($item->solutions_get_job))
+                                ? json_decode($item->solutions_get_job, true)
+                                : null;
+                    @endphp
+                    <td>{{ in_array($k, data_get($data, 'value', [])) ? 'x' : '' }}</td>
+                @endforeach
             </tr>
         @empty
             <tr>

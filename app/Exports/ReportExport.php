@@ -2,6 +2,7 @@
 
 namespace App\Exports;
 use App\Models\Major;
+use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 
 class ReportExport implements WithMultipleSheets
@@ -48,8 +49,7 @@ class ReportExport implements WithMultipleSheets
             $this->responsesByCode = $r2->keyBy('code_student');
         }
 
-        // Lấy dữ liệu dùng chung cho Tab 2
-        // (Chỉ chạy khi cần export tab 2)
+         // (Chỉ chạy khi cần export tab 2)
         if (in_array($type, ['all', 'tab2'])) {
             $studentIdsForGraduation = $studentTab2->pluck('id');
             $this->graduationData = DB::table('graduation_student')
@@ -59,8 +59,7 @@ class ReportExport implements WithMultipleSheets
                 ->get()
                 ->keyBy('student_id');
         }
-        // --- KẾT THÚC SỬA ---
-    }
+     }
 
     public function sheets(): array
     {

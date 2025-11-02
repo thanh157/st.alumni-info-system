@@ -46,5 +46,25 @@ class Student extends Model
     {
         return $this->belongsTo(Major::class, 'training_industry_id');
     }
-    
+    public function major()
+    {
+        return $this->belongsTo(Major::class, 'training_industry_id');
+    }
+    public function employmentResponses()
+    {
+        return $this->hasMany(EmploymentSurveyResponse::class, 'student_id');
+    }
+    public function alumniInfo()
+    {
+        return $this->hasOne(AlumniContactSurvey::class, 'student_code', 'code');
+    }
+    public function getFullNameAttribute($value)
+    {
+        return $value ?: trim(($this->last_name ?? '') . ' ' . ($this->first_name ?? ''));
+    }
+    public function getGenderTextAttribute()
+    {
+        return $this->gender === 'female' ? 'Nữ' : ($this->gender === 'male' ? 'Nam' : '');
+    }
+
 }
