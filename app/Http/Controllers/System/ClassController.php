@@ -18,12 +18,15 @@ class ClassController extends Controller
         $this->studentService = $studentService;
     }
 
-    // Trang danh sách các khóa
+    /** 
+     * Trang danh sách các khóa 
+     */
     public function index(Request $request)
     {
         $facultyId = $this->studentService->getFacultyId();
         $search = $request->query('search');
 
+        // Lấy token, cache 5 phút
         $token = cache()->remember('token_client1', 300, function () {
             return $this->studentService->post('/oauth/token', [
                 'grant_type' => 'client_credentials',
@@ -32,24 +35,28 @@ class ClassController extends Controller
             ]);
         });
 
-        $classes = $this->studentService->get("/api/v1/external/classes/faculty/{$facultyId}", [
+        // Gọi API danh sách lớp
+        $classesResponse = $this->studentService->get("/api/v1/external/classes/faculty/{$facultyId}", [
             'access_token' => Arr::get($token, 'access_token'),
         ]);
 
+        // Nếu trả về là array thì lấy dữ liệu an toàn
+        $classesData = $classesResponse['data'] ?? [];
+
         $grouped = [];
 
-        foreach ($classes['data'] ?? [] as $class) {
-            $khoa = strtoupper(substr($class['code'], 0, 3));
+        foreach ($classesData as $class) {
+            $khoa = strtoupper(substr($class['code'] ?? '', 0, 3));
             if ($search && stripos($khoa, $search) === false) continue;
 
             if (!isset($grouped[$khoa])) {
                 $grouped[$khoa] = [
+                    'id' => $khoa,
                     'khoa' => $khoa,
                     'nam' => '20' . substr($khoa, 1, 2),
                     'tong_so_lop' => 0,
                     'nhap_hoc' => 0,
                     'hien_tai' => 0,
-                    'id' => $khoa,
                 ];
             }
 
@@ -61,7 +68,9 @@ class ClassController extends Controller
         ]);
     }
 
-    // Trang danh sách lớp theo khóa
+    /** 
+     * Trang danh sách lớp theo khóa 
+     */
     public function showByKhoa(Request $request, $khoa)
     {
         $facultyId = $this->studentService->getFacultyId();
@@ -74,42 +83,43 @@ class ClassController extends Controller
             ]);
         });
 
-        $classes = $this->studentService->get("/api/v1/external/classes/faculty/{$facultyId}", [
+        // Gọi API danh sách lớp
+        $classesResponse = $this->studentService->get("/api/v1/external/classes/faculty/{$facultyId}", [
             'access_token' => Arr::get($token, 'access_token'),
         ]);
-         $response = $this->studentService->get("/api/v1/external/classes/faculty/{$facultyId}", [
-            'access_token' => Arr::get($token, 'access_token'),
-        ]);
 
-         if ($response->successful()) {
-             $classes = $response->json('data.data', []);
+        $classesData = $classesResponse['data'] ?? [];
 
-             return response()->json([
-                'total_classes' => count($classes)
-            ]);
-        }
+        // Lọc theo khóa
+        $filtered = collect($classesData)->filter(function ($class) use ($khoa) {
+            return Str::startsWith($class['code'] ?? '', $khoa);
+        });
 
-         $filtered = collect($classes['data'] ?? [])->filter(function ($class) use ($khoa) {
-            return Str::startsWith($class['code'], $khoa);
-        })->values();
-
+        // Lọc thêm theo từ khóa tìm kiếm
         $search = $request->query('search');
         if ($search) {
             $filtered = $filtered->filter(function ($class) use ($search) {
-                return stripos($class['code'], $search) !== false ||
-                    stripos($class['description'], $search) !== false;
-            })->values();
+                return stripos($class['code'] ?? '', $search) !== false ||
+                    stripos($class['description'] ?? '', $search) !== false;
+            });
         }
 
+        // Đếm số sinh viên trong từng lớp
         foreach ($filtered as &$class) {
-            $classCode = $class['code'];
+            $classCode = $class['code'] ?? null;
+            if (!$classCode) {
+                $class['student_count'] = 0;
+                continue;
+            }
+
             $studentResponse = $this->studentService->get("/api/v1/external/students/class/{$classCode}", [
                 'access_token' => Arr::get($token, 'access_token'),
             ]);
-            $class['student_count'] = count($studentResponse['data'] ?? []);
 
+            $class['student_count'] = count($studentResponse['data'] ?? []);
         }
 
+        // Phân trang
         $perPage = 6;
         $currentPage = $request->get('page', 1);
         $paged = $filtered->slice(($currentPage - 1) * $perPage, $perPage)->values();
@@ -128,7 +138,9 @@ class ClassController extends Controller
         ]);
     }
 
-    // Trang danh sách sinh viên trong lớp
+    /** 
+     * Trang danh sách sinh viên trong lớp 
+     */
     public function showStudents(Request $request, $code)
     {
         $facultyId = $this->studentService->getFacultyId();
@@ -145,16 +157,20 @@ class ClassController extends Controller
             'access_token' => Arr::get($token, 'access_token'),
         ]);
 
+        $students = collect($response['data'] ?? []);
+
+        // Lọc theo code, name, email
         $filterCode = $request->query('code');
         $filterName = $request->query('name');
         $filterEmail = $request->query('email');
 
-        $students = collect($response['data'] ?? [])->filter(function ($student) use ($filterCode, $filterName, $filterEmail) {
-            return (!$filterCode || Str::contains($student['code'], $filterCode)) &&
-                (!$filterName || Str::contains(Str::lower($student['full_name']), Str::lower($filterName))) &&
-                (!$filterEmail || Str::contains(Str::lower($student['email']), Str::lower($filterEmail)));
-        })->values();
+        $students = $students->filter(function ($student) use ($filterCode, $filterName, $filterEmail) {
+            return (!$filterCode || Str::contains($student['code'] ?? '', $filterCode)) &&
+                (!$filterName || Str::contains(Str::lower($student['full_name'] ?? ''), Str::lower($filterName))) &&
+                (!$filterEmail || Str::contains(Str::lower($student['email'] ?? ''), Str::lower($filterEmail)));
+        });
 
+        // Phân trang
         $perPage = 10;
         $currentPage = $request->get('page', 1);
         $paged = $students->slice(($currentPage - 1) * $perPage, $perPage)->values();
@@ -173,7 +189,9 @@ class ClassController extends Controller
         ]);
     }
 
-    // Trang chi tiết sinh viên (từ danh sách sinh viên theo lớp)
+    /** 
+     * Trang chi tiết sinh viên 
+     */
     public function showStudentDetail($id)
     {
         $token = cache()->remember('token_client1', 300, function () {
@@ -191,17 +209,17 @@ class ClassController extends Controller
             'access_token' => Arr::get($token, 'access_token'),
         ]);
 
-        $student = collect($response['data'])->firstWhere('id', $id);
+        $student = collect($response['data'] ?? [])->firstWhere('id', $id);
 
         if (!$student) {
             abort(404, 'Không tìm thấy sinh viên');
         }
 
-        // Lấy mã lớp từ sinh viên (VD: CNTT67B)
+        // Lấy mã lớp
         $classCode = $student['class'] ?? null;
         $classDetail = null;
 
-        // Gọi API để lấy thông tin chi tiết lớp học đó
+        // Lấy thông tin chi tiết lớp
         if ($classCode) {
             $classListResponse = $this->studentService->get("/api/v1/external/classes/faculty/{$facultyId}?q={$classCode}", [
                 'access_token' => Arr::get($token, 'access_token'),
@@ -216,6 +234,4 @@ class ClassController extends Controller
             'class_detail' => $classDetail,
         ]);
     }
-
-
 }
