@@ -32,11 +32,16 @@
             </div>
         @endif
 
-        <div>
-            <a href="{{ route('admin.role.create') }}" type="button" class="px-2 shadow btn btn-primary btn-icon fw-semibold">
-                <i class="px-1 ph-plus-circle fw-semibold"></i><span>Thêm mới</span>
-            </a>
-        </div>
+        @can('create', App\Models\Role::class)
+            <div>
+                <a href="{{ route('admin.role.create') }}" type="button"
+                    class="px-2 shadow btn btn-primary btn-icon fw-semibold">
+                    <i class="px-1 ph-plus-circle fw-semibold"></i><span>Thêm mới</span>
+                </a>
+            </div>
+            <br>
+        @endcan
+
         <div class="card shadow-sm">
             <div class="table-responsive">
                 <table class="table align-middle table-bordered mb-0">
@@ -58,19 +63,24 @@
                                 <td>{{ \Carbon\Carbon::parse($role['created_at'])->format('H:i d/m/Y') }}</td>
                                 <td>
                                     <div class="d-flex gap-1">
-                                        <a href="{{ route('admin.role.edit', $role->id) }}"
-                                           class="btn btn-sm btn-outline-primary" title="Chỉnh sửa">
-                                            <i class="bi bi-pencil"></i>
-                                        </a>
-                                        <form action="{{ route('admin.role.destroy', $role->id) }}"
-                                              method="POST" class="d-inline"
-                                              onsubmit="return confirm('Bạn có chắc chắn muốn xóa vai trò này?')">
+                                        @can('update', $role)
+                                            <a href="{{ route('admin.role.edit', $role->id) }}"
+                                                class="btn btn-sm btn-outline-primary" title="Chỉnh sửa">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+                                        @endcan
+
+                                        @can('delete', $role)
+                                        <form action="{{ route('admin.role.destroy', $role->id) }}" method="POST"
+                                            class="d-inline"
+                                            onsubmit="return confirm('Bạn có chắc chắn muốn xóa vai trò này?')">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="btn btn-sm btn-outline-danger" title="Xóa">
                                                 <i class="bi bi-trash"></i>
                                             </button>
                                         </form>
+                                        @endcan
                                     </div>
                                 </td>
                             </tr>
@@ -84,7 +94,7 @@
             </div>
 
             <!-- Phân trang -->
-            @if($roles->hasPages())
+            @if ($roles->hasPages())
                 <div class="card-footer">
                     <div class="d-flex justify-content-between align-items-center">
                         <div class="text-muted">

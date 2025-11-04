@@ -17,6 +17,7 @@ use App\Http\Controllers\ReportController;
 use App\Http\Controllers\Admin\ChartStatisticController;
 use App\Http\Controllers\System\StudentDetailController;
 use App\Http\Controllers\ContactSurveyController;
+use App\Http\Controllers\Admin\UserController;
 
 Route::post('/logout', [AuthenticateController::class, 'logout'])->name('handleLogout');
 Route::get('/auth/redirect', [AuthenticateController::class, 'redirectToSSO'])->name('sso.redirect');
@@ -97,6 +98,11 @@ Route::middleware('auth.sso')->group(function () {
             Route::get('/khao-sat/{id}/ket-qua', [SurveyResultController::class, 'index'])->name('result');
             Route::get('/khao-sat/{id}/ket-qua-chi-tiet', [SurveyResultController::class, 'show'])->name('result_detail');
             Route::get('exportPdf/{resultId}', [SurveyResultController::class, 'exportPdf'])->name('export_pdf');
+        });
+
+        Route::resource('users', UserController::class)->only(['index', 'show']);
+        Route::prefix('users')->name('users.')->group(function () {
+            Route::post('/{id}/roles', [UserController::class, 'updateRoles'])->name('updateRoles');
         });
     });
 });
@@ -216,13 +222,13 @@ Route::get('/report', [ReportController::class, 'index'])->name('admin.report.in
 // })->name('admin.report.index');
 
 Route::prefix('role')->group(function () {
-    Route::get('/', [RoleController::class, 'index'])->name('admin.role.index')->middleware('permission:role.index');
-    Route::get('/create', [RoleController::class, 'create'])->name('admin.role.create')->middleware('permission:role.create');
-    Route::post('/store', [RoleController::class, 'store'])->name('admin.role.store')->middleware('permission:role.create');
+    Route::get('/', [RoleController::class, 'index'])->name('admin.role.index');
+    Route::get('/create', [RoleController::class, 'create'])->name('admin.role.create');
+    Route::post('/store', [RoleController::class, 'store'])->name('admin.role.store');
     Route::get('/{role}', [RoleController::class, 'show'])->name('admin.role.show');
-    Route::get('/{role}/edit', [RoleController::class, 'edit'])->name('admin.role.edit')->middleware('permission:role.edit');
-    Route::put('/{id}', [RoleController::class, 'update'])->name('admin.role.update')->middleware('permission:role.edit');
-    Route::delete('/{id}', [RoleController::class, 'destroy'])->name('admin.role.destroy')->middleware('permission:role.delete');
+    Route::get('/{role}/edit', [RoleController::class, 'edit'])->name('admin.role.edit');
+    Route::put('/{id}', [RoleController::class, 'update'])->name('admin.role.update');
+    Route::delete('/{id}', [RoleController::class, 'destroy'])->name('admin.role.destroy');
 });
 
 Route::get('khao_sat/{survey_id}/form', [KhaoSatController::class, 'showForm'])->name('my_form');
