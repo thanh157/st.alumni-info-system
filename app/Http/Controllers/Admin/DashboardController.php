@@ -27,7 +27,6 @@ class DashboardController extends Controller
         $totalGraduations = (int) Graduation::count();
 
         $totalClasses = 15;
-
         return view('admin.pages.admin.dashboard', compact(
             'totalResponses',
             'employmentRate',
@@ -38,7 +37,7 @@ class DashboardController extends Controller
 
     public function getChartData(): JsonResponse
     {
-         $rows = DB::table('employment_survey_responses_v2 as esr')
+        $rows = DB::table('employment_survey_responses_v2 as esr')
             ->select(
                 'esr.survey_period_id',
                 DB::raw('SUM(CASE WHEN esr.employment_status = 1 THEN 1 ELSE 0 END) as employed_count'),
@@ -81,8 +80,8 @@ class DashboardController extends Controller
             $totals['foreign']    += $foreign;
 
             // Dòng bar
-             $bar[] = [
-                 'term'       => 'Đợt Khảo Sát ' . $r->survey_period_id,
+            $bar[] = [
+                'term'       => 'Đợt Khảo Sát ' . $r->survey_period_id,
                 'employed'   => $employed,
                 'unemployed' => $unemployed,
                 'related'    => $related,
