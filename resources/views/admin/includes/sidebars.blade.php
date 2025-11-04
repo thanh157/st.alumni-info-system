@@ -106,21 +106,18 @@
                 : '' }}">
                     <span>Quản lí chung</span>
                 </li>
-                @can('view-dashboard')
-                    <li class="nav-item">
-                        <a href="{{ route('admin.dashboard') }}"
-                            class="nav-link {{ request()->routeIs('admin.dashboard*') ||
-                            request()->route() === null ||
-                            request()->is('admin') ||
-                            request()->path() == '/'
-                                ? 'active'
-                                : '' }}">
-                            <i class="fa-solid fa-table-columns"></i>
-                            <span>Bảng điều khiển</span>
-                        </a>
-                    </li>
-                @endcan
-
+                <li class="nav-item">
+                    <a href="{{ route('admin.dashboard') }}"
+                        class="nav-link {{ request()->routeIs('admin.dashboard*') ||
+                        request()->route() === null ||
+                        request()->is('admin') ||
+                        request()->path() == '/'
+                            ? 'active'
+                            : '' }}">
+                        <i class="fa-solid fa-table-columns"></i>
+                        <span>Bảng điều khiển</span>
+                    </a>
+                </li>
                 <li class="nav-item">
                     <a href="{{ route('admin.department.index') }}"
                         class="nav-link {{ request()->routeIs('admin.department.*') ? 'active' : '' }}">
