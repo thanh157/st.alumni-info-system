@@ -32,7 +32,7 @@ class StudentService
             }
 
             $response = Http::withToken($accessToken)
-                ->timeout(60)           // tổng thời gian chờ
+                ->timeout(300)           // tổng thời gian chờ
                 ->connectTimeout(10)    // thời gian chờ kết nối TCP
                 ->get(config('auth.student.ip') . $endPoint, $data);
                         
@@ -49,7 +49,9 @@ class StudentService
     public function post(string $endPoint, $data = [])
     {
         try {
-            $response = Http::withToken($this->accessToken)->post(config('auth.student.ip') . $endPoint, $data);
+            $response = Http::withToken($this->accessToken)
+                ->timeout(300)           // tổng thời gian chờ
+                ->post(config('auth.student.ip') . $endPoint, $data);
 
             return $response->json();
         } catch (Throwable $th) {
