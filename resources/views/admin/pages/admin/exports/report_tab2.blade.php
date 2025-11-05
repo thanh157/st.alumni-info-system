@@ -16,21 +16,20 @@
         <tr>
             <th colspan="13"></th>
         </tr>
-
-        <tr>
-            <td>{{ $item->code }}</td>
-            <td>{{ $item->full_name }}</td>
-            <td>{{ $item->gender == 'female' ? 'x' : '' }}</td>
-            <td>'{{ $item->citizen_identification }}</td>
-            <td>{{ optional($major)->code }}</td>
-            <td>{{ optional($graduation)->certification }}</td>
-            <td>{{ optional($graduation)->certification_date ? date('d-m-Y', strtotime($graduation->certification_date)) : '' }}</td>
-            <td>{{ $item->phone }}</td>
-            <td>{{ $item->email }}</td>
-            <td></td>
-            <td>{{ $res ? 'Có' : 'Không' }}</td>
-            <td>{{ optional($major)->name }}</td>
-            <td>{{ $item->school_year_end ?? '' }}</td>
+        <tr style="font-weight: bold;">
+            <th rowspan="2" style="text-align: center; vertical-align: middle;">Mã sinh viên</th>
+            <th rowspan="2" style="text-align: center; vertical-align: middle;">Họ và tên</th>
+            <th rowspan="2" style="text-align: center; vertical-align: middle;">Nữ</th>
+            <th rowspan="2" style="text-align: center; vertical-align: middle;">Số thẻ CCCD/CMND</th>
+            <th rowspan="2" style="text-align: center; vertical-align: middle;">Mã ngành đào tạo<br>(Ghi bằng số theo mã
+                ngành tuyển sinh của Bộ Giáo dục và Đào tạo)</th>
+            <th colspan="2" style="text-align: center; vertical-align: middle;">Quyết định tốt nghiệp</th>
+            <th colspan="2" style="text-align: center; vertical-align: middle;">Thông tin liên hệ</th>
+            <th rowspan="2" style="text-align: center; vertical-align: middle;">Hình thức khảo sát<br>(Online, điện
+                thoại, email …)</th>
+            <th rowspan="2" style="text-align: center; vertical-align: middle;">Có phản hồi</th>
+            <th rowspan="2" style="text-align: center; vertical-align: middle;">Ngành</th>
+            <th rowspan="2" style="text-align: center; vertical-align: middle;">Khóa học</th>
         </tr>
         <tr style="font-weight: bold;">
             <th style="text-align: center; vertical-align: middle;">Số Quyết định</th>
