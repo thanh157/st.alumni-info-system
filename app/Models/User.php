@@ -68,6 +68,7 @@ class User extends Authenticatable
         'faculty_id',
         'role_id',
         'type',
+        'st_students_token',
     ];
 
     protected $casts = [

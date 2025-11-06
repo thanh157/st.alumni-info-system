@@ -63,7 +63,8 @@ class SsoService
         if (auth()->check()) {
             auth()->user()->update([
                 'access_token' => null,
-                'user_data' => null
+                'user_data' => null,
+                'st_students_token' => null
             ]);
         }
 
@@ -148,7 +149,7 @@ class SsoService
     /**
      * Lấy access token từ các nguồn khác nhau
      */
-    private function getAccessTokenFromSources(): ?string
+    public function getAccessTokenFromSources(): ?string
     {
         // Thử lấy từ database nếu đã đăng nhập
         if (auth()->check()) {
