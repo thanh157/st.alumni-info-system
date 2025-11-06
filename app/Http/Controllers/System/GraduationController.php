@@ -7,6 +7,7 @@ use App\Models\DotTotnghiep;
 use App\Models\DotTotNghiepStudent;
 use App\Models\GraduationStudent;
 use App\Models\Student;
+use App\Services\SsoService;
 use Illuminate\Http\Request;
 use App\Services\StudentService;
 use Illuminate\Support\Arr;
@@ -14,44 +15,34 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 use Illuminate\Support\Carbon;
 use App\Models\Graduation;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
+use Throwable;
 
 class GraduationController extends Controller
 {
-    public function __construct(private StudentService $studentService) {}
+    public function __construct (
+        private StudentService $studentService,
+        private SsoService $ssoService
+    ) {}
 
     public function index(Request $request)
     {
-        $facultyId = $this->studentService->getFacultyId();
-
-        $token = cache()->remember(
-            'token_client1',
-            60 * 5,
-            fn() =>
-            $this->studentService->post('/oauth/token', [
-                'grant_type' => 'client_credentials',
-                'client_id' => config('auth.student.client_id'),
-                'client_secret' => config('auth.student.client_secret'),
-            ])
-        );
-
-        $response = $this->studentService->get('/api/v1/external/graduation-ceremonies/faculty/' . $facultyId, [
-            'access_token' => Arr::get($token, 'access_token')
-        ]);
-
-        // dd($response['data']);
-
-        // $allStudents = collect($response['data'])
-        //     ->flatMap(function ($item) {
-        //         return collect($item['students'])->map(function ($student) use ($item) {
-        //             // Gộp school_year vào từng sinh viên
-        //             $student['school_year'] = $item['school_year'];
-        //             return $student;
-        //         });
-        //     })
-        //     ->toArray();
-
-        // dd($allStudents);
-
+        try {
+            $user = auth()->user();
+            if (empty($user->st_students_token)) {
+                $tokenData = $this->getAccessTokenVerify();
+                if (!$tokenData || empty($tokenData['token'])) {
+                    throw new \Exception('Cannot get student access token.');
+                }
+            }
+            $response = Http::withToken($user->st_students_token)
+            ->timeout(10)
+            ->get(config('auth.student.ip') . '/api/v1/external/graduation-ceremonies')
+            ->json();
+        } catch (Throwable $th) {
+            Log::error($th->getMessage());
+        }
 
         $graduations = collect($response['data'] ?? []);
         // dd($graduations);
@@ -151,7 +142,6 @@ class GraduationController extends Controller
         ]);
     }
 
-
     public function showStudents(Request $request, $graduationId)
     {
         $graduation = Graduation::with('students')->findOrFail($graduationId);
@@ -197,6 +187,46 @@ class GraduationController extends Controller
             'graduation' => $graduation,
             'showPaginationInfo' => $showPaginationInfo,
         ]);
+    }
+
+    private function getAccessTokenVerify()
+    {
+        try {
+            $ssoToken = $this->ssoService->getAccessTokenFromSources();
+
+            $response = Http::post(config('auth.student.ip') . '/api/verify', [
+                'access_token' => $ssoToken,
+            ]);
+
+            if ($response->failed()) {
+                Log::warning('Verify token API failed', [
+                    'status' => $response->status(),
+                    'body' => $response->body(),
+                ]);
+                return null;
+            }
+
+            $accessToken = $response->json();
+            if (!isset($accessToken['token'])) {
+                Log::warning('Verify API response missing token', $accessToken);
+                return null;
+            }
+
+            $user = auth()->user();
+            if ($user) {
+                $user->update(['st_students_token' => $accessToken['token']]);
+            }
+
+            return $accessToken;
+        } catch (Throwable $th) {
+            Log::error('getAccessTokenVerify error', [
+                'message' => $th->getMessage(),
+                'file' => $th->getFile(),
+                'line' => $th->getLine(),
+                'trace' => $th->getTraceAsString(),
+            ]);
+            return null;
+        }
     }
 
     // public function create()
