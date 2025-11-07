@@ -25,6 +25,7 @@
             </div>
         </div>
 
+
         <div class="mb-3">
             <label class="form-label">5. Số căn cước công dân</label>
             <input type="text" class="form-control mb-2" placeholder="Nhập số CCCD">

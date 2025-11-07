@@ -58,7 +58,7 @@
             <!-- Header -->
             <div class="text-center mb-4">
                 <img src="{{ asset('assets/client/images/logo-vnua.jpg') }}" width="90" class="mb-2">
-                <h6 class="fw-bold mb-1 text-uppercase">Bộ Nông Nghiệp và Phát Triển Nông Thôn</h6>
+                <h6 class="fw-bold mb-1 text-uppercase">Bộ Nông nghiệp và Môi trường</h6>
                 <p class="mb-1 text-uppercase fw-semibold">Học Viện Nông Nghiệp Việt Nam</p>
                 <small class="text-muted fst-italic">Thị trấn Trâu Quỳ, Gia Lâm, Hà Nội | ĐT: 024.62617586</small>
             </div>
@@ -104,6 +104,13 @@
                         <input type="text" name="course" id="student-course" class="form-control"
                             value="{{ old('course') }}" required>
                     </div>
+
+                       <div class="mb-3">
+                        <label>Lớp *</label>
+                        <input type="text" name="class" id="student-course" class="form-control"
+                            value="{{ old('course') }}" required>
+                    </div>
+
 
                 </div>
 
