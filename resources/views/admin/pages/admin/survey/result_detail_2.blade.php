@@ -343,7 +343,7 @@
 
 
             <div style="font-size: 16px;text-transform: uppercase;border-left: none;color: #1f2937;text-align: center; font-weight: 700; margin-bottom: 6px">
-                Bộ Nông Nghiệp và Phát Triển Nông Thôn
+                Bộ Nông nghiệp và Môi trường
             </div>
             <div style="text-align: center; font-size: 14px; text-transform: uppercase; color: #1f2937; font-weight: 600; margin-bottom: 6px">
                 Học Viện Nông Nghiệp Việt Nam

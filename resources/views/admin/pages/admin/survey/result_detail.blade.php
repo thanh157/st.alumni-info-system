@@ -44,7 +44,7 @@
             <!-- Header -->
             <div class="text-center mb-4">
                 <img src="{{ asset('assets/client/images/logo-vnua.jpg') }}" width="90" class="mb-2">
-                <h6 class="fw-bold mb-1 text-uppercase">Bộ Nông Nghiệp và Phát Triển Nông Thôn</h6>
+                <h6 class="fw-bold mb-1 text-uppercase">Bộ Nông nghiệp và Môi trường</h6>
                 <p class="mb-1 text-uppercase fw-semibold">Học Viện Nông Nghiệp Việt Nam</p>
                 <small class="text-muted fst-italic">Thị trấn Trâu Quỳ, huyện Gia Lâm, TP Hà Nội | ĐT: 024.62617586 – Fax:
                     024.62617586</small>
