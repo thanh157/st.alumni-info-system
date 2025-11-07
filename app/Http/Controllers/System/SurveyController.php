@@ -9,9 +9,14 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Graduation;
+use App\Services\StudentService;
+use Illuminate\Support\Facades\Http;
+use Throwable;
 
 class SurveyController extends Controller
 {
+    public function __construct (private StudentService $studentService) {}
+
     public function index()
     {
         $data = Survey::with(['graduations', 'employmentSurveyResponse'])->paginate(10);
@@ -21,8 +26,49 @@ class SurveyController extends Controller
         return view('admin.pages.admin.survey.index', $viewData);
     }
 
+    private function getAllGraduations()
+    {
+        try {
+            $user = auth()->user();
+
+            // Nếu chưa có token thì gọi lại verify
+            if (empty($user->st_students_token)) {
+                $tokenData = $this->studentService->getAccessTokenVerify();
+                if (!$tokenData || empty($tokenData['token'])) {
+                    throw new \Exception('Không lấy được access token của sinh viên.');
+                }
+                $user->update(['st_students_token' => $tokenData['token']]);
+            }
+
+            $apiUrl = config('auth.student.ip') . '/api/v1/external/graduation-ceremonies/73/students';
+            $allData = [];
+            $page = 1;
+
+            do {
+                $response = Http::withToken($user->st_students_token)
+                    ->timeout(10)
+                    ->get($apiUrl, ['page' => $page])
+                    ->json();
+
+                if (empty($response['data'])) break;
+
+                $allData = array_merge($allData, $response['data']);
+
+                $lastPage = $response['meta']['last_page'] ?? 1;
+                $page++;
+            } while ($page <= $lastPage);
+
+            return $allData;
+
+        } catch (Throwable $th) {
+            Log::error('getGraduations error: ' . $th->getMessage());
+            return [];
+        }
+    }
+
     public function create()
     {
+        // dd($this->getAllGraduations());
         $namTotNghiep = Graduation::select('school_year')->groupBy('school_year')->pluck('school_year')->toArray();
         $dotTotNghiep = Graduation::get();
 

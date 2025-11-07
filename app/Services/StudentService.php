@@ -16,12 +16,14 @@ class StudentService
 {
     private $accessToken;
 
-    public function __construct()
+    public function __construct(
+        private SsoService $ssoService
+    )
     {
         // Lấy access token từ session, request header hoặc database
         $this->accessToken = $this->getAccessTokenFromSources();
+        
     }
-
 
     public function get(string $endPoint, $data = [])
     {
@@ -69,7 +71,8 @@ class StudentService
         if (auth()->check()) {
             auth()->user()->update([
                 'access_token' => null,
-                'user_data' => null
+                'user_data' => null,
+                'st_students_token' => null,
             ]);
         }
 
@@ -190,5 +193,42 @@ class StudentService
             abort(403);
         }
 
+    }
+    public function getAccessTokenVerify()
+    {
+        try {
+            $ssoToken = $this->ssoService->getAccessTokenFromSources();
+
+            $response = Http::post(config('auth.student.ip') . '/api/verify', [
+                'access_token' => $ssoToken,
+            ]);
+
+            if ($response->failed()) {
+                Log::warning('Verify token API failed', [
+                    'status' => $response->status(),
+                    'body' => $response->body(),
+                ]);
+                return null;
+            }
+            $accessToken = $response->json();
+            if (!isset($accessToken['token'])) {
+                Log::warning('Verify API response missing token', $accessToken);
+                return null;
+            }
+            $user = auth()->user();
+            if ($user) {
+                $user->update(['st_students_token' => $accessToken['token']]);
+            }
+
+            return $accessToken;
+        } catch (Throwable $th) {
+            Log::error('getAccessTokenVerify error', [
+                'message' => $th->getMessage(),
+                'file' => $th->getFile(),
+                'line' => $th->getLine(),
+                'trace' => $th->getTraceAsString(),
+            ]);
+            return null;
+        }
     }
 }
