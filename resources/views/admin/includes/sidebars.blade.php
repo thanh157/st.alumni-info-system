@@ -20,12 +20,14 @@
             transition: all 0.3s ease;
             overflow: hidden;
         }
+
         .sidebar .nav-link i {
             width: 1.25rem;
             margin-right: 0.5rem;
             text-align: center;
             vertical-align: middle;
         }
+
         /* Chỉ lấp lánh khi có class active-section */
         .nav-item-header.active-section::before {
             content: '';
@@ -104,7 +106,6 @@
                 : '' }}">
                     <span>Quản lí chung</span>
                 </li>
-
                 <li class="nav-item">
                     <a href="{{ route('admin.dashboard') }}"
                         class="nav-link {{ request()->routeIs('admin.dashboard*') ||
@@ -117,7 +118,6 @@
                         <span>Bảng điều khiển</span>
                     </a>
                 </li>
-
                 <li class="nav-item">
                     <a href="{{ route('admin.department.index') }}"
                         class="nav-link {{ request()->routeIs('admin.department.*') ? 'active' : '' }}">
@@ -126,13 +126,15 @@
                     </a>
                 </li>
 
-                <li class="nav-item">
-                    <a href="{{ route('admin.major.index') }}"
-                        class="nav-link {{ request()->routeIs('admin.major.*') ? 'active' : '' }}">
-                        <i class="fa-solid fa-laptop-code"></i>
-                        <span>Ngành đào tạo</span>
-                    </a>
-                </li>
+                @can('viewAny', \App\Models\Major::class)
+                    <li class="nav-item">
+                        <a href="{{ route('admin.major.index') }}"
+                            class="nav-link {{ request()->routeIs('admin.major.*') ? 'active' : '' }}">
+                            <i class="fa-solid fa-laptop-code"></i>
+                            <span>Ngành đào tạo</span>
+                        </a>
+                    </li>
+                @endcan
 
                 <li class="nav-item">
                     <a href="{{ route('admin.class.index') }}"
@@ -151,18 +153,20 @@
                     request()->routeIs('admin.graduation.*') || request()->routeIs('admin.graduation-student.*');
             @endphp
 
-            <ul class="nav nav-sidebar" data-nav-type="accordion">
-                <li class="nav-item-header {{ $isGraduationActive ? 'active-section' : '' }}">
-                    <span>Tốt nghiệp</span>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ route('admin.graduation.index') }}"
-                        class="nav-link {{ $isGraduationActive ? 'active' : '' }}">
-                        <i class="fa-solid fa-user-graduate"></i>
-                        <span>Đợt tốt nghiệp</span>
-                    </a>
-                </li>
-            </ul>
+            @can('viewAny', \App\Models\Graduation::class)
+                <ul class="nav nav-sidebar" data-nav-type="accordion">
+                    <li class="nav-item-header {{ $isGraduationActive ? 'active-section' : '' }}">
+                        <span>Tốt nghiệp</span>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('admin.graduation.index') }}"
+                            class="nav-link {{ $isGraduationActive ? 'active' : '' }}">
+                            <i class="fa-solid fa-user-graduate"></i>
+                            <span>Đợt tốt nghiệp</span>
+                        </a>
+                    </li>
+                </ul>
+            @endcan
         </div>
 
 
@@ -322,13 +326,25 @@
                         <span>Tài khoản</span>
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a href="{{ route('admin.role.index') }}"
-                        class="nav-link {{ request()->routeIs('admin.role.*') ? 'active' : '' }}">
-                        <i class="ph-shield"></i>
-                        <span>Vai trò</span>
-                    </a>
-                </li>
+                @can('viewAny', \App\Models\Role::class)
+                    <li class="nav-item">
+                        <a href="{{ route('admin.role.index') }}"
+                            class="nav-link {{ request()->routeIs('admin.role.*') ? 'active' : '' }}">
+                            <i class="ph-shield"></i>
+                            <span>Vai trò</span>
+                        </a>
+                    </li>
+                @endcan
+
+                @can('viewAny', \App\Models\User::class)
+                    <li class="nav-item">
+                        <a href="{{ route('admin.users.index') }}"
+                            class="nav-link {{ request()->routeIs('admin.users.*') ? 'active' : '' }}">
+                            <i class="ph-user-circle"></i>
+                            <span>Người dùng</span>
+                        </a>
+                    </li>
+                @endcan
             </ul>
         </div>
     </div>

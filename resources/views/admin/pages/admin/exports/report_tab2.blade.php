@@ -16,7 +16,6 @@
         <tr>
             <th colspan="13"></th>
         </tr>
-
         <tr style="font-weight: bold;">
             <th rowspan="2" style="text-align: center; vertical-align: middle;">Mã sinh viên</th>
             <th rowspan="2" style="text-align: center; vertical-align: middle;">Họ và tên</th>

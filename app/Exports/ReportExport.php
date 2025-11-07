@@ -38,7 +38,6 @@ class ReportExport implements WithMultipleSheets
         $this->alumniData = $alumniData;
         $this->type = $type;
 
-        // --- BẮT ĐẦU SỬA: Thêm logic chuẩn bị data dùng chung ---
 
         // Lấy dữ liệu dùng chung cho Tab 2 và Tab 3
         // (Chỉ chạy khi cần export các tab này)
@@ -50,17 +49,21 @@ class ReportExport implements WithMultipleSheets
 
         // Lấy dữ liệu dùng chung cho Tab 2
         // (Chỉ chạy khi cần export tab 2)
+        if (in_array($type, ['all', 'tab2', 'tab3'])) {
+            $this->majors = Major::all()->keyBy('id');
+            $this->responsesByCode = $r2->keyBy('code_student');
+        }
+
         if (in_array($type, ['all', 'tab2'])) {
             $studentIdsForGraduation = $studentTab2->pluck('id');
-            $this->graduationData = DB::table('graduation_student')
+            $this->graduationData = \Illuminate\Support\Facades\DB::table('graduation_student')
                 ->join('graduation', 'graduation_student.graduation_id', '=', 'graduation.id')
                 ->whereIn('graduation_student.student_id', $studentIdsForGraduation)
                 ->select('graduation_student.student_id', 'graduation.certification', 'graduation.certification_date')
                 ->get()
                 ->keyBy('student_id');
         }
-        // --- KẾT THÚC SỬA ---
-    }
+     }
 
     public function sheets(): array
     {
