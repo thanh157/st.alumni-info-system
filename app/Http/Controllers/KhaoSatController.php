@@ -22,6 +22,11 @@ class KhaoSatController extends Controller
         $student = Student::where('code', 596606)->first();
         $major = Major::query()->get();
 
+
+        // if ($student) {
+        //     $student->gender = $student->gender === 'male' ? 'Nam' : ($student->gender === 'female' ? 'Nữ' : '');
+        // }
+
         $end_time = $survey->end_time;
         $current_time = date('Y-m-d H:i:s');
 
@@ -90,7 +95,7 @@ class KhaoSatController extends Controller
             }
 
             if (!empty($phone) && $student->phone_number !== $phone) {
-               
+
                 $invalidFields[] = 'phone';
             }
 
@@ -109,6 +114,14 @@ class KhaoSatController extends Controller
                     'message' => 'Thông tin xác thực không khớp: ' . implode(',', $invalidFields),
                 ]);
             }
+
+            // 🔹 Thêm đoạn này
+            if ($student->gender === 'male') {
+                $student->gender = 'Nam';
+            } elseif ($student->gender === 'female') {
+                $student->gender = 'Nữ';
+            }
+
 
             return response()->json([
                 'success' => true,
@@ -175,7 +188,7 @@ class KhaoSatController extends Controller
                 return redirect()->back()->with('error', 'Thông tin xác thực không khớp: ' . implode(',', $invalidFields))->withInput();
             }
 
-             $id = $surveyId;
+            $id = $surveyId;
             session()->put("verified_{$id}", true);
             session()->put("student_code_{$id}", $student->code);
             session()->put("email_{$id}", $student->email);
@@ -197,8 +210,7 @@ class KhaoSatController extends Controller
         try {
             $validator = Validator::make($request->all(), [
                 'survey_id' => 'required|exists:survey,id',
-            ], [], [
-            ]);
+            ], [], []);
 
             if ($validator->fails()) {
                 return back()->withErrors($validator)->withInput();
