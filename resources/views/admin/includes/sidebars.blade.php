@@ -230,13 +230,13 @@
                 </li>
 
                 {{-- Câu hỏi cố định --}}
-                <li class="nav-item">
+                {{-- <li class="nav-item">
                     <a href="{{ route('admin.survey.form-survey') }}"
                         class="nav-link {{ request()->routeIs('admin.survey.form-survey') ? 'active' : '' }}">
                         <i class="fa-solid fa-clipboard-question"></i>
                         <span>Form câu hỏi cố định</span>
                     </a>
-                </li>
+                </li> --}}
 
                 {{-- Thu thập thông tin cựu sinh viên --}}
                 <li class="nav-item">

@@ -60,7 +60,7 @@
                 <img src="{{ asset('assets/client/images/logo-vnua.jpg') }}" width="90" class="mb-2">
                 <h6 class="fw-bold mb-1 text-uppercase">Bộ Nông nghiệp và Môi trường</h6>
                 <p class="mb-1 text-uppercase fw-semibold">Học Viện Nông Nghiệp Việt Nam</p>
-                <small class="text-muted fst-italic">Thị trấn Trâu Quỳ, Gia Lâm, Hà Nội | ĐT: 024.62617586</small>
+                <small class="text-muted fst-italic">Xã Gia Lâm, Thành phố Hà Nội | Điện thoại: 024.62617586 - Fax: 024.62617586</small>
             </div>
 
             <!-- Title & Time -->
