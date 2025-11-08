@@ -12,9 +12,12 @@ use App\Models\Graduation;
 
 class SurveyController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $data = Survey::with(['graduations', 'employmentSurveyResponse'])->paginate(10);
+        $data = Survey::with(['graduations'=>function( $query){
+            $query->orderBy('name', 'desc');
+        }
+        , 'employmentSurveyResponse'])->orderBy('title', 'desc')->paginate(10);
         $viewData = [
             'data' => $data
         ];
