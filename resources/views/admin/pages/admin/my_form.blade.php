@@ -12,8 +12,8 @@
             max-width: 800px;
             margin: auto;
             background-color: white;
-            padding: 2rem;
-            border-radius: 10px;
+            padding: 3rem 4rem;
+             border-radius: 10px;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
 
@@ -37,39 +37,272 @@
             border-color: #1a73e8;
             box-shadow: 0 0 0 2px rgba(26, 115, 232, 0.2);
         }
+
+        /* Header styles */
+        .header-wrapper {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 2rem;
+        }
+
+        .header-left {
+            text-align: center;
+        }
+
+        .header-right {
+            text-align: right;
+            flex: 1;
+ 
+        }
+
+        .header-date {
+            font-style: italic;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .survey-title-section {
+            text-align: center;
+            margin: 2rem 0;
+        }
+
+        .survey-title-section h5 {
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+        }
+
+        .greeting-section {
+            margin: 2rem 0;
+            line-height: 1.8;
+        }
+
+      .header-wrapper
+
+        .greeting-content {
+            text-align: justify;
+        }
+
+        .greeting-footer {
+            font-style: italic;
+            text-align: center;
+            margin-top: 1rem;
+        }
+        .header-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+}
+
+.header-left {
+    flex: 0 0 auto;
+    padding-right: 2rem;
+}
+
+.header-left img {
+    width: 180px;
+    height: auto;
+    max-width: 100%;
+}
+
+.header-right {
+    text-align: right;
+    flex: 1;
+    min-width: 250px;
+}
+.greeting-section {
+            margin: 2rem 0;
+            line-height: 1.8;
+        }
+
+        .greeting-title {
+            font-style: italic;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+
+        .greeting-content {
+            text-align: justify;
+            margin: 1.5rem 0;
+            line-height: 1.8;
+        }
+
+        .greeting-footer {
+            font-style: italic;
+            text-align: center;
+            margin-top: 1rem;
+        }
+ @media (max-width: 768px) {
+    .header-wrapper {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+    
+    .header-left {
+        padding-right: 0;
+        margin-bottom: 1rem;
+    }
+    
+    .header-left img {
+        width: 120px;
+    }
+    
+    .header-right {
+        text-align: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .header-left img {
+        width: 100px;
+    }
+    
+    .header-right h6 {
+        font-size: 20px;
+    }
+    
+    .header-right p {
+        font-size: 13px;
+    }
+    
+    .header-right small {
+        font-size: 11px;
+    }
+
+}
+@media (max-width: 1200px){
+  .google-form-style{ padding: 2.5rem 3rem; }
+}
+@media (max-width: 992px){
+  .google-form-style{ padding: 2rem 2rem; }
+}
+@media (max-width: 768px){
+  .google-form-style{ padding: 1.5rem 1.25rem; }
+}
+@media (max-width: 576px){
+  .google-form-style{ padding: 1.25rem 1rem; }
+}
+
+ .header-wrapper{
+  display:flex; justify-content:space-between; align-items:flex-start; gap:1rem; flex-wrap:wrap;
+}
+.header-left{ display:flex; align-items:center; padding-right:2rem; }
+.header-left img{
+  width: 180px; height:auto; max-width:100%;
+}
+ @media (max-width: 992px){
+  .header-left{ padding-right:0; }
+}
+@media (max-width: 768px){
+  .header-left{ justify-content:center; width:100%; }
+  .header-left img{ margin:0 auto !important; width:140px; }
+}
+@media (max-width: 480px){
+  .header-left img{ width:110px; }
+}
+
+ .header-right{
+  text-align:right; flex:1; min-width:260px;
+}
+@media (max-width: 768px){
+  .header-right{ text-align:center; }
+  .header-right h6{ font-size:1.05rem; margin-bottom:.25rem; }
+  .header-right p{ font-size:.95rem; margin-bottom:.25rem; }
+  .header-right small{ font-size:.85rem; display:block; }
+}
+
+ .survey-title-section h5{ margin-bottom:.75rem; }
+.greeting-section{ margin:1.25rem 0; line-height:1.85; }
+.greeting-title{ margin-bottom:.75rem; }
+.greeting-content{ text-align:justify; }
+@media (max-width: 576px){
+  .greeting-section{ margin:1rem 0; line-height:1.75; }
+}
+
+ .google-form-style .form-section{ padding-bottom:1.25rem; margin-bottom:1.25rem; }
+.google-form-style label{ display:block; margin-bottom:.4rem; }
+.form-check{ display:flex; align-items:flex-start; gap:.5rem; }
+.form-check-input{ margin-top:.2rem; flex:0 0 auto; }
+.form-check-label{ line-height:1.6; }
+
+ .row .col-12.col-md-6{ margin-bottom:.75rem; }
+
+ .d-flex.gap-2 > .btn{ white-space:normal; }
+@media (max-width: 480px){
+  .d-flex.justify-content-end.gap-2{
+    flex-wrap:wrap; gap:.5rem; justify-content:stretch !important;
+  }
+  .d-flex.justify-content-end.gap-2 .btn{ width:100%; }
+}
+
+ @media (max-width: 576px){
+  .alert{ font-size:.95rem; }
+  .text-muted, .fst-italic{ font-size:.95em; }
+}
+
+ .modal-content{ border-radius:.75rem; }
+@media (max-width: 576px){
+  .modal-dialog{ margin: .75rem; }
+  .modal-content{ padding: .75rem; }
+}
+
+ div[style*="padding:10%"]{ padding: 4% 3% !important; }
+@media (max-width: 992px){
+  div[style*="padding:10%"]{ padding: 3% 2% !important; }
+}
+@media (max-width: 576px){
+  div[style*="padding:10%"]{ padding: 2% 1% !important; }
+}
     </style>
-
-
-    <!-- 🧾 Form khảo sát chính (ẩn lúc đầu) -->
-
-
+<div style="padding:10%">
+    
     <div class="container py-4">
-        <div class="google-form-style ">
+        <div class="google-form-style">
             <!-- Header -->
-            <div class="text-center mb-4">
-                <img src="{{ asset('assets/client/images/logo-vnua.jpg') }}" width="90" class="mb-2">
-                <h6 class="fw-bold mb-1 text-uppercase">Bộ Nông nghiệp và Môi trường</h6>
-                <p class="mb-1 text-uppercase fw-semibold">Học Viện Nông Nghiệp Việt Nam</p>
-                <small class="text-muted fst-italic">Xã Gia Lâm, Thành phố Hà Nội | Điện thoại: 024.62617586 - Fax: 024.62617586</small>
+            <div class="header-wrapper">
+                <div class="header-left">
+    <img src="{{ asset('assets/client/images/logo-vnua.jpg') }}" alt="Logo VNUA" style="margin-left:60%">
+</div>
+                <div class="header-right" style="font-size:larger"  >
+                    <div class="header-date">Ngày {{ date('d/m/Y') }}</div>
+                    <h6 class="fw-bold mb-1 text-uppercase">Bộ Nông nghiệp và Môi trường</h6>
+                    <p class="mb-1 text-uppercase fw-semibold">Học Viện Nông Nghiệp Việt Nam</p>
+                    <small class="text-muted">Xã Gia Lâm, Thành phố Hà Nội</small><br>
+                    <small class="text-muted">Điện thoại: 024.62617586 - Fax: 024.62617586</small>
+                </div>
             </div>
-
+            <br><br> 
             <!-- Title -->
+      <!-- Title -->
             <div class="form-section">
-                <h5 class="fw-bold text-center">{{ $survey->title }}</h5>
-                <p class="text-justify">
+                <h5 class="fw-bold text-center" style="margin:10px 10px auto ">{{ $survey->title }}</h5>
+                 <div class="greeting-section">
+                    <div class="greeting-title">
+                        Thân gửi Anh/Chị cựu sinh viên của Học viện Nông nghiệp Việt Nam!
+                    </div>
+                    <div class="greeting-content">
                     {{ $survey->description }}
-                </p>
-                <p class="text-end mt-2">
-                    <small class="text-muted fst-italic">Thời gian khảo sát: {{ $survey->start_time }} –
-                        {{ $survey->end_time }}</small>
-                </p>
+                    </div>
+                    <div class="greeting-footer">
+                        Trân trọng cảm ơn sự cộng tác của các Anh/Chị!
+                    </div>
+                </div>
+                 
+                <br>
+              
                 @if ($outDate)
                     <div class="text-danger">Đã hết hạn khảo sát</div>
                 @endif
             </div>
+               
 
+           
 
-
+        <!-- #region -->
             @if ($errors->any())
                 <div class="alert alert-danger">
                     <ul class="mb-0">
@@ -118,7 +351,7 @@
                     <div class="mb-3">
                         <label for="ho_ten">5. Mã ngành đào tạo</label>
                         <input type="text" class="form-control" id="ma_nghanh_dao_tao" name="ma_nghanh_dao_tao"
-                            placeholder="Nhập họ và tên đầy đủ">
+                            placeholder="Nhập mã ngành đào tạo">
                     </div>
 
                     <div class="mb-3">
@@ -140,7 +373,7 @@
                         <div class="col-12 col-md-6 mb-3">
                             <label class="form-label">8. Tên ngành được đào tạo</label>
                             <select name="training_industry_id" class="form-control" required>
-                                <option value="" readonly="readonly">-- Chọn nghành đào tạo --</option>
+                                <option value="" readonly="readonly">-- Chọn ngành đào tạo --</option>
                                 @foreach ($major as $item)
                                     <option value="{{ $item->id }}">{{ $item->name }}</option>
                                 @endforeach
@@ -190,12 +423,10 @@
 
                         <div class="mb-3">
                             <label class="form-label">13. Địa chỉ đơn vị</label>
-                            {{-- <div class="form-text mb-3">VD: Khu 2 Hoàng Khương, Thanh Ba, Phú Thọ</div> --}}
                             <input type="text" class="form-control mb-1"
                                 placeholder="VD: Khu 2 Hoàng Khương, Thanh Ba, Phú Thọ" name="recruit_partner_address"
                                 required>
                             <label class="form-label">Tỉnh/Thành phố</label>
-                            {{-- <div class="form-text mb-3">VD: Hà Nội</div> --}}
                             <input type="text" class="form-control mb-1" placeholder="VD: Hà Nội"required>
 
                         </div>
@@ -333,7 +564,6 @@
                                     </div>
                                 @endif
                             @endforeach
-                            {{-- Input ghi chú nếu chọn "Khác" --}}
                             <div id="recruitment_type_other_wrapper" style="display: none;" class="mt-2">
                                 <input type="text" name="recruitment_type_other" id="recruitment_type_other"
                                     class="form-control" placeholder="Nhập hình thức tìm việc làm..." autocomplete="off">
@@ -363,7 +593,6 @@
                                     </div>
                                 @endif
                             @endforeach
-                            {{-- Input ghi chú nếu chọn "Khác" --}}
                             <div id="job_search_method_other_wrapper" style="display: none;" class="mt-2">
                                 <input type="text" name="job_search_method_other" id="job_search_method_other"
                                     class="form-control" placeholder="Nhập hình thức tuyển dụng...">
@@ -395,7 +624,6 @@
                                     </div>
                                 @endif
                             @endforeach
-                            {{-- Input ghi chú nếu chọn "Khác" --}}
                             <div id="soft_skills_required_other_wrapper" style="display: none;" class="mt-2">
                                 <input type="text" name="soft_skills_required_other" id="soft_skills_required_other"
                                     class="form-control" placeholder="Nhập kỹ năng mềm..." autocomplete="off">
@@ -499,6 +727,7 @@
     </button>
 </div>
 
+                </div>
             </form>
         </div>
     </div>
@@ -558,6 +787,7 @@
             </div>
         </div>
     </div>
+</div>
 
     <script>
         function toggleOtherInput(checkbox, targetId = 'other_input_box') {
@@ -660,20 +890,14 @@
                 if (dob !== '') filled++;
                 if (nganh !== '') filled++;
 
-                // if (!mssv) {
-                //     $error.text('Vui lòng nhập Mã số sinh viên').removeClass('d-none');
-                //     // return;
-                // }
-
                 if (mssv === '') {
                     alert('Vui lòng nhập mã sinh viên (MSSV).');
-                    e.preventDefault();
                     return;
                 }
 
                 if (filled < 1) {
                     alert('Vui lòng nhập thêm ít nhất 1 thông tin ngoài MSSV để xác thực.');
-                    e.preventDefault();
+                    return;
                 }
 
                 $.ajax({
@@ -705,7 +929,6 @@
                                 $('input[name="phone_number"]').val(data.phone);
                                 $('input[name="gender"]').val(data.gender);
                                 $('input[name="dob"]').val(data.dob);
-                                // Các input khác nếu có
                             }
 
                             // Truyền 1 hidden input flag
@@ -739,7 +962,7 @@
                     wrapper.show();
                 } else {
                     wrapper.hide();
-                    input.val(''); // 👈 Reset nội dung đã nhập
+                    input.val('');
                 }
             });
             // 23
@@ -751,7 +974,7 @@
                     wrapper.show();
                 } else {
                     wrapper.hide();
-                    input.val(''); // 👈 Reset nội dung đã nhập
+                    input.val('');
                 }
             });
 
@@ -764,7 +987,7 @@
                     wrapper.show();
                 } else {
                     wrapper.hide();
-                    input.val(''); // 👈 Reset nội dung đã nhập
+                    input.val('');
                 }
             });
 
@@ -777,7 +1000,7 @@
                     wrapper.show();
                 } else {
                     wrapper.hide();
-                    input.val(''); // 👈 Reset nội dung đã nhập
+                    input.val('');
                 }
             });
 
@@ -790,7 +1013,7 @@
                     wrapper.show();
                 } else {
                     wrapper.hide();
-                    input.val(''); // 👈 Reset nội dung đã nhập
+                    input.val('');
                 }
             });
         });
@@ -879,9 +1102,8 @@
 
         $(document).ready(function() {
             function toggleEmploymentDetails() {
-                // Lấy value thực tế của đáp án "Đã có việc làm"
                 var employedValue =
-                    '{{ array_key_first(config('config.tinh_trang')) }}'; // Nếu "Đã có việc làm" là phần tử đầu
+                    '{{ array_key_first(config('config.tinh_trang')) }}';
                 var selected = $('input[name="employment_status"]:checked').val();
                 if (selected == employedValue) {
                     $('.employment-details').show();
