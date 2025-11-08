@@ -40,14 +40,11 @@
                             <th>
                                 <form method="GET" class="position-relative d-inline-block">
                                     <span>Mã SV</span>
-                                    <i class="bi bi-funnel-fill text-primary ms-1" onclick="toggleFilter('filter-code')"
-                                        style="cursor:pointer;"></i>
-                                    <div id="filter-code"
-                                        class="shadow rounded p-3 bg-white position-absolute filter-popup">
+                                    <i class="bi bi-funnel-fill text-primary ms-1" onclick="toggleFilter('filter-code')" style="cursor:pointer;"></i>
+                                    <div id="filter-code" class="shadow rounded p-3 bg-white position-absolute filter-popup">
                                         <div class="input-group mb-2">
                                             <span class="input-group-text"><i class="bi bi-search"></i></span>
-                                            <input type="text" name="code" class="form-control"
-                                                placeholder="VD: 698519" value="{{ request('code') }}">
+                                            <input type="text" name="code" class="form-control" placeholder="VD: 698519" value="{{ request('code') }}">
                                         </div>
                                         <button type="submit" class="btn btn-sm btn-primary w-100">Lọc</button>
                                     </div>
@@ -56,14 +53,11 @@
                             <th>
                                 <form method="GET" class="position-relative d-inline-block">
                                     <span>Họ tên</span>
-                                    <i class="bi bi-funnel-fill text-primary ms-1" onclick="toggleFilter('filter-name')"
-                                        style="cursor:pointer;"></i>
-                                    <div id="filter-name"
-                                        class="shadow rounded p-3 bg-white position-absolute filter-popup">
+                                    <i class="bi bi-funnel-fill text-primary ms-1" onclick="toggleFilter('filter-name')" style="cursor:pointer;"></i>
+                                    <div id="filter-name" class="shadow rounded p-3 bg-white position-absolute filter-popup">
                                         <div class="input-group mb-2">
                                             <span class="input-group-text"><i class="bi bi-search"></i></span>
-                                            <input type="text" name="name" class="form-control"
-                                                placeholder="VD: Nguyễn Văn A" value="{{ request('name') }}">
+                                            <input type="text" name="name" class="form-control" placeholder="VD: Nguyễn Văn A" value="{{ request('name') }}">
                                         </div>
                                         <button type="submit" class="btn btn-sm btn-primary w-100">Lọc</button>
                                     </div>
@@ -72,14 +66,37 @@
                             <th>
                                 <form method="GET" class="position-relative d-inline-block">
                                     <span>Email</span>
-                                    <i class="bi bi-funnel-fill text-primary ms-1" onclick="toggleFilter('filter-email')"
-                                        style="cursor:pointer;"></i>
-                                    <div id="filter-email"
-                                        class="shadow rounded p-3 bg-white position-absolute filter-popup">
+                                    <i class="bi bi-funnel-fill text-primary ms-1" onclick="toggleFilter('filter-email')" style="cursor:pointer;"></i>
+                                    <div id="filter-email" class="shadow rounded p-3 bg-white position-absolute filter-popup">
                                         <div class="input-group mb-2">
                                             <span class="input-group-text"><i class="bi bi-search"></i></span>
-                                            <input type="text" name="email" class="form-control"
-                                                placeholder="VD: abc@sv.vnua.edu.vn" value="{{ request('email') }}">
+                                            <input type="text" name="email" class="form-control" placeholder="VD: abc@sv.vnua.edu.vn" value="{{ request('email') }}">
+                                        </div>
+                                        <button type="submit" class="btn btn-sm btn-primary w-100">Lọc</button>
+                                    </div>
+                                </form>
+                            </th>
+                            <th>
+                                <form method="GET" class="position-relative d-inline-block">
+                                    <span>Số điện thoại</span>
+                                    <i class="bi bi-funnel-fill text-primary ms-1" onclick="toggleFilter('filter-phone')" style="cursor:pointer;"></i>
+                                    <div id="filter-phone" class="shadow rounded p-3 bg-white position-absolute filter-popup">
+                                        <div class="input-group mb-2">
+                                            <span class="input-group-text"><i class="bi bi-search"></i></span>
+                                            <input type="text" name="phone" class="form-control" placeholder="VD: 0912345678" value="{{ request('phone') }}">
+                                        </div>
+                                        <button type="submit" class="btn btn-sm btn-primary w-100">Lọc</button>
+                                    </div>
+                                </form>
+                            </th>
+                            <th>
+                                <form method="GET" class="position-relative d-inline-block">
+                                    <span>Lớp</span>
+                                    <i class="bi bi-funnel-fill text-primary ms-1" onclick="toggleFilter('filter-class')" style="cursor:pointer;"></i>
+                                    <div id="filter-class" class="shadow rounded p-3 bg-white position-absolute filter-popup">
+                                        <div class="input-group mb-2">
+                                            <span class="input-group-text"><i class="bi bi-search"></i></span>
+                                            <input type="text" name="class_name" class="form-control" placeholder="VD: K62-CLC1" value="{{ request('class_name') }}">
                                         </div>
                                         <button type="submit" class="btn btn-sm btn-primary w-100">Lọc</button>
                                     </div>
@@ -97,12 +114,14 @@
                                 <td>{{ $student['code'] ?? '—' }}</td>
                                 <td>{{ $student['full_name'] ?? '—' }}</td>
                                 <td>{{ $student['email'] ?? '—' }}</td>
+                                <td>{{ $student['phone'] ?? '—' }}</td>
+                                <td>{{ $student['class_name'] ?? '—' }}</td> <!-- Cột lớp -->
                                 <td>{{ $student['dob'] ? date('d-m-Y', strtotime($student['dob'])) : '—' }}</td>
                                 <td>{{ \Carbon\Carbon::parse($student['created_at'])->format('d/m/Y H:i') }}</td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="6" class="text-danger">Không có sinh viên trong đợt này.</td>
+                                <td colspan="8" class="text-danger">Không có sinh viên trong đợt này.</td>
                             </tr>
                         @endforelse
                     </tbody>
