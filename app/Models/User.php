@@ -68,6 +68,7 @@ class User extends Authenticatable
         'faculty_id',
         'role_id',
         'type',
+        'st_students_token',
     ];
 
     protected $casts = [
@@ -92,6 +93,11 @@ class User extends Authenticatable
         return $this->userRoles()->whereHas('permissions', function ($query) use ($permissionCode): void {
             $query->where('code', $permissionCode);
         })->exists();
+    }
+
+    public function userRoles(): BelongsToMany
+    {
+        return $this->belongsToMany(Role::class, 'user_roles','user_id', 'role_id');
     }
 
 

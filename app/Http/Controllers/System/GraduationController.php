@@ -14,143 +14,107 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 use Illuminate\Support\Carbon;
 use App\Models\Graduation;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
+use Throwable;
 
 class GraduationController extends Controller
 {
-    public function __construct(private StudentService $studentService) {}
+    public function __construct (private StudentService $studentService) {}
 
     public function index(Request $request)
     {
-        $facultyId = $this->studentService->getFacultyId();
+        try {
+            $user = auth()->user();
 
-        $token = cache()->remember(
-            'token_client1',
-            60 * 5,
-            fn() =>
-            $this->studentService->post('/oauth/token', [
-                'grant_type' => 'client_credentials',
-                'client_id' => config('auth.student.client_id'),
-                'client_secret' => config('auth.student.client_secret'),
-            ])
-        );
-
-        $response = $this->studentService->get('/api/v1/external/graduation-ceremonies/faculty/' . $facultyId, [
-            'access_token' => Arr::get($token, 'access_token')
-        ]);
-
-        // dd($response['data']);
-
-        // $allStudents = collect($response['data'])
-        //     ->flatMap(function ($item) {
-        //         return collect($item['students'])->map(function ($student) use ($item) {
-        //             // Gộp school_year vào từng sinh viên
-        //             $student['school_year'] = $item['school_year'];
-        //             return $student;
-        //         });
-        //     })
-        //     ->toArray();
-
-        // dd($allStudents);
-
-
-        $graduations = collect($response['data'] ?? []);
-        // dd($graduations);
-
-        foreach ($graduations as $item) {
-            Graduation::query()->updateOrCreate(
-                [
-                    'id' => data_get($item, 'id')
-                ],
-                [
-                    'name' => data_get($item, 'name'),
-                    'school_year' => data_get($item, 'school_year'),
-                    'certification' => data_get($item, 'certification'),
-                    'certification_date' => Carbon::parse(data_get($item, 'certification_date'))->toDateString(),
-                    'faculty_id' => data_get($item, 'faculty_id'),
-                    'student_count' => data_get($item, 'student_count'),
-                    'created_at' => Carbon::parse(data_get($item, 'created_at')),
-                    'updated_at' => Carbon::parse(data_get($item, 'updated_at')),
-                ]
-            );
-
-            $students = data_get($item, 'students', []);
-
-            if (count($students) > 0) {
-                GraduationStudent::query()->where('graduation_id', data_get($item, 'id'))->delete();
+            // Lấy access token nếu chưa có
+            if (empty($user->st_students_token)) {
+                $tokenData = $this->studentService->getAccessTokenVerify();
+                if (!$tokenData || empty($tokenData['token'])) {
+                    throw new \Exception('Không lấy được access token của sinh viên.');
+                }
             }
-            foreach ($students as $item2) {
-                Student::query()->updateOrCreate(
+
+            // Gọi API
+            $apiUrl = config('auth.student.ip') . '/api/v1/external/graduation-ceremonies';
+            $response = Http::withToken($user->st_students_token)
+                ->timeout(10)
+                ->get($apiUrl, [
+                    'page' => $request->get('page', 1),
+                ])
+                ->json();
+
+            if (!isset($response['data'])) {
+                throw new \Exception('API trả về dữ liệu không hợp lệ.');
+            }
+
+            $graduations = collect($response['data']);
+            $meta = $response['meta'] ?? [];
+            $total = $meta['total'] ?? $graduations->count();
+            $perPage = $meta['per_page'] ?? 10;
+            $currentPage = $meta['current_page'] ?? 1;
+
+            // Lưu DB (chỉ nếu cần)
+            foreach ($graduations as $item) {
+                Graduation::updateOrCreate(
+                    ['id' => data_get($item, 'id')],
                     [
-                        'id' => data_get($item2, 'id'),
-                        'code' => data_get($item2, 'code'),
-                        'email' => data_get($item2, 'email'),
-                    ],
-                    [
-                        'last_name' => data_get($item2, 'last_name'),
-                        'first_name' => data_get($item2, 'first_name'),
-                        'full_name' => data_get($item2, 'full_name'),
-                        'training_industry_id' => data_get($item2, 'training_industry_id'),
-                        'dob' => data_get($item2, 'dob'),
-                        'citizen_identification' => data_get($item2, 'citizen_identification'),
-                        'phone' => data_get($item2, 'phone'),
-                        'gender' => data_get($item2, 'gender'),
-                        'created_at' => Carbon::parse(data_get($item2, 'created_at')),
-                        'updated_at' => Carbon::parse(data_get($item2, 'updated_at')),
+                        'name' => data_get($item, 'name'),
+                        'school_year' => data_get($item, 'school_year'),
+                        'certification' => data_get($item, 'certification'),
+                        'certification_date' => Carbon::parse(data_get($item, 'certification_date'))->toDateString(),
+                        'faculty_id' => data_get($item, 'faculty_id'),
+                        'student_count' => data_get($item, 'student_count'),
+                        'created_at' => Carbon::parse(data_get($item, 'created_at')),
+                        'updated_at' => Carbon::parse(data_get($item, 'updated_at')),
                     ]
                 );
-                GraduationStudent::create([
-                    'student_id' => data_get($item2, 'id'),
-                    'graduation_id' => data_get($item, 'id'),
-                ]);
             }
-        }
 
+            // Lọc dữ liệu (nếu có)
+            if ($request->filled('name')) {
+                $graduations = $graduations->filter(fn($g) =>
+                    str_contains(Str::lower($g['name']), Str::lower($request->input('name')))
+                );
+            }
 
-        // Lọc theo tên
-        if ($request->filled('name')) {
-            $graduations = $graduations->filter(
-                fn($item) =>
-                str_contains(Str::lower($item['name']), Str::lower($request->input('name')))
+            if ($request->filled('year')) {
+                $graduations = $graduations->filter(fn($g) =>
+                    str_contains(Str::lower($g['school_year']), Str::lower($request->input('year')))
+                );
+            }
+
+            // Sắp xếp
+            $graduations = match ($request->input('sap_xep')) {
+                'moi_nhat' => $graduations->sortByDesc('created_at'),
+                'cu_nhat' => $graduations->sortBy('created_at'),
+                default => $graduations,
+            };
+
+            // Phân trang dựa trên meta từ API
+            $graduationsPaginated = new \Illuminate\Pagination\LengthAwarePaginator(
+                $graduations,
+                $total,
+                $perPage,
+                $currentPage,
+                ['path' => $request->url(), 'query' => $request->query()]
             );
+
+            return view('admin.pages.admin.graduation', [
+                'graduations' => $graduationsPaginated,
+                'showPaginationInfo' => $total > $perPage,
+            ]);
+
+        } catch (Throwable $th) {
+            Log::error('GraduationController@index error', [
+                'message' => $th->getMessage(),
+                'file' => $th->getFile(),
+                'line' => $th->getLine(),
+            ]);
+
+            return back()->with('error', 'Không thể tải dữ liệu đợt tốt nghiệp.');
         }
-
-        // Lọc theo năm
-        if ($request->filled('year')) {
-            $graduations = $graduations->filter(
-                fn($item) =>
-                str_contains(Str::lower($item['school_year']), Str::lower($request->input('year')))
-            );
-        }
-
-        // Sắp xếp
-        if ($request->input('sap_xep') === 'moi_nhat') {
-            $graduations = $graduations->sortByDesc('created_at');
-        } elseif ($request->input('sap_xep') === 'cu_nhat') {
-            $graduations = $graduations->sortBy('created_at');
-        }
-
-        // Phân trang thủ công
-        $perPage = 10;
-        $currentPage = $request->get('page', 1);
-        $paged = $graduations->slice(($currentPage - 1) * $perPage, $perPage)->values();
-
-        $graduationsPaginated = new \Illuminate\Pagination\LengthAwarePaginator(
-            $paged,
-            $graduations->count(),
-            $perPage,
-            $currentPage,
-            ['path' => $request->url(), 'query' => $request->query()]
-        );
-
-        // Chỉ hiển thị nếu tổng số > $perPage
-        $showPaginationInfo = $graduations->count() > $perPage;
-
-        return view('admin.pages.admin.graduation', [
-            'graduations' => $graduationsPaginated,
-            'showPaginationInfo' => $showPaginationInfo,
-        ]);
     }
-
 
     public function showStudents(Request $request, $graduationId)
     {

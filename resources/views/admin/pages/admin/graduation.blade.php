@@ -157,32 +157,8 @@
                         </div>
                     @endif
 
-                    <div class="custom-pagination">
-                        @if ($graduations->lastPage() > 1)
-                            <nav>
-                                <ul class="pagination justify-content-end mb-0">
-                                    {{-- Previous --}}
-                                    <li class="page-item {{ $graduations->onFirstPage() ? 'disabled' : '' }}">
-                                        <a class="page-link"
-                                            href="{{ $graduations->previousPageUrl() }}{{ request()->getQueryString() ? '&' . request()->getQueryString() : '' }}">&laquo;</a>
-                                    </li>
-
-                                    {{-- Page numbers --}}
-                                    @for ($i = 1; $i <= $graduations->lastPage(); $i++)
-                                        <li class="page-item {{ $graduations->currentPage() == $i ? 'active' : '' }}">
-                                            <a class="page-link"
-                                                href="{{ $graduations->url($i) }}{{ request()->getQueryString() ? '&' . request()->getQueryString() : '' }}">{{ $i }}</a>
-                                        </li>
-                                    @endfor
-
-                                    {{-- Next --}}
-                                    <li class="page-item {{ !$graduations->hasMorePages() ? 'disabled' : '' }}">
-                                        <a class="page-link"
-                                            href="{{ $graduations->nextPageUrl() }}{{ request()->getQueryString() ? '&' . request()->getQueryString() : '' }}">&raquo;</a>
-                                    </li>
-                                </ul>
-                            </nav>
-                        @endif
+                    <div class="mt-3">
+                        {{ $graduations->appends(request()->query())->links() }}
                     </div>
                 </div>
             @endif

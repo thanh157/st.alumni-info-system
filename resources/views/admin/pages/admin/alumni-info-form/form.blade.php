@@ -45,7 +45,8 @@
             color: #888;
         }
 
-        input[readonly], textarea[readonly] {
+        input[readonly],
+        textarea[readonly] {
             background-color: #e9ecef;
             cursor: not-allowed;
             color: #6c757d;
@@ -57,7 +58,7 @@
             <!-- Header -->
             <div class="text-center mb-4">
                 <img src="{{ asset('assets/client/images/logo-vnua.jpg') }}" width="90" class="mb-2">
-                <h6 class="fw-bold mb-1 text-uppercase">Bộ Nông Nghiệp và Phát Triển Nông Thôn</h6>
+                <h6 class="fw-bold mb-1 text-uppercase">Bộ Nông nghiệp và Môi trường</h6>
                 <p class="mb-1 text-uppercase fw-semibold">Học Viện Nông Nghiệp Việt Nam</p>
                 <small class="text-muted fst-italic">Thị trấn Trâu Quỳ, Gia Lâm, Hà Nội | ĐT: 024.62617586</small>
             </div>
@@ -93,15 +94,23 @@
 
                     <div class="mb-3">
                         <label>Mã sinh viên *</label>
-                        <input type="text" name="student_code" id="student-code" class="form-control" value="{{ $student->code }}"
-                            placeholder="Nhập mã sinh viên" required readonly>
+                        <input type="text" name="student_code" id="student-code" class="form-control"
+                            value="{{ $student->code }}" placeholder="Nhập mã sinh viên" required readonly>
 
                     </div>
 
                     <div class="mb-3">
                         <label>Khóa học *</label>
-                        <input type="text" name="course" id="student-course" class="form-control" value="{{ old('course') }}" required>
+                        <input type="text" name="course" id="student-course" class="form-control"
+                            value="{{ old('course') }}" required>
                     </div>
+
+                       <div class="mb-3">
+                        <label>Lớp *</label>
+                        <input type="text" name="class" id="student-course" class="form-control"
+                            value="{{ old('course') }}" required>
+                    </div>
+
 
                 </div>
 
@@ -110,25 +119,29 @@
 
                     <div class="mb-3">
                         <label>Họ và tên *</label>
-                        <input type="text" name="full_name" class="form-control" placeholder="Nhập họ và tên" required value="{{ $student->full_name }}" >
+                        <input type="text" name="full_name" class="form-control" placeholder="Nhập họ và tên" required
+                            value="{{ $student->full_name }}">
                     </div>
 
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label>Giới tính *</label>
                             <select name="gender" class="form-select" required>
-                                <option value="male" {{$student->gender == "male" ? "selected" : ""}}>Nam</option>
-                                <option value="female" {{$student->gender == "female" ? "selected" : ""}}>Nữ</option>
+                                <option value="male" {{ $student->gender == 'male' ? 'selected' : '' }}>Nam</option>
+                                <option value="female" {{ $student->gender == 'female' ? 'selected' : '' }}>Nữ</option>
                             </select>
                         </div>
                         <div class="col-md-6 mb-3">
                             <label>Ngày sinh *</label>
-                            <input type="date" name="date_of_birth" class="form-control" required value="{{ $student->dob }}">
+                            <input type="date" name="date_of_birth" class="form-control" required
+                                value="{{ $student->dob }}">
                         </div>
                     </div>
 
                     <div class="mb-3">
-                        <label>Nơi sinh *</label>
+                        <label>Nơi sinh sống/Hộ khẩu hiện tại: thôn, xã/phường, tỉnh và tương đương (Số nhà 28 ngách 250/27
+                            đường Ngô Xuân Quảng, xã Gia Lâm, thành phố Hà Nội)
+                            *</label>
                         <input type="text" name="place_of_birth" class="form-control" placeholder="Nhập nơi sinh">
                     </div>
 
@@ -141,24 +154,26 @@
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label>Điện thoại *</label>
-                            <input type="text" name="phone" class="form-control" placeholder="Nhập số điện thoại" value="{{ $student->phone }}"
-                                required>
+                            <input type="text" name="phone" class="form-control" placeholder="Nhập số điện thoại"
+                                value="{{ $student->phone }}" required>
                         </div>
                         <div class="col-md-6 mb-3">
                             <label>Email *</label>
-                            <input type="email" name="email" class="form-control" placeholder="Nhập địa chỉ email" value="{{ $student->email }}"
-                                required>
+                            <input type="email" name="email" class="form-control" placeholder="Nhập địa chỉ email"
+                                value="{{ $student->email }}" required>
                         </div>
                     </div>
 
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label>Facebook *</label>
-                            <input type="text" name="facebook" class="form-control" placeholder="Nhập link Facebook" required>
+                            <input type="text" name="facebook" class="form-control" placeholder="Nhập link Facebook"
+                                required>
                         </div>
                         <div class="col-md-6 mb-3">
                             <label>Instagram *</label>
-                            <input type="text" name="instagram" class="form-control" placeholder="Nhập link Instagram" required>
+                            <input type="text" name="instagram" class="form-control" placeholder="Nhập link Instagram"
+                                required>
                         </div>
                     </div>
                 </div>
@@ -168,7 +183,8 @@
 
                     <div class="mb-3">
                         <label>Tên công ty *</label>
-                        <input type="text" name="company_name" class="form-control" placeholder="Nhập tên công ty" required>
+                        <input type="text" name="company_name" class="form-control" placeholder="Nhập tên công ty"
+                            required>
                     </div>
 
                     <div class="mb-3">
@@ -198,35 +214,35 @@
         </div>
     </div>
     <script>
-    // document.addEventListener('DOMContentLoaded', function () {
-    //     const studentCodeInput = document.getElementById('student-code');
-    //     const studentCourseInput = document.getElementById('student-course');
-    //
-    //     studentCodeInput.addEventListener('input', function () {
-    //         const code = this.value.trim();
-    //         if (code.length >= 2 && /^\d+$/.test(code)) {
-    //             const course = code.substring(0, 2);
-    //             studentCourseInput.value = 'Khóa: ' + course;
-    //         } else {
-    //             studentCourseInput.value = '';
-    //         }
-    //     });
-    // });
+        // document.addEventListener('DOMContentLoaded', function () {
+        //     const studentCodeInput = document.getElementById('student-code');
+        //     const studentCourseInput = document.getElementById('student-course');
+        //
+        //     studentCodeInput.addEventListener('input', function () {
+        //         const code = this.value.trim();
+        //         if (code.length >= 2 && /^\d+$/.test(code)) {
+        //             const course = code.substring(0, 2);
+        //             studentCourseInput.value = 'Khóa: ' + course;
+        //         } else {
+        //             studentCourseInput.value = '';
+        //         }
+        //     });
+        // });
 
-    window.addEventListener('DOMContentLoaded', function () {
-        const studentCodeInput = document.getElementById('student-code');
-        const studentCourseInput = document.getElementById('student-course');
+        window.addEventListener('DOMContentLoaded', function() {
+            const studentCodeInput = document.getElementById('student-code');
+            const studentCourseInput = document.getElementById('student-course');
 
-        if (studentCodeInput && studentCourseInput) {
-            const code = studentCodeInput.value.trim();
-            if (code.length >= 2 && /^\d+$/.test(code)) {
-                const course = code.substring(0, 2);
-                studentCourseInput.value = 'Khóa: ' + course;
-            } else {
-                studentCourseInput.value = '';
+            if (studentCodeInput && studentCourseInput) {
+                const code = studentCodeInput.value.trim();
+                if (code.length >= 2 && /^\d+$/.test(code)) {
+                    const course = code.substring(0, 2);
+                    studentCourseInput.value = 'Khóa: ' + course;
+                } else {
+                    studentCourseInput.value = '';
+                }
             }
-        }
-    });
-</script>
+        });
+    </script>
 
 @endsection
