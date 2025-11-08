@@ -348,8 +348,7 @@
             <div style="text-align: center; font-size: 14px; text-transform: uppercase; color: #1f2937; font-weight: 600; margin-bottom: 6px">
                 Học Viện Nông Nghiệp Việt Nam
             </div>
-            <small style="display: block;text-align: center; font-size: 12px; color: #6b7280;">Thị trấn Trâu Quỳ, huyện Gia Lâm, TP Hà Nội | ĐT: 024.62617586 – Fax:
-                024.62617586</small>
+            <small style="display: block;text-align: center; font-size: 12px; color: #6b7280;"></small>Xã Gia Lâm, Thành phố Hà Nội | Điện thoại: 024.62617586 - Fax: 024.62617586
         </div>
 
         <!-- Title -->
