@@ -12,8 +12,8 @@
             max-width: 800px;
             margin: auto;
             background-color: white;
-            padding: 3rem 4rem;
-             border-radius: 10px;
+            padding: 2rem;
+            border-radius: 10px;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
 
@@ -37,281 +37,45 @@
             border-color: #1a73e8;
             box-shadow: 0 0 0 2px rgba(26, 115, 232, 0.2);
         }
-
-        /* Header styles */
-        .header-wrapper {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 2rem;
-        }
-
-        .header-left {
-            text-align: center;
-        }
-
-        .header-right {
-            text-align: right;
-            flex: 1;
- 
-        }
-
-        .header-date {
-            font-style: italic;
-            font-size: 14px;
-            margin-bottom: 10px;
-        }
-
-        .survey-title-section {
-            text-align: center;
-            margin: 2rem 0;
-        }
-
-        .survey-title-section h5 {
-            font-weight: bold;
-            text-transform: uppercase;
-            margin-bottom: 0.5rem;
-        }
-
-        .greeting-section {
-            margin: 2rem 0;
-            line-height: 1.8;
-        }
-
-      .header-wrapper
-
-        .greeting-content {
-            text-align: justify;
-        }
-
-        .greeting-footer {
-            font-style: italic;
-            text-align: center;
-            margin-top: 1rem;
-        }
-        .header-wrapper {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 2rem;
-    flex-wrap: wrap;
-}
-
-.header-left {
-    flex: 0 0 auto;
-    padding-right: 2rem;
-}
-
-.header-left img {
-    width: 180px;
-    height: auto;
-    max-width: 100%;
-}
-
-.header-right {
-    text-align: right;
-    flex: 1;
-    min-width: 250px;
-}
-.greeting-section {
-            margin: 2rem 0;
-            line-height: 1.8;
-        }
-
-        .greeting-title {
-            font-style: italic;
-            font-weight: bold;
-            margin-bottom: 1rem;
-        }
-
-        .greeting-content {
-            text-align: justify;
-            margin: 1.5rem 0;
-            line-height: 1.8;
-        }
-
-        .greeting-footer {
-            font-style: italic;
-            text-align: center;
-            margin-top: 1rem;
-        }
- @media (max-width: 768px) {
-    .header-wrapper {
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-    }
-    
-    .header-left {
-        padding-right: 0;
-        margin-bottom: 1rem;
-    }
-    
-    .header-left img {
-        width: 120px;
-    }
-    
-    .header-right {
-        text-align: center;
-    }
-}
-
-@media (max-width: 480px) {
-    .header-left img {
-        width: 100px;
-    }
-    
-    .header-right h6 {
-        font-size: 20px;
-    }
-    
-    .header-right p {
-        font-size: 13px;
-    }
-    
-    .header-right small {
-        font-size: 11px;
-    }
-
-}
-@media (max-width: 1200px){
-  .google-form-style{ padding: 2.5rem 3rem; }
-}
-@media (max-width: 992px){
-  .google-form-style{ padding: 2rem 2rem; }
-}
-@media (max-width: 768px){
-  .google-form-style{ padding: 1.5rem 1.25rem; }
-}
-@media (max-width: 576px){
-  .google-form-style{ padding: 1.25rem 1rem; }
-}
-
- .header-wrapper{
-  display:flex; justify-content:space-between; align-items:flex-start; gap:1rem; flex-wrap:wrap;
-}
-.header-left{ display:flex; align-items:center; padding-right:2rem; }
-.header-left img{
-  width: 180px; height:auto; max-width:100%;
-}
- @media (max-width: 992px){
-  .header-left{ padding-right:0; }
-}
-@media (max-width: 768px){
-  .header-left{ justify-content:center; width:100%; }
-  .header-left img{ margin:0 auto !important; width:140px; }
-}
-@media (max-width: 480px){
-  .header-left img{ width:110px; }
-}
-
- .header-right{
-  text-align:right; flex:1; min-width:260px;
-}
-@media (max-width: 768px){
-  .header-right{ text-align:center; }
-  .header-right h6{ font-size:1.05rem; margin-bottom:.25rem; }
-  .header-right p{ font-size:.95rem; margin-bottom:.25rem; }
-  .header-right small{ font-size:.85rem; display:block; }
-}
-
- .survey-title-section h5{ margin-bottom:.75rem; }
-.greeting-section{ margin:1.25rem 0; line-height:1.85; }
-.greeting-title{ margin-bottom:.75rem; }
-.greeting-content{ text-align:justify; }
-@media (max-width: 576px){
-  .greeting-section{ margin:1rem 0; line-height:1.75; }
-}
-
- .google-form-style .form-section{ padding-bottom:1.25rem; margin-bottom:1.25rem; }
-.google-form-style label{ display:block; margin-bottom:.4rem; }
-.form-check{ display:flex; align-items:flex-start; gap:.5rem; }
-.form-check-input{ margin-top:.2rem; flex:0 0 auto; }
-.form-check-label{ line-height:1.6; }
-
- .row .col-12.col-md-6{ margin-bottom:.75rem; }
-
- .d-flex.gap-2 > .btn{ white-space:normal; }
-@media (max-width: 480px){
-  .d-flex.justify-content-end.gap-2{
-    flex-wrap:wrap; gap:.5rem; justify-content:stretch !important;
-  }
-  .d-flex.justify-content-end.gap-2 .btn{ width:100%; }
-}
-
- @media (max-width: 576px){
-  .alert{ font-size:.95rem; }
-  .text-muted, .fst-italic{ font-size:.95em; }
-}
-
- .modal-content{ border-radius:.75rem; }
-@media (max-width: 576px){
-  .modal-dialog{ margin: .75rem; }
-  .modal-content{ padding: .75rem; }
-}
-
- div[style*="padding:10%"]{ padding: 4% 3% !important; }
-@media (max-width: 992px){
-  div[style*="padding:10%"]{ padding: 3% 2% !important; }
-}
-@media (max-width: 576px){
-  div[style*="padding:10%"]{ padding: 2% 1% !important; }
-}
     </style>
-<div style="padding:10%">
-    
+
+
+    <!-- 🧾 Form khảo sát chính (ẩn lúc đầu) -->
+
+
     <div class="container py-4">
-        <div class="google-form-style">
+        <div class="google-form-style ">
             <!-- Header -->
-            <div class="header-wrapper">
-                <div class="header-left">
-    <img src="{{ asset('assets/client/images/logo-vnua.jpg') }}" alt="Logo VNUA" style="margin-left:60%">
-</div>
-                <div class="header-right" style="font-size:larger"  >
-                    <div class="header-date">Ngày {{ date('d/m/Y') }}</div>
-                    <h6 class="fw-bold mb-1 text-uppercase">Bộ Nông nghiệp và Môi trường</h6>
-                    <p class="mb-1 text-uppercase fw-semibold">Học Viện Nông Nghiệp Việt Nam</p>
-                    <small class="text-muted">Xã Gia Lâm, Thành phố Hà Nội</small><br>
-                    <small class="text-muted">Điện thoại: 024.62617586 - Fax: 024.62617586</small>
-                </div>
+            <div class="text-center mb-4">
+                <img src="{{ asset('assets/client/images/logo-vnua.jpg') }}" width="90" class="mb-2">
+                <h6 class="fw-bold mb-1 text-uppercase">Bộ Nông nghiệp và Môi trường</h6>
+                <p class="mb-1 text-uppercase fw-semibold">Học Viện Nông Nghiệp Việt Nam</p>
+                <small class="text-muted fst-italic">Xã Gia Lâm, Thành phố Hà Nội | Điện thoại: 024.62617586 - Fax:
+                    024.62617586</small>
             </div>
-            <br><br> 
+
             <!-- Title -->
-      <!-- Title -->
             <div class="form-section">
-                <h5 class="fw-bold text-center" style="margin:10px 10px auto ">{{ $survey->title }}</h5>
-                 <div class="greeting-section">
-                    <div class="greeting-title">
-                        Thân gửi Anh/Chị cựu sinh viên của Học viện Nông nghiệp Việt Nam!
-                    </div>
-                    <div class="greeting-content">
+                <h5 class="fw-bold text-center">{{ $survey->title }}</h5>
+                <p class="fw-semibold fst-italic text-center mt-4">
+                    Thân gửi Anh/Chị cựu sinh viên của Học viện Nông nghiệp Việt Nam!
+                </p>
+                <p class="text-justify">
                     {{ $survey->description }}
-                    </div>
-                    <div class="greeting-footer">
-                        Trân trọng cảm ơn sự cộng tác của các Anh/Chị!
-                    </div>
-                </div>
-                 
-                <br>
-              
+                </p>
+                <p class="fst-italic text-muted text-center mt-2">
+                    Trân trọng cảm ơn sự cộng tác của các Anh/Chị!
+                </p>
+                <p class="text-end mt-2">
+                    <small class="text-muted fst-italic">
+                        Ngày: {{ now()->format('d/m/Y') }}
+                    </small>
+                </p>
+
                 @if ($outDate)
                     <div class="text-danger">Đã hết hạn khảo sát</div>
                 @endif
             </div>
-               
-
-           
-
-        <!-- #region -->
-            @if ($errors->any())
-                <div class="alert alert-danger">
-                    <ul class="mb-0">
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-            @endif
 
             <form action="{{ route('survey.submit') }}" method="POST" id="form-wrapper">
                 @csrf
@@ -409,7 +173,8 @@
                                     for="tt_{{ $index }}">{{ $value }}</label>
                             </div>
                         @endforeach
-                        <i class="question-10" style="font-size: 14px; color:rgb(94, 6, 6)"> *Nếu chưa có việc làm hoặc
+                        <i class="question-10" style="font-size: 14px; color:rgb(94, 6, 6)"> *Nếu chưa có việc làm
+                            hoặc
                             đang tiếp tục học, anh/chị trả lời tiếp câu 27.
                             Nếu đã có việc làm, anh/chị trả lời tiếp các câu sau</i>
                     </div>
@@ -477,7 +242,8 @@
 
                         <!-- 17. Công việc có phù hợp với ngành đào tạo -->
                         <div class="mb-4">
-                            <label class="form-label fw-bold">18. Công việc Anh/Chị đang đảm nhận có phù hợp với ngành đào
+                            <label class="form-label fw-bold">18. Công việc Anh/Chị đang đảm nhận có phù hợp với ngành
+                                đào
                                 tạo
                                 không?</label>
                             @foreach (config('config.trained_field') as $key => $item)
@@ -492,7 +258,8 @@
 
                         <!-- 18. Công việc có phù hợp với trình độ chuyên môn -->
                         <div class="mb-4">
-                            <label class="form-label fw-bold">19. Công việc Anh/Chị đang đảm nhận có phù hợp với trình độ
+                            <label class="form-label fw-bold">19. Công việc Anh/Chị đang đảm nhận có phù hợp với trình
+                                độ
                                 chuyên môn không?</label>
                             @foreach (config('config.professional_qualification_field') as $key => $item)
                                 <div class="form-check mb-2">
@@ -507,7 +274,8 @@
 
                         <!-- 19. Kiến thức kỹ năng từ trường có phù hợp công việc -->
                         <div class="mb-4">
-                            <label class="form-label fw-bold">20. Anh/chị có học được các kiến thức và kỹ năng cần thiết từ
+                            <label class="form-label fw-bold">20. Anh/chị có học được các kiến thức và kỹ năng cần
+                                thiết từ
                                 nhà trường cho công việc theo ngành tốt nghiệp không?</label>
                             @foreach (config('config.level_knowledge_acquired') as $key => $item)
                                 <div class="form-check mb-2">
@@ -528,7 +296,8 @@
 
                         <!-- 21. Mức thu nhập hiện tại -->
                         <div class="mb-4">
-                            <label class="form-label fw-bold">22. Mức thu nhập bình quân/tháng tính theo VNĐ của Anh/Chị
+                            <label class="form-label fw-bold">22. Mức thu nhập bình quân/tháng tính theo VNĐ của
+                                Anh/Chị
                                 hiện nay</label>
                             @foreach (config('config.average_income') as $key => $item)
                                 <div class="form-check mb-2">
@@ -542,7 +311,8 @@
 
                         <!-- 23. Hình thức tìm được việc làm -->
                         <div class="mb-4">
-                            <label class="form-label fw-bold">23. Anh/Chị tìm được việc làm thông qua những hình thức nào?
+                            <label class="form-label fw-bold">23. Anh/Chị tìm được việc làm thông qua những hình thức
+                                nào?
 
                                 <span class="fw-normal">(Có thể chọn nhiều lựa chọn)</span></label>
                             @php $tim_viec = config('config.recruitment_type'); @endphp
@@ -602,7 +372,8 @@
 
                         <!-- 24. Kỹ năng mềm -->
                         <div class="mb-4">
-                            <label class="form-label fw-bold">25. Trong quá trình làm việc, Anh/Chị cần những kỹ năng mềm
+                            <label class="form-label fw-bold">25. Trong quá trình làm việc, Anh/Chị cần những kỹ năng
+                                mềm
                                 nào
                                 sau đây? <span class="fw-normal">(Có thể chọn nhiều lựa chọn)</span></label>
                             @php $ky_nang = config('config.soft_skills_required'); @endphp
@@ -633,9 +404,11 @@
 
                         <!-- 25. Khóa học nâng cao -->
                         <div class="mb-4">
-                            <label class="form-label fw-bold">26. Sau khi được tuyển dụng, Anh/Chị có phải tham gia khóa
+                            <label class="form-label fw-bold">26. Sau khi được tuyển dụng, Anh/Chị có phải tham gia
+                                khóa
                                 học
-                                nâng cao nào dưới đây để đáp ứng công việc không <span class="fw-normal">(Có thể chọn nhiều
+                                nâng cao nào dưới đây để đáp ứng công việc không <span class="fw-normal">(Có thể chọn
+                                    nhiều
                                     lựa
                                     chọn)</span></label>
                             @php $nang_cao = config('config.must_attended_courses'); @endphp
@@ -669,9 +442,10 @@
 
                     <!-- 26. Giải pháp nâng tỷ lệ có việc làm -->
                     <div class="mb-4" id="question-26">
-                        <label class="form-label fw-bold">27. Theo Anh/Chị, những giải pháp nào sau đây giúp tăng tỷ lệ có
-                            việc làm đúng ngành của sinh viên tốt nghiệp từ chương trình đào tạo mà Anh/Chị đã học? <span
-                                class="fw-normal">(Có thể chọn nhiều lựa chọn)</span></label>
+                        <label class="form-label fw-bold">27. Theo Anh/Chị, những giải pháp nào sau đây giúp tăng tỷ lệ
+                            có
+                            việc làm đúng ngành của sinh viên tốt nghiệp từ chương trình đào tạo mà Anh/Chị đã học?
+                            <span class="fw-normal">(Có thể chọn nhiều lựa chọn)</span></label>
                         @php $giai_phap = config('config.solutions_get_job'); @endphp
                         @foreach ($giai_phap as $index => $value)
                             @if ($value == 'Khác')
@@ -698,34 +472,35 @@
                         <div id="solutions_get_job_error" class="text-danger small d-none"></div>
                     </div>
 
-                 <div>
-    <!-- Thông báo -->
-    @if ($outDate)
-        <div class="alert alert-danger mt-4" role="alert">
-            <i class="bi bi-x-circle-fill me-2"></i>
-            Thời gian khảo sát đã kết thúc. Bạn không thể gửi phiếu khảo sát này.
-        </div>
-    @else
-        <div class="alert alert-warning mt-4" role="alert">
-            <i class="bi bi-exclamation-triangle-fill me-2"></i>
-            Vui lòng kiểm tra kỹ thông tin trước khi gửi. Mỗi sinh viên chỉ được gửi phiếu khảo sát một lần.
-        </div>
-    @endif
+                    <div>
+                        <!-- Thông báo -->
+                        @if ($outDate)
+                            <div class="alert alert-danger mt-4" role="alert">
+                                <i class="bi bi-x-circle-fill me-2"></i>
+                                Thời gian khảo sát đã kết thúc. Bạn không thể gửi phiếu khảo sát này.
+                            </div>
+                        @else
+                            <div class="alert alert-warning mt-4" role="alert">
+                                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                                Vui lòng kiểm tra kỹ thông tin trước khi gửi. Mỗi sinh viên chỉ được gửi phiếu khảo sát
+                                một lần.
+                            </div>
+                        @endif
 
-    <!-- Cảm ơn -->
-    <div class="text-center mt-4">
-        <p class="fw-semibold mb-1">Xin trân trọng cảm ơn sự hợp tác của Anh/Chị!</p>
-        <p class="text-muted fst-italic mb-3">Kính chúc Anh/Chị sức khỏe và thành công!</p>
-    </div>
-</div>
+                        <!-- Cảm ơn -->
+                        <div class="text-center mt-4">
+                            <p class="fw-semibold mb-1">Xin trân trọng cảm ơn sự hợp tác của Anh/Chị!</p>
+                            <p class="text-muted fst-italic mb-3">Kính chúc Anh/Chị sức khỏe và thành công!</p>
+                        </div>
+                    </div>
 
-<!-- Nút gửi -->
-<div class="d-flex justify-content-end gap-2">
-    <button type="submit" class="btn {{ $outDate ? 'btn-danger' : 'btn-primary' }}" 
-        {{ $outDate ? 'disabled' : '' }}>
-        {{ $outDate ? 'Hết hạn gửi' : 'Submit' }}
-    </button>
-</div>
+                    <!-- Nút gửi -->
+                    <div class="d-flex justify-content-end gap-2">
+                        <button type="submit" class="btn {{ $outDate ? 'btn-danger' : 'btn-primary' }}"
+                            {{ $outDate ? 'disabled' : '' }}>
+                            {{ $outDate ? 'Hết hạn gửi' : 'Submit' }}
+                        </button>
+                    </div>
 
                 </div>
             </form>
@@ -787,7 +562,7 @@
             </div>
         </div>
     </div>
-</div>
+    </div>
 
     <script>
         function toggleOtherInput(checkbox, targetId = 'other_input_box') {
