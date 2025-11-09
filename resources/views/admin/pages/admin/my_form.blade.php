@@ -97,7 +97,7 @@
 
                     <div class="mb-3">
                         <label for="ho_ten">2. Họ và tên</label>
-                        <input type="text" class="form-control" id="full_name" name="full_name" required
+                        <input type="text" class="form-control" id="full_names" name="full_name" required
                             placeholder="Nhập họ và tên đầy đủ">
                     </div>
 
@@ -508,85 +508,240 @@
     </div>
 
 
-    <!-- 🛡️ Modal nhập MSSV -->
-    <div class="modal fade" id="mssvModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content p-3">
-                <h5 class="modal-title">Xác thực Sinh viên <small style="font-size: 12px"><i>(điền ít nhất 2
-                            input)</i></small></h5>
+    <!-- 🛡️ Modal xác thực sinh viên -->
+    <div class="modal fade" id="verifyStudentModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-md">
+            <div class="modal-content p-4 border-0 shadow-sm rounded-4">
 
-                <div class="text-danger small d-none" id="total-error"></div>
+                <!-- Header: Logo + Tiêu đề -->
+                <div class="text-center mb-4 modal-header-professional">
+                    <img src="{{ asset('assets/client/images/logo-vnua.jpg') }}" width="90"
+                        class="logo-professional" alt="Logo Học viện Nông nghiệp Việt Nam">
+                    <h6 class="school-name">Học viện Nông nghiệp Việt Nam</h6>
+                    <h5 class="fw-bold modal-title-professional">Xác thực thông tin sinh viên</h5>
+                    <small class="text-muted fst-italic note-professional">
+                        (Anh/Chị vui lòng điền ít nhất 2 trong 5 thông tin để xác thực)
+                    </small>
+                    <hr class="hr-professional">
+                </div>
 
-                <div class="modal-body">
-                    <label for="">Mã sv <span class="text-danger">*</span></label>
-                    <input type="text" id="input-mssv" class="form-control" placeholder="Nhập MSSV" name="m_mssv">
-                    <div class="text-danger small d-none" id="mssv-error"></div>
-                </div>
-                <div class="modal-body">
-                    <label for="">Email</label>
-                    <input type="email" id="email" name="m_email" class="form-control" placeholder="Nhập email">
-                    <div class="text-danger small d-none" id="email-error"></div>
-                </div>
-                <div class="modal-body">
-                    <label for="">Phone</label>
-                    <input type="text" id="phone" name="m_phone" class="form-control" placeholder="Nhập phone">
-                    <div class="text-danger small d-none" id="phone-error"></div>
-                </div>
-                <div class="modal-body">
-                    <label for="">CCCD</label>
-                    <input type="text" id="citizen_identification" name="m_citizen_identification"
-                        class="form-control" placeholder="Nhập CCCD">
-                    <div class="text-danger small d-none" id="cccd-error"></div>
-                </div>
-                <div class="modal-body">
-                    <label for="">Ngày sinh</label>
-                    <input type="date" id="dob" class="form-control" name="m_dob">
-                    <div class="text-danger small d-none" id="dob-error"></div>
-                </div>
-                <div class="modal-body">
-                    <label for="">Ngành đào tạo</label>
-                    @php
-                        $major = \App\Models\Major::query()->get();
-                    @endphp
-                    <select name="m_training_industry_id" id="" class="form-control">
-                        <option value="" readonly>--- Chọn ngành đào tạo ---</option>
-                        @foreach ($major as $item)
-                            <option value="{{ $item->id }}">{{ $item->name }}</option>
-                        @endforeach
-                    </select>
-                    <div class="text-danger small d-none" id="training_industry_id-error"></div>
-                </div>
-                <div class="modal-footer">
-                    <button class="btn btn-primary" id="verify-mssv-btn">Xác nhận</button>
-                </div>
+                <!-- Tổng lỗi -->
+                <div class="alert alert-danger py-1 small d-none" id="total-error"></div>
+
+                <!-- Form xác thực -->
+                <form id="verifyStudentForm">
+                    <!-- Họ và tên -->
+                    <div class="mb-3">
+                        <label for="full_name" class="form-label fw-semibold">Họ và tên</label>
+                        <input type="text" id="full_name" name="m_full_name" class="form-control rounded-3"
+                            placeholder="Nhập họ và tên của Anh/Chị">
+                    </div>
+
+                    <!-- Mã sinh viên -->
+                    <div class="mb-3">
+                        <label for="input-mssv" class="form-label fw-semibold">Mã sinh viên</label>
+                        <input type="text" id="input-mssv" name="m_mssv" class="form-control rounded-3"
+                            placeholder="Nhập mã sinh viên (nếu nhớ)">
+                    </div>
+
+                    <!-- Email -->
+                    <div class="mb-3">
+                        <label for="email" class="form-label fw-semibold">Email</label>
+                        <input type="email" id="email" name="m_email" class="form-control rounded-3"
+                            placeholder="Nhập email Anh/Chị được cấp khi học">
+                        <div class="form-text text-muted small">Ví dụ: 647081@sv.vnua.edu.vn</div>
+                    </div>
+
+                    <!-- Số điện thoại -->
+                    <div class="mb-3">
+                        <label for="phone" class="form-label fw-semibold">Số điện thoại</label>
+                        <input type="text" id="phone" name="m_phone" class="form-control rounded-3"
+                            placeholder="Nhập số điện thoại liên hệ">
+                    </div>
+
+                    <!-- Ngày sinh -->
+                    <div class="mb-3">
+                        <label for="dob" class="form-label fw-semibold">Ngày sinh</label>
+                        <input type="date" id="dob" name="m_dob" class="form-control rounded-3">
+                    </div>
+
+                    <!-- Nút xác nhận -->
+                    <div class="text-center mt-4">
+                        <button type="submit" class="btn btn-primary w-50 rounded-pill">Xác nhận</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
-    </div>
 
+    <!-- CSS animation -->
+    <style>
+        .modal-header-professional img {
+            border-radius: 50%;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            opacity: 0;
+            transform: translateY(-20px) scale(0.8);
+            transition: all 0.6s ease-out;
+        }
+
+        .school-name {
+            opacity: 0;
+            transform: translateY(-10px);
+            font-size: 0.95rem;
+            color: #033e15;
+            font-weight: 500;
+            transition: all 0.6s ease-out;
+            margin-bottom: 0.25rem;
+        }
+
+        .modal-title-professional {
+            opacity: 0;
+            transform: translateY(-5px);
+            transition: all 0.6s ease-out;
+            font-size: 1.25rem;
+            color: #1a1a1a;
+        }
+
+        .note-professional {
+            opacity: 0;
+            transition: opacity 0.8s ease-out;
+            font-size: 0.85rem;
+            display: block;
+            margin-bottom: 0;
+        }
+
+        .hr-professional {
+            width: 0;
+            border-top: 1px solid #dee2e6;
+            opacity: 0;
+            transition: width 0.5s ease-out, opacity 0.5s ease-out;
+            margin-top: 0.8rem;
+        }
+
+        .logo-professional:hover,
+        .modal-title-professional:hover {
+            transform: scale(1.05);
+            transition: all 0.3s ease;
+        }
+    </style>
+
+    <!-- JS -->
     <script>
-        function toggleOtherInput(checkbox, targetId = 'other_input_box') {
-            const inputBox = document.getElementById(targetId);
-            const inputField = inputBox?.querySelector('input, textarea');
-            if (checkbox.checked) {
-                inputBox.style.display = 'block';
-            } else {
-                inputBox.style.display = 'none';
-                if (inputField) inputField.value = '';
-            }
-        }
+        document.addEventListener('DOMContentLoaded', function() {
+            const modalEl = document.getElementById('verifyStudentModal');
+            const modal = new bootstrap.Modal(modalEl, {
+                backdrop: 'static',
+                keyboard: false
+            });
+            modal.show();
 
-        function setKhoaHocFromMaSV() {
-            const maSV = document.getElementById('ma_sv').value;
-            const khoaHocInput = document.getElementById('khoa_hoc');
+            // Animation modal header
+            modalEl.addEventListener('shown.bs.modal', function() {
+                const logo = modalEl.querySelector('.logo-professional');
+                const schoolName = modalEl.querySelector('.school-name');
+                const title = modalEl.querySelector('.modal-title-professional');
+                const note = modalEl.querySelector('.note-professional');
+                const hr = modalEl.querySelector('.hr-professional');
 
-            if (maSV.length >= 2 && !isNaN(maSV)) {
-                const khoa = maSV.substring(0, 2);
-                khoaHocInput.value = 'Khóa ' + khoa;
-            } else {
-                khoaHocInput.value = '';
-            }
-        }
+                setTimeout(() => {
+                    logo.style.opacity = 1;
+                    logo.style.transform = 'translateY(0) scale(1)';
+                }, 100);
+                setTimeout(() => {
+                    schoolName.style.opacity = 1;
+                    schoolName.style.transform = 'translateY(0)';
+                }, 300);
+                setTimeout(() => {
+                    title.style.opacity = 1;
+                    title.style.transform = 'translateY(0)';
+                }, 500);
+                setTimeout(() => {
+                    note.style.opacity = 1;
+                }, 700);
+                setTimeout(() => {
+                    hr.style.width = '100%';
+                    hr.style.opacity = 1;
+                }, 600);
+            });
+
+            // Xử lý submit form xác thực
+            $('#verifyStudentForm').on('submit', function(e) {
+                e.preventDefault(); // Ngăn reload trang
+
+                const full_name = $('#full_name').val().trim();
+                const mssv = $('#input-mssv').val().trim();
+                const email = $('#email').val().trim();
+                const phone = $('#phone').val().trim();
+                const dob = $('#dob').val().trim();
+
+                const filledCount = [full_name, mssv, email, phone, dob].filter(v => v !== '').length;
+                console.log('filledCount: ', full_name);
+                console.log('filledCount: ', phone);
+                console.log('filledCount: ', dob);
+                if (filledCount < 2) {
+                    $('#total-error').text('Vui lòng nhập ít nhất 2 thông tin để xác thực.').removeClass(
+                        'd-none');
+                    return;
+                } else {
+                    $('#total-error').addClass('d-none');
+                }
+
+                $.ajax({
+                    url: '/api/khao-sat/verify-student',
+                    method: 'POST',
+                    data: {
+                        full_name,
+                        mssv,
+                        email,
+                        phone,
+                        dob,
+                        _token: '{{ csrf_token() }}'
+                    },
+                    success: function(res) {
+                        if (res.success) {
+                            const modalInstance = bootstrap.Modal.getInstance(modalEl);
+                            modalInstance.hide();
+                            $('#form-wrapper').fadeIn();
+
+                            const data = res.student;
+                            if (data) {
+                                $('input[name="full_name"]').val(data.full_name);
+                                $('input[name="code_student"]').val(data.code);
+                                $('input[name="email"]').val(data.email);
+                                $('input[name="phone_number"]').val(data.phone);
+                                $('input[name="dob"]').val(data.dob);
+
+                                var gender = data.gender == 'male' ? 'Nam' : 'Nữ';
+                                $('input[name="gender"]').val(gender);
+
+                                // Lấy 2 số đầu của mã sinh viên để xác định khóa học
+                                var mssv = data.code; // Mã sinh viên
+                                var course = 'Khóa: ' + mssv.substring(0,
+                                2); // Lấy 2 chữ số đầu
+                                $('input[name="course"]').val(
+                                course); // Điền khóa học vào trường input
+                            }
+
+                            // Thêm flag hidden để form biết đã xác thực
+                            if ($('input[name="mssv_verified"]').length === 0) {
+                                $('<input>').attr({
+                                    type: 'hidden',
+                                    name: 'mssv_verified',
+                                    value: '1'
+                                }).appendTo("#form-wrapper form");
+                            }
+                        } else {
+                            $('#total-error').text(res.message || 'Thông tin không hợp lệ')
+                                .removeClass('d-none');
+                        }
+                    },
+                    error: function() {
+                        $('#total-error').text('Đã có lỗi xảy ra, vui lòng thử lại.')
+                            .removeClass('d-none');
+                    }
+                });
+            });
+        });
     </script>
 @endsection
 
