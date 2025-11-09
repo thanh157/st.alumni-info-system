@@ -77,7 +77,7 @@ class KhaoSatController extends Controller
             if (!$student) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Không tìm thấy sinh viên có mã này trong khảo sát.',
+                    'message' => 'Anh/chị vui lòng kiểm tra lại thông tin đã nhập.',
                 ]);
             }
 
