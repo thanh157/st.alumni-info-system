@@ -291,7 +291,7 @@
                         <div class="mb-4">
                             <label class="form-label fw-bold">21. Mức lương khởi điểm của Anh/Chị (triệu
                                 đồng/tháng)</label>
-                            <input type="text" class="form-control" name="starting_salary" placeholder="10" required>
+                            <input type="text" class="form-control" name="starting_salary" placeholder="10">
                         </div>
 
                         <!-- 21. Mức thu nhập hiện tại -->
@@ -301,7 +301,7 @@
                                 hiện nay</label>
                             @foreach (config('config.average_income') as $key => $item)
                                 <div class="form-check mb-2">
-                                    <input class="form-check-input" type="radio" name="average_income" required
+                                    <input class="form-check-input" type="radio" name="average_income"
                                         id="tn_{{ $key }}" value="{{ $key }}">
                                     <label class="form-check-label fw-normal"
                                         for="tn_{{ $key }}">{{ $item }}</label>
@@ -336,7 +336,8 @@
                             @endforeach
                             <div id="recruitment_type_other_wrapper" style="display: none;" class="mt-2">
                                 <input type="text" name="recruitment_type_other" id="recruitment_type_other"
-                                    class="form-control" placeholder="Nhập hình thức tìm việc làm..." autocomplete="off">
+                                    class="form-control other-input" placeholder="Nhập hình thức tìm việc làm..."
+                                    autocomplete="off">
                             </div>
 
                             <div id="recruitment_type_error" class="text-danger small d-none"></div>
@@ -365,7 +366,7 @@
                             @endforeach
                             <div id="job_search_method_other_wrapper" style="display: none;" class="mt-2">
                                 <input type="text" name="job_search_method_other" id="job_search_method_other"
-                                    class="form-control" placeholder="Nhập hình thức tuyển dụng...">
+                                    class="form-control other-input" placeholder="Nhập hình thức tuyển dụng...">
                             </div>
                             <div id="job_search_method_error" class="text-danger small d-none"></div>
                         </div>
@@ -397,7 +398,8 @@
                             @endforeach
                             <div id="soft_skills_required_other_wrapper" style="display: none;" class="mt-2">
                                 <input type="text" name="soft_skills_required_other" id="soft_skills_required_other"
-                                    class="form-control" placeholder="Nhập kỹ năng mềm..." autocomplete="off">
+                                    class="form-control other-input" placeholder="Nhập kỹ năng mềm..."
+                                    autocomplete="off">
                             </div>
                             <div id="soft_skills_required_error" class="text-danger small d-none"></div>
                         </div>
@@ -432,7 +434,8 @@
                             @endforeach
                             <div id="must_attended_courses_other_wrapper" style="display: none;" class="mt-2">
                                 <input type="text" name="must_attended_courses_other" id="must_attended_courses_other"
-                                    class="form-control" placeholder="Nhập khóa học..." autocomplete="off">
+                                    class="form-control other-input" placeholder="Nhập khóa học..123."
+                                    autocomplete="off">
                             </div>
                             <div id="must_attended_courses_error" class="text-danger small d-none"></div>
                         </div>
@@ -466,7 +469,7 @@
                         @endforeach
                         <div id="solutions_get_job_other_wrapper" style="display: none;" class="mt-2">
                             <input type="text" name="solutions_get_job_other" id="solutions_get_job_other"
-                                class="form-control" placeholder="Nhập giải pháp khác của bạn tại đây..."
+                                class="form-control other-input" placeholder="Nhập giải pháp khác của bạn tại đây..."
                                 autocomplete="off">
                         </div>
                         <div id="solutions_get_job_error" class="text-danger small d-none"></div>
@@ -498,7 +501,7 @@
                     <div class="d-flex justify-content-end gap-2">
                         <button type="submit" class="btn {{ $outDate ? 'btn-danger' : 'btn-primary' }}"
                             {{ $outDate ? 'disabled' : '' }}>
-                            {{ $outDate ? 'Hết hạn gửi' : 'Submit' }}
+                            {{ $outDate ? 'Hết hạn gửi' : 'Gửi' }}
                         </button>
                     </div>
 
@@ -664,6 +667,9 @@
                 }, 600);
             });
 
+
+
+
             // Xử lý submit form xác thực
             $('#verifyStudentForm').on('submit', function(e) {
                 e.preventDefault(); // Ngăn reload trang
@@ -717,9 +723,9 @@
                                 // Lấy 2 số đầu của mã sinh viên để xác định khóa học
                                 var mssv = data.code; // Mã sinh viên
                                 var course = 'Khóa: ' + mssv.substring(0,
-                                2); // Lấy 2 chữ số đầu
+                                    2); // Lấy 2 chữ số đầu
                                 $('input[name="course"]').val(
-                                course); // Điền khóa học vào trường input
+                                    course); // Điền khóa học vào trường input
                             }
 
                             // Thêm flag hidden để form biết đã xác thực
@@ -990,20 +996,34 @@
 
             // Toggle input "Khác"
             otherGroups.forEach(group => {
-                $(group.checkboxClass).on('change', function() {
-                    if ($(this).is(':checked')) {
+                const $checkbox = $(group.checkboxClass);
+                const input = $(group.inputId);
+
+                // Hàm xử lý hiển thị và required
+                const toggleGroup = () => {
+                    if ($checkbox.is(':checked')) {
                         $(group.wrapperId).show();
                     } else {
                         $(group.wrapperId).hide();
                         $(group.inputId).val('');
                     }
-                });
+                };
+
+                // 1. Chạy ngay khi page load / code chạy
+                // toggleGroup();
+
+                // 2. Gắn sự kiện change để cập nhật khi người dùng click
+                $checkbox.on('change', toggleGroup);
             });
+
+
+
+
+
 
             // Validate khi submit
             $('#form-wrapper').on('submit', function(e) {
                 let hasError = false;
-
                 otherGroups.forEach(group => {
                     const checkedCount = $(`input[name="${group.groupName}"]:checked`).length;
                     const isOtherChecked = $(group.checkboxClass).is(':checked');
@@ -1025,8 +1045,10 @@
                 });
 
                 if (hasError) {
+                    console.llog('hasError');
                     e.preventDefault();
                 }
+
             });
         });
 
@@ -1035,6 +1057,19 @@
                 var employedValue =
                     '{{ array_key_first(config('config.tinh_trang')) }}';
                 var selected = $('input[name="employment_status"]:checked').val();
+
+                // xóa required theo option : đang đi làm thì giữ nguynn, còn lại xóa
+                if (selected == employedValue) {
+                    $('.employment-details').find('input, select, textarea').attr('required', true);
+                } else {
+                    $('.employment-details').find('input, select, textarea').removeAttr('required');
+                }
+
+                $('.employment-details')
+                    .find('.other-input, input[type="checkbox"]')
+                    .removeAttr('required');
+
+
                 if (selected == employedValue) {
                     $('.employment-details').show();
                     $('#question-26').show();
