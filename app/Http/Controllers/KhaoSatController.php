@@ -43,95 +43,67 @@ class KhaoSatController extends Controller
     public function verify(Request $request)
     {
         try {
-            $surveyId = $request->input('survey_id');
-            $code = $request->input('mssv');
+            $full_name = $request->input('full_name');
+            $mssv = $request->input('mssv');
             $email = $request->input('email');
             $phone = $request->input('phone');
             $dob = $request->input('dob');
-            $cccd = $request->input('citizen_identification');
-            $industry_id = $request->input('training_industry_id');
 
-            // Kiểm tra mã sinh viên có nhập không
-            if (empty($code)) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Vui lòng nhập mã sinh viên (MSSV)',
-                ]);
+
+
+            // Lấy student dựa trên MSSV nếu có, hoặc fullname nếu MSSV trống
+            $student = Student::query();
+
+            if (!empty($email)) {
+                $student->where('email', $email);
             }
 
-            // Kiểm tra survey có tồn tại không
-            $survey = Survey::find($surveyId);
-            if (empty($survey)) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Khảo sát không tồn tại',
-                ]);
+            if (!empty($phone)) {
+                $student->where('phone', $phone);
+            }
+            if (!empty($mssv)) {
+                $student->where('code', $mssv);
             }
 
-            $graduationIds = $survey->graduations()->pluck('id')->toArray();
+            if (!empty($full_name)) {
+                $student->where('full_name', $full_name);
+            }
 
-            $student = Student::query()
-                ->where('code', $code)
-                ->whereHas('graduations', function ($q) use ($graduationIds) {
-                    $q->whereIn('graduation_id', $graduationIds);
-                })
-                ->first();
+            if (!empty($dob)) {
+                $student->where('dob', $dob);
+            }
 
+            $student = $student->first();
             if (!$student) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Không tìm thấy sinh viên có mã này trong khảo sát',
+                    'message' => 'Anh/chị vui lòng kiểm tra lại thông tin đã nhập.',
                 ]);
             }
 
-            $invalidFields = [];
 
-            if (!empty($email) && $student->email !== $email) {
-                $invalidFields[] = 'email';
-            }
+            // $invalidFields = [];
+            // if ($email && $student->email !== $email) $invalidFields[] = 'email';
+            // if ($phone && $student->phone_number !== $phone) $invalidFields[] = 'phone';
+            // if ($dob && $student->dob !== $dob) $invalidFields[] = 'dob';
 
-            if (!empty($dob) && $student->dob !== $dob) {
-                $invalidFields[] = 'dob';
-            }
-
-            if (!empty($phone) && $student->phone_number !== $phone) {
-
-                $invalidFields[] = 'phone';
-            }
-
-            if (!empty($cccd) && $student->identification_card_number !== $cccd) {
-                $invalidFields[] = 'citizen_identification';
-            }
-
-            if (!empty($industry_id) && $student->training_industry_id != $industry_id) {
-                $invalidFields[] = 'training_industry_id';
-            }
-
-            if (count($invalidFields) > 0) {
-                return response()->json([
-                    'success' => false,
-                    'invalid_fields' => $invalidFields,
-                    'message' => 'Thông tin xác thực không khớp: ' . implode(',', $invalidFields),
-                ]);
-            }
-
-            // 🔹 Thêm đoạn này
-            if ($student->gender === 'male') {
-                $student->gender = 'Nam';
-            } elseif ($student->gender === 'female') {
-                $student->gender = 'Nữ';
-            }
-
+            // if (count($invalidFields) > 0) {
+            //     return response()->json([
+            //         'success' => false,
+            //         'invalid_fields' => $invalidFields,
+            //         'message' => 'Thông tin không khớp: ' . implode(', ', $invalidFields),
+            //     ]);
+            // }
 
             return response()->json([
                 'success' => true,
                 'student' => $student,
             ]);
         } catch (\Exception $e) {
-            Log::error($e);
+            \Log::error($e);
             return response()->json([
                 'success' => false,
-                'message' => 'Mã sinh viên không hợp lệ hoặc không thuộc đợt tốt nghiệp này.',
+                'message' => 'Đã có lỗi xảy ra, vui lòng thử lại.',
             ]);
         }
     }
@@ -158,13 +130,35 @@ class KhaoSatController extends Controller
                 return redirect()->back()->with('error', 'Khảo sát không tồn tại');
             }
 
-            $student = Student::query()
-                ->where('code', $code)
-                ->first();
+            $student = Student::query();
+
+            if (!empty($email)) {
+                $student->where('email', $email);
+            }
+            if (!empty($dod)) {
+                $student->where('dod', $dod);
+            }
+            if (!empty($phone)) {
+                $student->where('phone_number', $phone);
+            }
+            if (!empty($code)) {
+                $student->where('code', $code);
+            }
+
+            if (!empty($fullname)) {
+                $student->where('full_name', $fullname);
+            }
+            $student = $student->first();
+            dd($student);
+            die();
+
+            // ->where('code', $code)
+            // ->first();
 
             if (!$student) {
                 return redirect()->back()->with('error', 'Không tìm thấy sinh viên có mã này trong khảo sát')->withInput();
             }
+
 
             $invalidFields = [];
 

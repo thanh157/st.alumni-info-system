@@ -12,8 +12,8 @@
             max-width: 800px;
             margin: auto;
             background-color: white;
-            padding: 3rem 4rem;
-             border-radius: 10px;
+            padding: 2rem;
+            border-radius: 10px;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
 
@@ -37,281 +37,45 @@
             border-color: #1a73e8;
             box-shadow: 0 0 0 2px rgba(26, 115, 232, 0.2);
         }
-
-        /* Header styles */
-        .header-wrapper {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 2rem;
-        }
-
-        .header-left {
-            text-align: center;
-        }
-
-        .header-right {
-            text-align: right;
-            flex: 1;
- 
-        }
-
-        .header-date {
-            font-style: italic;
-            font-size: 14px;
-            margin-bottom: 10px;
-        }
-
-        .survey-title-section {
-            text-align: center;
-            margin: 2rem 0;
-        }
-
-        .survey-title-section h5 {
-            font-weight: bold;
-            text-transform: uppercase;
-            margin-bottom: 0.5rem;
-        }
-
-        .greeting-section {
-            margin: 2rem 0;
-            line-height: 1.8;
-        }
-
-      .header-wrapper
-
-        .greeting-content {
-            text-align: justify;
-        }
-
-        .greeting-footer {
-            font-style: italic;
-            text-align: center;
-            margin-top: 1rem;
-        }
-        .header-wrapper {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 2rem;
-    flex-wrap: wrap;
-}
-
-.header-left {
-    flex: 0 0 auto;
-    padding-right: 2rem;
-}
-
-.header-left img {
-    width: 180px;
-    height: auto;
-    max-width: 100%;
-}
-
-.header-right {
-    text-align: right;
-    flex: 1;
-    min-width: 250px;
-}
-.greeting-section {
-            margin: 2rem 0;
-            line-height: 1.8;
-        }
-
-        .greeting-title {
-            font-style: italic;
-            font-weight: bold;
-            margin-bottom: 1rem;
-        }
-
-        .greeting-content {
-            text-align: justify;
-            margin: 1.5rem 0;
-            line-height: 1.8;
-        }
-
-        .greeting-footer {
-            font-style: italic;
-            text-align: center;
-            margin-top: 1rem;
-        }
- @media (max-width: 768px) {
-    .header-wrapper {
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-    }
-    
-    .header-left {
-        padding-right: 0;
-        margin-bottom: 1rem;
-    }
-    
-    .header-left img {
-        width: 120px;
-    }
-    
-    .header-right {
-        text-align: center;
-    }
-}
-
-@media (max-width: 480px) {
-    .header-left img {
-        width: 100px;
-    }
-    
-    .header-right h6 {
-        font-size: 20px;
-    }
-    
-    .header-right p {
-        font-size: 13px;
-    }
-    
-    .header-right small {
-        font-size: 11px;
-    }
-
-}
-@media (max-width: 1200px){
-  .google-form-style{ padding: 2.5rem 3rem; }
-}
-@media (max-width: 992px){
-  .google-form-style{ padding: 2rem 2rem; }
-}
-@media (max-width: 768px){
-  .google-form-style{ padding: 1.5rem 1.25rem; }
-}
-@media (max-width: 576px){
-  .google-form-style{ padding: 1.25rem 1rem; }
-}
-
- .header-wrapper{
-  display:flex; justify-content:space-between; align-items:flex-start; gap:1rem; flex-wrap:wrap;
-}
-.header-left{ display:flex; align-items:center; padding-right:2rem; }
-.header-left img{
-  width: 180px; height:auto; max-width:100%;
-}
- @media (max-width: 992px){
-  .header-left{ padding-right:0; }
-}
-@media (max-width: 768px){
-  .header-left{ justify-content:center; width:100%; }
-  .header-left img{ margin:0 auto !important; width:140px; }
-}
-@media (max-width: 480px){
-  .header-left img{ width:110px; }
-}
-
- .header-right{
-  text-align:right; flex:1; min-width:260px;
-}
-@media (max-width: 768px){
-  .header-right{ text-align:center; }
-  .header-right h6{ font-size:1.05rem; margin-bottom:.25rem; }
-  .header-right p{ font-size:.95rem; margin-bottom:.25rem; }
-  .header-right small{ font-size:.85rem; display:block; }
-}
-
- .survey-title-section h5{ margin-bottom:.75rem; }
-.greeting-section{ margin:1.25rem 0; line-height:1.85; }
-.greeting-title{ margin-bottom:.75rem; }
-.greeting-content{ text-align:justify; }
-@media (max-width: 576px){
-  .greeting-section{ margin:1rem 0; line-height:1.75; }
-}
-
- .google-form-style .form-section{ padding-bottom:1.25rem; margin-bottom:1.25rem; }
-.google-form-style label{ display:block; margin-bottom:.4rem; }
-.form-check{ display:flex; align-items:flex-start; gap:.5rem; }
-.form-check-input{ margin-top:.2rem; flex:0 0 auto; }
-.form-check-label{ line-height:1.6; }
-
- .row .col-12.col-md-6{ margin-bottom:.75rem; }
-
- .d-flex.gap-2 > .btn{ white-space:normal; }
-@media (max-width: 480px){
-  .d-flex.justify-content-end.gap-2{
-    flex-wrap:wrap; gap:.5rem; justify-content:stretch !important;
-  }
-  .d-flex.justify-content-end.gap-2 .btn{ width:100%; }
-}
-
- @media (max-width: 576px){
-  .alert{ font-size:.95rem; }
-  .text-muted, .fst-italic{ font-size:.95em; }
-}
-
- .modal-content{ border-radius:.75rem; }
-@media (max-width: 576px){
-  .modal-dialog{ margin: .75rem; }
-  .modal-content{ padding: .75rem; }
-}
-
- div[style*="padding:10%"]{ padding: 4% 3% !important; }
-@media (max-width: 992px){
-  div[style*="padding:10%"]{ padding: 3% 2% !important; }
-}
-@media (max-width: 576px){
-  div[style*="padding:10%"]{ padding: 2% 1% !important; }
-}
     </style>
-<div style="padding:10%">
-    
+
+
+    <!-- 🧾 Form khảo sát chính (ẩn lúc đầu) -->
+
+
     <div class="container py-4">
-        <div class="google-form-style">
+        <div class="google-form-style ">
             <!-- Header -->
-            <div class="header-wrapper">
-                <div class="header-left">
-    <img src="{{ asset('assets/client/images/logo-vnua.jpg') }}" alt="Logo VNUA" style="margin-left:60%">
-</div>
-                <div class="header-right" style="font-size:larger"  >
-                    <div class="header-date">Ngày {{ date('d/m/Y') }}</div>
-                    <h6 class="fw-bold mb-1 text-uppercase">Bộ Nông nghiệp và Môi trường</h6>
-                    <p class="mb-1 text-uppercase fw-semibold">Học Viện Nông Nghiệp Việt Nam</p>
-                    <small class="text-muted">Xã Gia Lâm, Thành phố Hà Nội</small><br>
-                    <small class="text-muted">Điện thoại: 024.62617586 - Fax: 024.62617586</small>
-                </div>
+            <div class="text-center mb-4">
+                <img src="{{ asset('assets/client/images/logo-vnua.jpg') }}" width="90" class="mb-2">
+                <h6 class="fw-bold mb-1 text-uppercase">Bộ Nông nghiệp và Môi trường</h6>
+                <p class="mb-1 text-uppercase fw-semibold">Học Viện Nông Nghiệp Việt Nam</p>
+                <small class="text-muted fst-italic">Xã Gia Lâm, Thành phố Hà Nội | Điện thoại: 024.62617586 - Fax:
+                    024.62617586</small>
             </div>
-            <br><br> 
+
             <!-- Title -->
-      <!-- Title -->
             <div class="form-section">
-                <h5 class="fw-bold text-center" style="margin:10px 10px auto ">{{ $survey->title }}</h5>
-                 <div class="greeting-section">
-                    <div class="greeting-title">
-                        Thân gửi Anh/Chị cựu sinh viên của Học viện Nông nghiệp Việt Nam!
-                    </div>
-                    <div class="greeting-content">
+                <h5 class="fw-bold text-center">{{ $survey->title }}</h5>
+                <p class="fw-semibold fst-italic text-center mt-4">
+                    Thân gửi Anh/Chị cựu sinh viên của Học viện Nông nghiệp Việt Nam!
+                </p>
+                <p class="text-justify">
                     {{ $survey->description }}
-                    </div>
-                    <div class="greeting-footer">
-                        Trân trọng cảm ơn sự cộng tác của các Anh/Chị!
-                    </div>
-                </div>
-                 
-                <br>
-              
+                </p>
+                <p class="fst-italic text-muted text-center mt-2">
+                    Trân trọng cảm ơn sự cộng tác của các Anh/Chị!
+                </p>
+                <p class="text-end mt-2">
+                    <small class="text-muted fst-italic">
+                        Ngày: {{ now()->format('d/m/Y') }}
+                    </small>
+                </p>
+
                 @if ($outDate)
                     <div class="text-danger">Đã hết hạn khảo sát</div>
                 @endif
             </div>
-               
-
-           
-
-        <!-- #region -->
-            @if ($errors->any())
-                <div class="alert alert-danger">
-                    <ul class="mb-0">
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-            @endif
 
             <form action="{{ route('survey.submit') }}" method="POST" id="form-wrapper">
                 @csrf
@@ -333,7 +97,7 @@
 
                     <div class="mb-3">
                         <label for="ho_ten">2. Họ và tên</label>
-                        <input type="text" class="form-control" id="full_name" name="full_name" required
+                        <input type="text" class="form-control" id="full_names" name="full_name" required
                             placeholder="Nhập họ và tên đầy đủ">
                     </div>
 
@@ -409,7 +173,8 @@
                                     for="tt_{{ $index }}">{{ $value }}</label>
                             </div>
                         @endforeach
-                        <i class="question-10" style="font-size: 14px; color:rgb(94, 6, 6)"> *Nếu chưa có việc làm hoặc
+                        <i class="question-10" style="font-size: 14px; color:rgb(94, 6, 6)"> *Nếu chưa có việc làm
+                            hoặc
                             đang tiếp tục học, anh/chị trả lời tiếp câu 27.
                             Nếu đã có việc làm, anh/chị trả lời tiếp các câu sau</i>
                     </div>
@@ -477,7 +242,8 @@
 
                         <!-- 17. Công việc có phù hợp với ngành đào tạo -->
                         <div class="mb-4">
-                            <label class="form-label fw-bold">18. Công việc Anh/Chị đang đảm nhận có phù hợp với ngành đào
+                            <label class="form-label fw-bold">18. Công việc Anh/Chị đang đảm nhận có phù hợp với ngành
+                                đào
                                 tạo
                                 không?</label>
                             @foreach (config('config.trained_field') as $key => $item)
@@ -492,7 +258,8 @@
 
                         <!-- 18. Công việc có phù hợp với trình độ chuyên môn -->
                         <div class="mb-4">
-                            <label class="form-label fw-bold">19. Công việc Anh/Chị đang đảm nhận có phù hợp với trình độ
+                            <label class="form-label fw-bold">19. Công việc Anh/Chị đang đảm nhận có phù hợp với trình
+                                độ
                                 chuyên môn không?</label>
                             @foreach (config('config.professional_qualification_field') as $key => $item)
                                 <div class="form-check mb-2">
@@ -507,7 +274,8 @@
 
                         <!-- 19. Kiến thức kỹ năng từ trường có phù hợp công việc -->
                         <div class="mb-4">
-                            <label class="form-label fw-bold">20. Anh/chị có học được các kiến thức và kỹ năng cần thiết từ
+                            <label class="form-label fw-bold">20. Anh/chị có học được các kiến thức và kỹ năng cần
+                                thiết từ
                                 nhà trường cho công việc theo ngành tốt nghiệp không?</label>
                             @foreach (config('config.level_knowledge_acquired') as $key => $item)
                                 <div class="form-check mb-2">
@@ -523,16 +291,17 @@
                         <div class="mb-4">
                             <label class="form-label fw-bold">21. Mức lương khởi điểm của Anh/Chị (triệu
                                 đồng/tháng)</label>
-                            <input type="text" class="form-control" name="starting_salary" placeholder="10" required>
+                            <input type="text" class="form-control" name="starting_salary" placeholder="10">
                         </div>
 
                         <!-- 21. Mức thu nhập hiện tại -->
                         <div class="mb-4">
-                            <label class="form-label fw-bold">22. Mức thu nhập bình quân/tháng tính theo VNĐ của Anh/Chị
+                            <label class="form-label fw-bold">22. Mức thu nhập bình quân/tháng tính theo VNĐ của
+                                Anh/Chị
                                 hiện nay</label>
                             @foreach (config('config.average_income') as $key => $item)
                                 <div class="form-check mb-2">
-                                    <input class="form-check-input" type="radio" name="average_income" required
+                                    <input class="form-check-input" type="radio" name="average_income"
                                         id="tn_{{ $key }}" value="{{ $key }}">
                                     <label class="form-check-label fw-normal"
                                         for="tn_{{ $key }}">{{ $item }}</label>
@@ -542,7 +311,8 @@
 
                         <!-- 23. Hình thức tìm được việc làm -->
                         <div class="mb-4">
-                            <label class="form-label fw-bold">23. Anh/Chị tìm được việc làm thông qua những hình thức nào?
+                            <label class="form-label fw-bold">23. Anh/Chị tìm được việc làm thông qua những hình thức
+                                nào?
 
                                 <span class="fw-normal">(Có thể chọn nhiều lựa chọn)</span></label>
                             @php $tim_viec = config('config.recruitment_type'); @endphp
@@ -566,7 +336,8 @@
                             @endforeach
                             <div id="recruitment_type_other_wrapper" style="display: none;" class="mt-2">
                                 <input type="text" name="recruitment_type_other" id="recruitment_type_other"
-                                    class="form-control" placeholder="Nhập hình thức tìm việc làm..." autocomplete="off">
+                                    class="form-control other-input" placeholder="Nhập hình thức tìm việc làm..."
+                                    autocomplete="off">
                             </div>
 
                             <div id="recruitment_type_error" class="text-danger small d-none"></div>
@@ -595,14 +366,15 @@
                             @endforeach
                             <div id="job_search_method_other_wrapper" style="display: none;" class="mt-2">
                                 <input type="text" name="job_search_method_other" id="job_search_method_other"
-                                    class="form-control" placeholder="Nhập hình thức tuyển dụng...">
+                                    class="form-control other-input" placeholder="Nhập hình thức tuyển dụng...">
                             </div>
                             <div id="job_search_method_error" class="text-danger small d-none"></div>
                         </div>
 
                         <!-- 24. Kỹ năng mềm -->
                         <div class="mb-4">
-                            <label class="form-label fw-bold">25. Trong quá trình làm việc, Anh/Chị cần những kỹ năng mềm
+                            <label class="form-label fw-bold">25. Trong quá trình làm việc, Anh/Chị cần những kỹ năng
+                                mềm
                                 nào
                                 sau đây? <span class="fw-normal">(Có thể chọn nhiều lựa chọn)</span></label>
                             @php $ky_nang = config('config.soft_skills_required'); @endphp
@@ -626,16 +398,19 @@
                             @endforeach
                             <div id="soft_skills_required_other_wrapper" style="display: none;" class="mt-2">
                                 <input type="text" name="soft_skills_required_other" id="soft_skills_required_other"
-                                    class="form-control" placeholder="Nhập kỹ năng mềm..." autocomplete="off">
+                                    class="form-control other-input" placeholder="Nhập kỹ năng mềm..."
+                                    autocomplete="off">
                             </div>
                             <div id="soft_skills_required_error" class="text-danger small d-none"></div>
                         </div>
 
                         <!-- 25. Khóa học nâng cao -->
                         <div class="mb-4">
-                            <label class="form-label fw-bold">26. Sau khi được tuyển dụng, Anh/Chị có phải tham gia khóa
+                            <label class="form-label fw-bold">26. Sau khi được tuyển dụng, Anh/Chị có phải tham gia
+                                khóa
                                 học
-                                nâng cao nào dưới đây để đáp ứng công việc không <span class="fw-normal">(Có thể chọn nhiều
+                                nâng cao nào dưới đây để đáp ứng công việc không <span class="fw-normal">(Có thể chọn
+                                    nhiều
                                     lựa
                                     chọn)</span></label>
                             @php $nang_cao = config('config.must_attended_courses'); @endphp
@@ -659,7 +434,8 @@
                             @endforeach
                             <div id="must_attended_courses_other_wrapper" style="display: none;" class="mt-2">
                                 <input type="text" name="must_attended_courses_other" id="must_attended_courses_other"
-                                    class="form-control" placeholder="Nhập khóa học..." autocomplete="off">
+                                    class="form-control other-input" placeholder="Nhập khóa học..123."
+                                    autocomplete="off">
                             </div>
                             <div id="must_attended_courses_error" class="text-danger small d-none"></div>
                         </div>
@@ -669,9 +445,10 @@
 
                     <!-- 26. Giải pháp nâng tỷ lệ có việc làm -->
                     <div class="mb-4" id="question-26">
-                        <label class="form-label fw-bold">27. Theo Anh/Chị, những giải pháp nào sau đây giúp tăng tỷ lệ có
-                            việc làm đúng ngành của sinh viên tốt nghiệp từ chương trình đào tạo mà Anh/Chị đã học? <span
-                                class="fw-normal">(Có thể chọn nhiều lựa chọn)</span></label>
+                        <label class="form-label fw-bold">27. Theo Anh/Chị, những giải pháp nào sau đây giúp tăng tỷ lệ
+                            có
+                            việc làm đúng ngành của sinh viên tốt nghiệp từ chương trình đào tạo mà Anh/Chị đã học?
+                            <span class="fw-normal">(Có thể chọn nhiều lựa chọn)</span></label>
                         @php $giai_phap = config('config.solutions_get_job'); @endphp
                         @foreach ($giai_phap as $index => $value)
                             @if ($value == 'Khác')
@@ -692,40 +469,41 @@
                         @endforeach
                         <div id="solutions_get_job_other_wrapper" style="display: none;" class="mt-2">
                             <input type="text" name="solutions_get_job_other" id="solutions_get_job_other"
-                                class="form-control" placeholder="Nhập giải pháp khác của bạn tại đây..."
+                                class="form-control other-input" placeholder="Nhập giải pháp khác của bạn tại đây..."
                                 autocomplete="off">
                         </div>
                         <div id="solutions_get_job_error" class="text-danger small d-none"></div>
                     </div>
 
-                 <div>
-    <!-- Thông báo -->
-    @if ($outDate)
-        <div class="alert alert-danger mt-4" role="alert">
-            <i class="bi bi-x-circle-fill me-2"></i>
-            Thời gian khảo sát đã kết thúc. Bạn không thể gửi phiếu khảo sát này.
-        </div>
-    @else
-        <div class="alert alert-warning mt-4" role="alert">
-            <i class="bi bi-exclamation-triangle-fill me-2"></i>
-            Vui lòng kiểm tra kỹ thông tin trước khi gửi. Mỗi sinh viên chỉ được gửi phiếu khảo sát một lần.
-        </div>
-    @endif
+                    <div>
+                        <!-- Thông báo -->
+                        @if ($outDate)
+                            <div class="alert alert-danger mt-4" role="alert">
+                                <i class="bi bi-x-circle-fill me-2"></i>
+                                Thời gian khảo sát đã kết thúc. Bạn không thể gửi phiếu khảo sát này.
+                            </div>
+                        @else
+                            <div class="alert alert-warning mt-4" role="alert">
+                                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                                Vui lòng kiểm tra kỹ thông tin trước khi gửi. Mỗi sinh viên chỉ được gửi phiếu khảo sát
+                                một lần.
+                            </div>
+                        @endif
 
-    <!-- Cảm ơn -->
-    <div class="text-center mt-4">
-        <p class="fw-semibold mb-1">Xin trân trọng cảm ơn sự hợp tác của Anh/Chị!</p>
-        <p class="text-muted fst-italic mb-3">Kính chúc Anh/Chị sức khỏe và thành công!</p>
-    </div>
-</div>
+                        <!-- Cảm ơn -->
+                        <div class="text-center mt-4">
+                            <p class="fw-semibold mb-1">Xin trân trọng cảm ơn sự hợp tác của Anh/Chị!</p>
+                            <p class="text-muted fst-italic mb-3">Kính chúc Anh/Chị sức khỏe và thành công!</p>
+                        </div>
+                    </div>
 
-<!-- Nút gửi -->
-<div class="d-flex justify-content-end gap-2">
-    <button type="submit" class="btn {{ $outDate ? 'btn-danger' : 'btn-primary' }}" 
-        {{ $outDate ? 'disabled' : '' }}>
-        {{ $outDate ? 'Hết hạn gửi' : 'Submit' }}
-    </button>
-</div>
+                    <!-- Nút gửi -->
+                    <div class="d-flex justify-content-end gap-2">
+                        <button type="submit" class="btn {{ $outDate ? 'btn-danger' : 'btn-primary' }}"
+                            {{ $outDate ? 'disabled' : '' }}>
+                            {{ $outDate ? 'Hết hạn gửi' : 'Gửi' }}
+                        </button>
+                    </div>
 
                 </div>
             </form>
@@ -733,85 +511,243 @@
     </div>
 
 
-    <!-- 🛡️ Modal nhập MSSV -->
-    <div class="modal fade" id="mssvModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content p-3">
-                <h5 class="modal-title">Xác thực Sinh viên <small style="font-size: 12px"><i>(điền ít nhất 2
-                            input)</i></small></h5>
+    <!-- 🛡️ Modal xác thực sinh viên -->
+    <div class="modal fade" id="verifyStudentModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-md">
+            <div class="modal-content p-4 border-0 shadow-sm rounded-4">
 
-                <div class="text-danger small d-none" id="total-error"></div>
+                <!-- Header: Logo + Tiêu đề -->
+                <div class="text-center mb-4 modal-header-professional">
+                    <img src="{{ asset('assets/client/images/logo-vnua.jpg') }}" width="90"
+                        class="logo-professional" alt="Logo Học viện Nông nghiệp Việt Nam">
+                    <h6 class="school-name">Học viện Nông nghiệp Việt Nam</h6>
+                    <h5 class="fw-bold modal-title-professional">Xác thực thông tin sinh viên</h5>
+                    <small class="text-muted fst-italic note-professional">
+                        (Anh/Chị vui lòng điền ít nhất 2 trong 5 thông tin để xác thực)
+                    </small>
+                    <hr class="hr-professional">
+                </div>
 
-                <div class="modal-body">
-                    <label for="">Mã sv <span class="text-danger">*</span></label>
-                    <input type="text" id="input-mssv" class="form-control" placeholder="Nhập MSSV" name="m_mssv">
-                    <div class="text-danger small d-none" id="mssv-error"></div>
-                </div>
-                <div class="modal-body">
-                    <label for="">Email</label>
-                    <input type="email" id="email" name="m_email" class="form-control" placeholder="Nhập email">
-                    <div class="text-danger small d-none" id="email-error"></div>
-                </div>
-                <div class="modal-body">
-                    <label for="">Phone</label>
-                    <input type="text" id="phone" name="m_phone" class="form-control" placeholder="Nhập phone">
-                    <div class="text-danger small d-none" id="phone-error"></div>
-                </div>
-                <div class="modal-body">
-                    <label for="">CCCD</label>
-                    <input type="text" id="citizen_identification" name="m_citizen_identification"
-                        class="form-control" placeholder="Nhập CCCD">
-                    <div class="text-danger small d-none" id="cccd-error"></div>
-                </div>
-                <div class="modal-body">
-                    <label for="">Ngày sinh</label>
-                    <input type="date" id="dob" class="form-control" name="m_dob">
-                    <div class="text-danger small d-none" id="dob-error"></div>
-                </div>
-                <div class="modal-body">
-                    <label for="">Ngành đào tạo</label>
-                    @php
-                        $major = \App\Models\Major::query()->get();
-                    @endphp
-                    <select name="m_training_industry_id" id="" class="form-control">
-                        <option value="" readonly>--- Chọn ngành đào tạo ---</option>
-                        @foreach ($major as $item)
-                            <option value="{{ $item->id }}">{{ $item->name }}</option>
-                        @endforeach
-                    </select>
-                    <div class="text-danger small d-none" id="training_industry_id-error"></div>
-                </div>
-                <div class="modal-footer">
-                    <button class="btn btn-primary" id="verify-mssv-btn">Xác nhận</button>
-                </div>
+                <!-- Tổng lỗi -->
+                <div class="alert alert-danger py-1 small d-none" id="total-error"></div>
+
+                <!-- Form xác thực -->
+                <form id="verifyStudentForm">
+                    <!-- Họ và tên -->
+                    <div class="mb-3">
+                        <label for="full_name" class="form-label fw-semibold">Họ và tên</label>
+                        <input type="text" id="full_name" name="m_full_name" class="form-control rounded-3"
+                            placeholder="Nhập họ và tên của Anh/Chị">
+                    </div>
+
+                    <!-- Mã sinh viên -->
+                    <div class="mb-3">
+                        <label for="input-mssv" class="form-label fw-semibold">Mã sinh viên</label>
+                        <input type="text" id="input-mssv" name="m_mssv" class="form-control rounded-3"
+                            placeholder="Nhập mã sinh viên (nếu nhớ)">
+                    </div>
+
+                    <!-- Email -->
+                    <div class="mb-3">
+                        <label for="email" class="form-label fw-semibold">Email</label>
+                        <input type="email" id="email" name="m_email" class="form-control rounded-3"
+                            placeholder="Nhập email Anh/Chị được cấp khi học">
+                        <div class="form-text text-muted small">Ví dụ: 647081@sv.vnua.edu.vn</div>
+                    </div>
+
+                    <!-- Số điện thoại -->
+                    <div class="mb-3">
+                        <label for="phone" class="form-label fw-semibold">Số điện thoại</label>
+                        <input type="text" id="phone" name="m_phone" class="form-control rounded-3"
+                            placeholder="Nhập số điện thoại liên hệ">
+                    </div>
+
+                    <!-- Ngày sinh -->
+                    <div class="mb-3">
+                        <label for="dob" class="form-label fw-semibold">Ngày sinh</label>
+                        <input type="date" id="dob" name="m_dob" class="form-control rounded-3">
+                    </div>
+
+                    <!-- Nút xác nhận -->
+                    <div class="text-center mt-4">
+                        <button type="submit" class="btn btn-primary w-50 rounded-pill">Xác nhận</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
-</div>
 
+    <!-- CSS animation -->
+    <style>
+        .modal-header-professional img {
+            border-radius: 50%;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            opacity: 0;
+            transform: translateY(-20px) scale(0.8);
+            transition: all 0.6s ease-out;
+        }
+
+        .school-name {
+            opacity: 0;
+            transform: translateY(-10px);
+            font-size: 0.95rem;
+            color: #033e15;
+            font-weight: 500;
+            transition: all 0.6s ease-out;
+            margin-bottom: 0.25rem;
+        }
+
+        .modal-title-professional {
+            opacity: 0;
+            transform: translateY(-5px);
+            transition: all 0.6s ease-out;
+            font-size: 1.25rem;
+            color: #1a1a1a;
+        }
+
+        .note-professional {
+            opacity: 0;
+            transition: opacity 0.8s ease-out;
+            font-size: 0.85rem;
+            display: block;
+            margin-bottom: 0;
+        }
+
+        .hr-professional {
+            width: 0;
+            border-top: 1px solid #dee2e6;
+            opacity: 0;
+            transition: width 0.5s ease-out, opacity 0.5s ease-out;
+            margin-top: 0.8rem;
+        }
+
+        .logo-professional:hover,
+        .modal-title-professional:hover {
+            transform: scale(1.05);
+            transition: all 0.3s ease;
+        }
+    </style>
+
+    <!-- JS -->
     <script>
-        function toggleOtherInput(checkbox, targetId = 'other_input_box') {
-            const inputBox = document.getElementById(targetId);
-            const inputField = inputBox?.querySelector('input, textarea');
-            if (checkbox.checked) {
-                inputBox.style.display = 'block';
-            } else {
-                inputBox.style.display = 'none';
-                if (inputField) inputField.value = '';
-            }
-        }
+        document.addEventListener('DOMContentLoaded', function() {
+            const modalEl = document.getElementById('verifyStudentModal');
+            const modal = new bootstrap.Modal(modalEl, {
+                backdrop: 'static',
+                keyboard: false
+            });
+            modal.show();
 
-        function setKhoaHocFromMaSV() {
-            const maSV = document.getElementById('ma_sv').value;
-            const khoaHocInput = document.getElementById('khoa_hoc');
+            // Animation modal header
+            modalEl.addEventListener('shown.bs.modal', function() {
+                const logo = modalEl.querySelector('.logo-professional');
+                const schoolName = modalEl.querySelector('.school-name');
+                const title = modalEl.querySelector('.modal-title-professional');
+                const note = modalEl.querySelector('.note-professional');
+                const hr = modalEl.querySelector('.hr-professional');
 
-            if (maSV.length >= 2 && !isNaN(maSV)) {
-                const khoa = maSV.substring(0, 2);
-                khoaHocInput.value = 'Khóa ' + khoa;
-            } else {
-                khoaHocInput.value = '';
-            }
-        }
+                setTimeout(() => {
+                    logo.style.opacity = 1;
+                    logo.style.transform = 'translateY(0) scale(1)';
+                }, 100);
+                setTimeout(() => {
+                    schoolName.style.opacity = 1;
+                    schoolName.style.transform = 'translateY(0)';
+                }, 300);
+                setTimeout(() => {
+                    title.style.opacity = 1;
+                    title.style.transform = 'translateY(0)';
+                }, 500);
+                setTimeout(() => {
+                    note.style.opacity = 1;
+                }, 700);
+                setTimeout(() => {
+                    hr.style.width = '100%';
+                    hr.style.opacity = 1;
+                }, 600);
+            });
+
+
+
+
+            // Xử lý submit form xác thực
+            $('#verifyStudentForm').on('submit', function(e) {
+                e.preventDefault(); // Ngăn reload trang
+
+                const full_name = $('#full_name').val().trim();
+                const mssv = $('#input-mssv').val().trim();
+                const email = $('#email').val().trim();
+                const phone = $('#phone').val().trim();
+                const dob = $('#dob').val().trim();
+
+                const filledCount = [full_name, mssv, email, phone, dob].filter(v => v !== '').length;
+                console.log('filledCount: ', full_name);
+                console.log('filledCount: ', phone);
+                console.log('filledCount: ', dob);
+                if (filledCount < 2) {
+                    $('#total-error').text('Vui lòng nhập ít nhất 2 thông tin để xác thực.').removeClass(
+                        'd-none');
+                    return;
+                } else {
+                    $('#total-error').addClass('d-none');
+                }
+
+                $.ajax({
+                    url: '/api/khao-sat/verify-student',
+                    method: 'POST',
+                    data: {
+                        full_name,
+                        mssv,
+                        email,
+                        phone,
+                        dob,
+                        _token: '{{ csrf_token() }}'
+                    },
+                    success: function(res) {
+                        if (res.success) {
+                            const modalInstance = bootstrap.Modal.getInstance(modalEl);
+                            modalInstance.hide();
+                            $('#form-wrapper').fadeIn();
+
+                            const data = res.student;
+                            if (data) {
+                                $('input[name="full_name"]').val(data.full_name);
+                                $('input[name="code_student"]').val(data.code);
+                                $('input[name="email"]').val(data.email);
+                                $('input[name="phone_number"]').val(data.phone);
+                                $('input[name="dob"]').val(data.dob);
+
+                                var gender = data.gender == 'male' ? 'Nam' : 'Nữ';
+                                $('input[name="gender"]').val(gender);
+
+                                // Lấy 2 số đầu của mã sinh viên để xác định khóa học
+                                var mssv = data.code; // Mã sinh viên
+                                var course = 'Khóa: ' + mssv.substring(0,
+                                    2); // Lấy 2 chữ số đầu
+                                $('input[name="course"]').val(
+                                    course); // Điền khóa học vào trường input
+                            }
+
+                            // Thêm flag hidden để form biết đã xác thực
+                            if ($('input[name="mssv_verified"]').length === 0) {
+                                $('<input>').attr({
+                                    type: 'hidden',
+                                    name: 'mssv_verified',
+                                    value: '1'
+                                }).appendTo("#form-wrapper form");
+                            }
+                        } else {
+                            $('#total-error').text(res.message || 'Thông tin không hợp lệ')
+                                .removeClass('d-none');
+                        }
+                    },
+                    error: function() {
+                        $('#total-error').text('Đã có lỗi xảy ra, vui lòng thử lại.')
+                            .removeClass('d-none');
+                    }
+                });
+            });
+        });
     </script>
 @endsection
 
@@ -1060,20 +996,34 @@
 
             // Toggle input "Khác"
             otherGroups.forEach(group => {
-                $(group.checkboxClass).on('change', function() {
-                    if ($(this).is(':checked')) {
+                const $checkbox = $(group.checkboxClass);
+                const input = $(group.inputId);
+
+                // Hàm xử lý hiển thị và required
+                const toggleGroup = () => {
+                    if ($checkbox.is(':checked')) {
                         $(group.wrapperId).show();
                     } else {
                         $(group.wrapperId).hide();
                         $(group.inputId).val('');
                     }
-                });
+                };
+
+                // 1. Chạy ngay khi page load / code chạy
+                // toggleGroup();
+
+                // 2. Gắn sự kiện change để cập nhật khi người dùng click
+                $checkbox.on('change', toggleGroup);
             });
+
+
+
+
+
 
             // Validate khi submit
             $('#form-wrapper').on('submit', function(e) {
                 let hasError = false;
-
                 otherGroups.forEach(group => {
                     const checkedCount = $(`input[name="${group.groupName}"]:checked`).length;
                     const isOtherChecked = $(group.checkboxClass).is(':checked');
@@ -1095,8 +1045,10 @@
                 });
 
                 if (hasError) {
+                    console.llog('hasError');
                     e.preventDefault();
                 }
+
             });
         });
 
@@ -1105,6 +1057,19 @@
                 var employedValue =
                     '{{ array_key_first(config('config.tinh_trang')) }}';
                 var selected = $('input[name="employment_status"]:checked').val();
+
+                // xóa required theo option : đang đi làm thì giữ nguynn, còn lại xóa
+                if (selected == employedValue) {
+                    $('.employment-details').find('input, select, textarea').attr('required', true);
+                } else {
+                    $('.employment-details').find('input, select, textarea').removeAttr('required');
+                }
+
+                $('.employment-details')
+                    .find('.other-input, input[type="checkbox"]')
+                    .removeAttr('required');
+
+
                 if (selected == employedValue) {
                     $('.employment-details').show();
                     $('#question-26').show();
