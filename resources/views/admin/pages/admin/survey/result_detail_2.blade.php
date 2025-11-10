@@ -353,7 +353,7 @@
 
         <!-- Title -->
         <div class="form-section">
-            <h5 style="text-align: center; font-size: 16px">Tên khảo sát: {{ $survey->title }}</h5>
+            <h5 style="text-align: center; font-size: 16px"> {{ $survey->title }}</h5>
             <p class="text-justify">
                 {{ $survey->description }}
             </p>
