@@ -29,7 +29,7 @@
         }
 
         /* Chỉ lấp lánh khi có class active-section */
-        .nav-item-header.active-section::before {
+        /* .nav-item-header.active-section::before {
             content: '';
             position: absolute;
             top: 0;
@@ -40,7 +40,7 @@
             transform: skewX(-20deg);
             animation: shine 2s infinite;
             pointer-events: none;
-        }
+        } */
 
         @keyframes shine {
             0% {
