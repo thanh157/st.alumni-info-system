@@ -58,7 +58,8 @@
         }
 
         .contact-info span:first-child {
-            align-self: center;
+            text-align: center !important
+            /* align-self: center; */
             padding-right: 0;
         }
 
