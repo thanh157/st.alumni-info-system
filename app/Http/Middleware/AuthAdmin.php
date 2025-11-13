@@ -18,10 +18,11 @@ class AuthAdmin
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (Auth::user()->role === 'super_admin' || Auth::user()->role === 'officer') {
+        $auth = Auth::user();
+        $authData = json_decode($auth->user_data, true);
+        if ($authData['role'] === 'super_admin' || $authData['role'] === 'officer') {
             return $next($request);
         }
-
         abort(403);
     }
 }
