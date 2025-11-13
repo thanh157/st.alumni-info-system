@@ -19,7 +19,7 @@ class AuthAdmin
     public function handle(Request $request, Closure $next): Response
     {
         $auth = Auth::user();
-        $authData = json_decode($auth->user_data, true);
+        $authData = $auth->user_data;
         if ($authData['role'] === 'super_admin' || $authData['role'] === 'officer') {
             return $next($request);
         }
