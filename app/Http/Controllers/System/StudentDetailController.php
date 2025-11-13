@@ -8,6 +8,7 @@ class StudentDetailController extends Controller
 {
     public function show($id)
     {
+        abort(404);
         $student = [
             'id' => $id,
             'full_name' => 'Nguyễn Văn A',
@@ -44,10 +45,9 @@ class StudentDetailController extends Controller
             ],
         ];
 
-        dd(1); 
+        dd(1);
 
         // Truyền đúng biến
         return view('admin.pages.admin.student-info', compact('student'));
     }
 }
-
