@@ -711,7 +711,7 @@
                         {{-- <h6 class="school-name">Học viện Nông nghiệp Việt Nam</h6> --}}
                         <h5 class="fw-bold modal-title-professional">Xác thực thông tin sinh viên</h5>
                         <small class="text-muted fst-italic note-professional">
-                            (Anh/Chị vui lòng điền đúng ít nhất 2 trong 5 thông tin để xác nhận <br>là sinh viên của Học
+                            (Anh/Chị vui lòng điền đúng ít nhất 2 thông tin để xác nhận <br>là sinh viên của Học
                             viện)
                         </small>
                         <hr class="hr-professional">
@@ -737,12 +737,12 @@
                         </div>
 
                         <!-- Email -->
-                        <div class="mb-3">
+                        {{-- <div class="mb-3">
                             <label for="email" class="form-label fw-semibold">Email</label>
                             <input type="email" id="email" name="m_email" class="form-control rounded-3"
                                 placeholder="Nhập email Anh/Chị được cấp khi học">
                             <div class="form-text text-muted small">Ví dụ: 647081@sv.vnua.edu.vn</div>
-                        </div>
+                        </div> --}}
 
                         <!-- Số điện thoại -->
                         <div class="mb-3">
@@ -865,11 +865,11 @@
 
                     const full_name = $('#full_name').val().trim();
                     const mssv = $('#input-mssv').val().trim();
-                    const email = $('#email').val().trim();
+                    // const email = $('#email').val().trim();
                     const phone = $('#phone').val().trim();
                     const dob = $('#dob').val().trim();
 
-                    const filledCount = [full_name, mssv, email, phone, dob].filter(v => v !== '').length;
+                    const filledCount = [full_name, mssv, phone, dob].filter(v => v !== '').length;
                     console.log('filledCount: ', full_name);
                     console.log('filledCount: ', phone);
                     console.log('filledCount: ', dob);
@@ -887,7 +887,7 @@
                         data: {
                             full_name,
                             mssv,
-                            email,
+                            // email,
                             phone,
                             dob,
                             _token: '{{ csrf_token() }}'
@@ -902,7 +902,7 @@
                                 if (data) {
                                     $('input[name="full_name"]').val(data.full_name);
                                     $('input[name="code_student"]').val(data.code);
-                                    $('input[name="email"]').val(data.email);
+                                    // $('input[name="email"]').val(data.email);
                                     $('input[name="phone_number"]').val(data.phone);
                                     $('input[name="dob"]').val(data.dob);
 
@@ -1031,7 +1031,7 @@
                         data: {
                             survey_id: survey_id,
                             mssv: mssv,
-                            email: email,
+                            // email: email,
                             phone: phone,
                             dob: dob,
                             citizen_identification: cccd,
@@ -1050,7 +1050,7 @@
                                 if (data) {
                                     $('input[name="code_student"]').val(data.code);
                                     $('input[name="full_name"]').val(data.full_name);
-                                    $('input[name="email"]').val(data.email);
+                                    // $('input[name="email"]').val(data.email);
                                     $('input[name="phone_number"]').val(data.phone);
                                     $('input[name="gender"]').val(data.gender);
                                     $('input[name="dob"]').val(data.dob);
