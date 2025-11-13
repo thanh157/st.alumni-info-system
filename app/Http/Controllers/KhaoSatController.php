@@ -45,7 +45,7 @@ class KhaoSatController extends Controller
         try {
             $full_name = $request->input('full_name');
             $mssv = $request->input('mssv');
-            $email = $request->input('email');
+            // $email = $request->input('email');
             $phone = $request->input('phone');
             $dob = $request->input('dob');
 
@@ -54,9 +54,9 @@ class KhaoSatController extends Controller
             // Lấy student dựa trên MSSV nếu có, hoặc fullname nếu MSSV trống
             $student = Student::query();
 
-            if (!empty($email)) {
-                $student->where('email', $email);
-            }
+            // if (!empty($email)) {
+            //     $student->where('email', $email);
+            // }
 
             if (!empty($phone)) {
                 $student->where('phone', $phone);
