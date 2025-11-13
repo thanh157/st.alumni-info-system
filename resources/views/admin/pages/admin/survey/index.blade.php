@@ -59,8 +59,9 @@
                                     @endif
                                 </td>
 
-                                <td>{{ $item->start_time }}</td>
-                                <td>{{ $item->end_time }}</td>
+                                <td>{{ \Carbon\Carbon::parse($item->start_time)->format('d/m/Y') }}</td>
+                                <td>{{ \Carbon\Carbon::parse($item->end_time)->format('d/m/Y') }}</td>
+
                                 <td>
                                     @php
                                         $totalPhanHoi = App\Models\EmploymentSurveyResponse::where(
