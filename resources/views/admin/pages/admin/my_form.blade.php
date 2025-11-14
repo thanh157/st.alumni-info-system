@@ -59,8 +59,8 @@
 
         .contact-info span:first-child {
             text-align: center !important
-            /* align-self: center; */
-            padding-right: 0;
+                /* align-self: center; */
+                padding-right: 0;
         }
 
         /* --- Responsive --- */
@@ -107,8 +107,8 @@
             }
 
             /* .form-title h5 {
-                            font-size: 0.9rem;
-                        } */
+                                    font-size: 0.9rem;
+                                } */
 
             .first-line-indent {
                 text-indent: 18px;
@@ -154,8 +154,8 @@
             }
 
             /* .form-title h5 {
-                            font-size: 0.4rem;
-                        } */
+                                    font-size: 0.4rem;
+                                } */
 
             .first-line-indent {
                 text-indent: 12px;
@@ -290,31 +290,36 @@
                             </div>
                             <div class="col-12 col-md-6 mb-3">
                                 <label class="form-label">8. Tên ngành được đào tạo</label>
-                                <select name="training_industry_id" class="form-control" id="ten_nghanh_dao_tao" required>
-                                    <option value="" readonly="readonly">-- Chọn ngành đào tạo --</option>
-                                    @foreach ($major as $item)
-                                        <option value="{{ $item->id }}">{{ $item->name }}</option>
-                                    @endforeach
-                                </select>
+                                <input type="text" id="ten_nganh_hien_thi" class="form-control"
+                                    placeholder="" readonly>
+                                <input type="hidden" name="training_industry_id" id="training_industry_id">
                             </div>
                             <script>
-                                const maNgheSelect = document.getElementById('ma_nghanh_dao_tao');
-                                const tenNgheSelect = document.getElementById('ten_nghanh_dao_tao');
+                                const maNgheSelect = document.getElementById('ma_nghanh_dao_tao'); // mã ngành bạn đã có ở câu 5
+                                const tenNganhDisplay = document.getElementById('ten_nganh_hien_thi'); // hiển thị
+                                const tenNganhHidden = document.getElementById('training_industry_id'); // gửi về server
 
-                                // Tạo map mã ngành -> tên ngành id trong select tên ngành
+                                // Map mã ngành -> tên ngành + ID trong DB
                                 const majorMap = {
-                                    '7480201': '{{ $major->firstWhere('name', 'Công nghệ thông tin')?->id }}',
-                                    '7480102': '{{ $major->firstWhere('name', 'Mạng máy tính và truyền thông dữ liệu')?->id }}'
+                                    "7480201": {
+                                        id: 1,
+                                        name: "Công nghệ thông tin"
+                                    },
+                                    "7480102": {
+                                        id: 2,
+                                        name: "Mạng máy tính và truyền thông dữ liệu"
+                                    }
                                 };
 
-                                maNgheSelect.addEventListener('change', function() {
-                                    const selectedCode = this.value;
-                                    const majorId = majorMap[selectedCode];
+                                maNgheSelect.addEventListener("change", function() {
+                                    const code = this.value;
 
-                                    if (majorId) {
-                                        tenNgheSelect.value = majorId; // tự chọn tên ngành
+                                    if (majorMap[code]) {
+                                        tenNganhDisplay.value = majorMap[code].name; // hiện tên ngành
+                                        tenNganhHidden.value = majorMap[code].id; // gửi ID về server
                                     } else {
-                                        tenNgheSelect.selectedIndex = 0; // reset
+                                        tenNganhDisplay.value = "";
+                                        tenNganhHidden.value = "";
                                     }
                                 });
                             </script>
