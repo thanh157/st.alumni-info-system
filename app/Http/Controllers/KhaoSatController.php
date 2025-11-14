@@ -45,62 +45,106 @@ class KhaoSatController extends Controller
         try {
             $full_name = $request->input('full_name');
             $mssv = $request->input('mssv');
-            // $email = $request->input('email');
             $phone = $request->input('phone');
             $dob = $request->input('dob');
 
+            // Đếm số trường đã nhập
+            $inputFields = array_filter([
+                'full_name' => $full_name,
+                'mssv' => $mssv,
+                'phone' => $phone,
+                'dob' => $dob,
+            ], function ($value) {
+                return !empty($value);
+            });
 
-
-            // Lấy student dựa trên MSSV nếu có, hoặc fullname nếu MSSV trống
-            $student = Student::query();
-
-            // if (!empty($email)) {
-            //     $student->where('email', $email);
-            // }
-
-            if (!empty($phone)) {
-                $student->where('phone', $phone);
-            }
-            if (!empty($mssv)) {
-                $student->where('code', $mssv);
-            }
-
-            if (!empty($full_name)) {
-                $student->where('full_name', $full_name);
-            }
-
-            if (!empty($dob)) {
-                $student->where('dob', $dob);
-            }
-
-            $student = $student->first();
-            if (!$student) {
+            // Kiểm tra phải có ít nhất 2 trường được nhập
+            if (count($inputFields) < 2) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Anh/chị vui lòng kiểm tra lại thông tin đã nhập.',
+                    'message' => 'Vui lòng nhập ít nhất 2 thông tin để xác thực.',
                 ]);
             }
 
+            // Tìm tất cả sinh viên có thể khớp với BẤT KỲ trường nào đã nhập
+            $students = Student::query()
+                ->where(function ($query) use ($full_name, $mssv, $phone, $dob) {
+                    $hasCondition = false;
 
-            // $invalidFields = [];
-            // if ($email && $student->email !== $email) $invalidFields[] = 'email';
-            // if ($phone && $student->phone_number !== $phone) $invalidFields[] = 'phone';
-            // if ($dob && $student->dob !== $dob) $invalidFields[] = 'dob';
+                    if (!empty($full_name)) {
+                        $query->orWhere('full_name', $full_name);
+                        $hasCondition = true;
+                    }
+                    if (!empty($mssv)) {
+                        $query->orWhere('code', $mssv);
+                        $hasCondition = true;
+                    }
+                    if (!empty($phone)) {
+                        $query->orWhere('phone', $phone);
+                        $hasCondition = true;
+                    }
+                    if (!empty($dob)) {
+                        $query->orWhere('dob', $dob);
+                        $hasCondition = true;
+                    }
 
-            // if (count($invalidFields) > 0) {
-            //     return response()->json([
-            //         'success' => false,
-            //         'invalid_fields' => $invalidFields,
-            //         'message' => 'Thông tin không khớp: ' . implode(', ', $invalidFields),
-            //     ]);
-            // }
+                    // Fallback nếu không có điều kiện nào (không nên xảy ra do đã check ở trên)
+                    if (!$hasCondition) {
+                        $query->whereRaw('1 = 0'); // Trả về rỗng
+                    }
+                })
+                ->get();
+
+            if ($students->isEmpty()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Không tìm thấy sinh viên khớp với bất kỳ thông tin nào đã nhập.',
+                ]);
+            }
+
+            // Kiểm tra từng sinh viên tìm được, tính điểm khớp
+            $bestMatch = null;
+            $maxMatchCount = 0;
+
+            foreach ($students as $student) {
+                $matchCount = 0;
+
+                // Đếm số trường khớp
+                if (!empty($full_name) && $student->full_name === $full_name) {
+                    $matchCount++;
+                }
+                if (!empty($mssv) && $student->code === $mssv) {
+                    $matchCount++;
+                }
+                if (!empty($phone) && $student->phone === $phone) {
+                    $matchCount++;
+                }
+                if (!empty($dob) && $student->dob === $dob) {
+                    $matchCount++;
+                }
+
+                // Cập nhật sinh viên khớp tốt nhất
+                if ($matchCount > $maxMatchCount) {
+                    $maxMatchCount = $matchCount;
+                    $bestMatch = $student;
+                }
+            }
+
+            // Kiểm tra xem có đủ 2 trường khớp không
+            if ($maxMatchCount >= 2) {
+                return response()->json([
+                    'success' => true,
+                    'student' => $bestMatch,
+                    'matched_fields' => $maxMatchCount,
+                ]);
+            }
 
             return response()->json([
-                'success' => true,
-                'student' => $student,
+                'success' => false,
+                'message' => 'Thông tin không khớp. Vui lòng kiểm tra lại ít nhất 2 thông tin chính xác.',
             ]);
         } catch (\Exception $e) {
-            \Log::error($e);
+            \Log::error('Verify student error: ' . $e->getMessage());
             return response()->json([
                 'success' => false,
                 'message' => 'Đã có lỗi xảy ra, vui lòng thử lại.',
