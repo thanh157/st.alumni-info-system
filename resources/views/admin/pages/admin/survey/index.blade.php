@@ -197,9 +197,19 @@
         }
 
         @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-10px); }
-            75% { transform: translateX(10px); }
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            25% {
+                transform: translateX(-10px);
+            }
+
+            75% {
+                transform: translateX(10px);
+            }
         }
 
         .is-invalid {
@@ -250,8 +260,8 @@
                                     'survey_period_id',
                                     $item->id,
                                 )->count();
-                            
-                                $percentage = $item->total_graduations > 0 ? round(($totalPhanHoi /  $item->total_graduations) * 100, 1) : 0;
+
+                                $percentage = $item->total_graduations > 0 ? round(($totalPhanHoi / $item->total_graduations) * 100, 1) : 0;
                             @endphp
                             <tr>
                                 <td>{{ $item->title }}</td>
@@ -263,8 +273,7 @@
                                 <td>
                                     @if ($item->graduations->count() > 0)
                                         @foreach ($item->graduations as $dot)
-                                            <a target="_blank"
-                                                href="{{ route('admin.graduation-student.show', ['id' => $dot->id]) }}"
+                                            <a target="_blank" href="{{ route('admin.graduation-student.show', ['id' => $dot->id]) }}"
                                                 class="d-block text-decoration-none text-primary mb-1">
                                                 {{ $dot->name }}
                                             </a>
@@ -274,23 +283,24 @@
                                         @endforeach
                                     @endif
                                 </td>
-                                
+
                                 <!-- Bắt đầu -->
                                 <td class="text-center">
                                     {{ \Carbon\Carbon::parse($item->start_time)->format('d/m/Y') }}
                                 </td>
-                                
+
                                 <!-- Kết thúc -->
                                 <td class="text-center">
                                     {{ \Carbon\Carbon::parse($item->end_time)->format('d/m/Y') }}
                                 </td>
-                                
+
                                 <!-- Phản hồi (Badge nhỏ giống Trạng thái) -->
                                 <td class="text-center">
                                     <div class="response-wrapper">
                                         <span class="response-percentage">{{ $percentage }}%</span>
                                         <span class="response-tooltip">
-                                            <span class="tooltip-count">{{ $totalPhanHoi }}</span> / {{  $item->total_graduations }} sinh viên
+                                            <span class="tooltip-count">{{ $totalPhanHoi }}</span> /
+                                            {{  $item->total_graduations }} sinh viên
                                         </span>
                                     </div>
                                 </td>
@@ -300,15 +310,13 @@
                                     <div class="action-group">
                                         <!-- 1. Xem trước form -->
                                         <a href="{{ route('admin.survey.form', ['id' => $item->id]) }}"
-                                            class="btn btn-sm btn-outline-primary btn-action" 
-                                            title="Xem trước form"
+                                            class="btn btn-sm btn-outline-primary btn-action" title="Xem trước form"
                                             target="_blank">
                                             <i class="bi bi-eye"></i>
                                         </a>
 
                                         <!-- 2. Lấy link khảo sát -->
-                                        <button class="btn btn-sm btn-outline-info btn-action" 
-                                            title="Lấy link khảo sát"
+                                        <button class="btn btn-sm btn-outline-info btn-action" title="Lấy link khảo sát"
                                             data-link="{{ route('my_form', ['survey_id' => $item->id]) }}"
                                             onclick="copySurveyLink(this)">
                                             <i class="bi bi-link-45deg"></i>
@@ -317,13 +325,11 @@
                                         <!-- 3. Xem kết quả (chỉ hiện khi có phản hồi) -->
                                         @if ($totalPhanHoi > 0)
                                             <a href="{{ route('admin.survey.result', ['id' => $item->id]) }}"
-                                                class="btn btn-sm btn-outline-success btn-action" 
-                                                title="Xem kết quả phản hồi">
+                                                class="btn btn-sm btn-outline-success btn-action" title="Xem kết quả phản hồi">
                                                 <i class="bi bi-bar-chart-fill"></i>
                                             </a>
                                         @else
-                                            <button class="btn btn-sm btn-outline-secondary btn-action" 
-                                                title="Chưa có phản hồi"
+                                            <button class="btn btn-sm btn-outline-secondary btn-action" title="Chưa có phản hồi"
                                                 disabled>
                                                 <i class="bi bi-bar-chart"></i>
                                             </button>
@@ -331,15 +337,13 @@
 
                                         <!-- Dropdown menu (3 chấm) -->
                                         <div class="dropdown">
-                                            <button class="btn btn-sm btn-outline-secondary btn-action dropdown-toggle" 
-                                                type="button" 
-                                                id="dropdownMenu{{ $item->id }}" 
-                                                data-bs-toggle="dropdown" 
-                                                aria-expanded="false"
-                                                title="Thêm tùy chọn">
+                                            <button class="btn btn-sm btn-outline-secondary btn-action dropdown-toggle"
+                                                type="button" id="dropdownMenu{{ $item->id }}" data-bs-toggle="dropdown"
+                                                aria-expanded="false" title="Thêm tùy chọn">
                                                 <i class="bi bi-three-dots-vertical"></i>
                                             </button>
-                                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenu{{ $item->id }}">
+                                            <ul class="dropdown-menu dropdown-menu-end"
+                                                aria-labelledby="dropdownMenu{{ $item->id }}">
                                                 <!-- Gửi email (Chức năng hay dùng) -->
                                                 <li>
                                                     <form action="{{ route('send_mail', $item->id) }}" method="POST"
@@ -354,26 +358,37 @@
                                                     </form>
                                                 </li>
 
-                                                <li><hr class="dropdown-divider"></li>
+                                                <li>
+                                                    <hr class="dropdown-divider">
+                                                </li>
 
                                                 <!-- Chỉnh sửa -->
                                                 <li>
-                                                    <a class="dropdown-item" 
+                                                    <a class="dropdown-item"
                                                         href="{{ route('admin.survey.edit', ['id' => $item->id]) }}">
                                                         <i class="bi bi-pencil-square text-primary"></i>
                                                         <span>Chỉnh sửa</span>
                                                     </a>
                                                 </li>
 
-                                                <li><hr class="dropdown-divider"></li>
+                                                <li>
+                                                    <hr class="dropdown-divider">
+                                                </li>
 
                                                 <!-- Xóa (Cuối cùng) -->
                                                 <li>
-                                                    <a class="dropdown-item text-danger" 
-                                                        href="javascript:void(0);"
+                                                    <a class="dropdown-item text-danger" href="javascript:void(0);"
                                                         onclick="showDeleteModal('{{ $item->id }}', '{{ addslashes($item->title) }}')">
                                                         <i class="bi bi-trash"></i>
                                                         <span>Xóa khảo sát</span>
+                                                    </a>
+                                                </li>
+
+                                                <li>
+                                                    <a class="dropdown-item"
+                                                        href="{{ route('admin.surveys.downloadAllPdfs', $item->id) }}" download>
+                                                        <i class="bi bi-file-earmark-zip-fill text-info"></i>
+                                                        <span>Tải toàn bộ file PDF (ZIP)</span>
                                                     </a>
                                                 </li>
                                             </ul>
@@ -384,7 +399,7 @@
                         @endforeach
                     </tbody>
                 </table>
-                
+
                 {{-- Phân trang --}}
                 <div class="d-flex justify-content-center mt-3">
                     {{ $data->links('pagination::bootstrap-5') }}
@@ -409,7 +424,7 @@
                         <div class="d-flex align-items-start gap-2">
                             <i class="bi bi-exclamation-triangle-fill"></i>
                             <div>
-                                <strong>Cảnh báo:</strong> Hành động này không thể hoàn tác! 
+                                <strong>Cảnh báo:</strong> Hành động này không thể hoàn tác!
                                 <br>Tất cả dữ liệu phản hồi của đợt khảo sát này sẽ bị xóa vĩnh viễn.
                             </div>
                         </div>
@@ -421,14 +436,11 @@
                     <p class="mb-2">
                         <strong>Để xác nhận, vui lòng nhập chính xác tên đợt khảo sát bên trên:</strong>
                     </p>
-                    <input type="text" 
-                        class="form-control confirm-input" 
-                        id="confirmSurveyName" 
-                        placeholder="Nhập tên đợt khảo sát..."
-                        autocomplete="off">
-                    
+                    <input type="text" class="form-control confirm-input" id="confirmSurveyName"
+                        placeholder="Nhập tên đợt khảo sát..." autocomplete="off">
+
                     <small class="text-muted d-block mt-2">
-                        <i class="bi bi-info-circle"></i> 
+                        <i class="bi bi-info-circle"></i>
                         Nhập chính xác tên (phân biệt chữ hoa/thường)
                     </small>
 
@@ -462,7 +474,7 @@
                 showToast('Không có đường dẫn để sao chép.', 'error');
                 return;
             }
-            
+
             navigator.clipboard.writeText(link).then(() => {
                 showToast('✓ Link khảo sát đã được sao chép!', 'success');
             }).catch(() => {
@@ -473,12 +485,12 @@
         function showDeleteModal(surveyId, surveyName) {
             currentSurveyName = surveyName;
             deleteFormAction = '{{ route('admin.survey.destroy', ':id') }}'.replace(':id', surveyId);
-            
+
             document.getElementById('surveyNameDisplay').textContent = surveyName;
             document.getElementById('confirmSurveyName').value = '';
             document.getElementById('errorMessage').classList.add('d-none');
             document.getElementById('deleteForm').action = deleteFormAction;
-            
+
             const modal = new bootstrap.Modal(document.getElementById('deleteModal'));
             modal.show();
 
@@ -491,7 +503,7 @@
         function confirmDelete() {
             const inputName = document.getElementById('confirmSurveyName').value;
             const errorMessage = document.getElementById('errorMessage');
-            
+
             if (inputName === currentSurveyName) {
                 // Tên khớp - cho phép xóa
                 document.getElementById('deleteForm').submit();
@@ -499,7 +511,7 @@
                 // Tên không khớp - hiện thông báo lỗi
                 errorMessage.classList.remove('d-none');
                 document.getElementById('confirmSurveyName').classList.add('is-invalid');
-                
+
                 // Shake animation
                 const input = document.getElementById('confirmSurveyName');
                 input.style.animation = 'shake 0.5s';
@@ -510,16 +522,16 @@
         }
 
         // Xóa error khi người dùng gõ lại
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const confirmInput = document.getElementById('confirmSurveyName');
             if (confirmInput) {
-                confirmInput.addEventListener('input', function() {
+                confirmInput.addEventListener('input', function () {
                     document.getElementById('errorMessage').classList.add('d-none');
                     this.classList.remove('is-invalid');
                 });
 
                 // Enter để submit
-                confirmInput.addEventListener('keypress', function(e) {
+                confirmInput.addEventListener('keypress', function (e) {
                     if (e.key === 'Enter') {
                         e.preventDefault();
                         confirmDelete();
@@ -531,26 +543,26 @@
         function showToast(message, type = 'success') {
             const bgColor = type === 'success' ? '#28a745' : '#dc3545';
             const icon = type === 'success' ? 'check-circle-fill' : 'x-circle-fill';
-            
+
             const toastHTML = `
-                <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 9999">
-                    <div class="toast show align-items-center text-white border-0" 
-                         style="background-color: ${bgColor}; box-shadow: 0 4px 12px rgba(0,0,0,0.15); border-radius: 8px;" 
-                         role="alert">
-                        <div class="d-flex">
-                            <div class="toast-body d-flex align-items-center gap-2 py-3">
-                                <i class="bi bi-${icon}"></i>
-                                <span>${message}</span>
+                            <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 9999">
+                                <div class="toast show align-items-center text-white border-0" 
+                                     style="background-color: ${bgColor}; box-shadow: 0 4px 12px rgba(0,0,0,0.15); border-radius: 8px;" 
+                                     role="alert">
+                                    <div class="d-flex">
+                                        <div class="toast-body d-flex align-items-center gap-2 py-3">
+                                            <i class="bi bi-${icon}"></i>
+                                            <span>${message}</span>
+                                        </div>
+                                        <button type="button" class="btn-close btn-close-white me-2 m-auto" 
+                                                onclick="this.closest('.toast').remove()"></button>
+                                    </div>
+                                </div>
                             </div>
-                            <button type="button" class="btn-close btn-close-white me-2 m-auto" 
-                                    onclick="this.closest('.toast').remove()"></button>
-                        </div>
-                    </div>
-                </div>
-            `;
-            
+                        `;
+
             document.body.insertAdjacentHTML('beforeend', toastHTML);
-            
+
             setTimeout(() => {
                 const toast = document.querySelector('.toast');
                 if (toast) {
