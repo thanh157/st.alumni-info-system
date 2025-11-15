@@ -28,28 +28,43 @@ class SurveyResultController extends Controller
 {
     public function index(Request $request, $surveyId)
     {
+
+
         $query = EmploymentSurveyResponse::query()
             ->with(['student'])
             ->where('survey_period_id', $surveyId);
 
-        // Lọc theo mã sinh viên
-        if ($request->filled('student_code')) {
-            $query->whereHas('student', function ($q) use ($request) {
-                $q->where('student_code', 'like', '%' . $request->student_code . '%');
+
+        // Tìm kiếm tổng hợp (search)
+        $searchQuery = $request->input('search');
+
+        if ($searchQuery) {
+            $query->where(function ($q) use ($searchQuery) {
+                $q->where('code_student', 'like', '%' . $searchQuery . '%')
+                    ->orWhere('full_name', 'like', '%' . $searchQuery . '%')
+                    ->orWhere('email', 'like', '%' . $searchQuery . '%')
+                    ->orWhere('phone_number', 'like', '%' . $searchQuery . '%')
+                    ->orWhere('identification_card_number', 'like', '%' . $searchQuery . '%');
             });
         }
+        // // Lọc theo mã sinh viên
+        // if ($request->filled('student_code')) {
+        //     $query->whereHas('student', function ($q) use ($request) {
+        //         $q->where('student_code', 'like', '%' . $request->student_code . '%');
+        //     });
+        // }
 
-        // Lọc theo tên sinh viên
-        if ($request->filled('student_name')) {
-            $query->whereHas('student', function ($q) use ($request) {
-                $q->where('full_name', 'like', '%' . $request->student_name . '%');
-            });
-        }
+        // // Lọc theo tên sinh viên
+        // if ($request->filled('student_name')) {
+        //     $query->whereHas('student', function ($q) use ($request) {
+        //         $q->where('full_name', 'like', '%' . $request->student_name . '%');
+        //     });
+        // }
 
-        // Lọc theo đợt tốt nghiệp
-        if ($request->filled('graduation_id')) {
-            $query->where('graduation_id', $request->graduation_id);
-        }
+        // // Lọc theo đợt tốt nghiệp
+        // if ($request->filled('graduation_id')) {
+        //     $query->where('graduation_id', $request->graduation_id);
+        // }
 
         $data = $query->orderBy('id', 'desc')->paginate(15);
 
