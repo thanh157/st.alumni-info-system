@@ -62,4 +62,5 @@ class Survey extends Model
         return $this->status == self::STATUS_INACTIVE;
     }
 
+
 }

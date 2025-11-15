@@ -22,6 +22,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Carbon;
 use App\Models\Graduation;
 use Barryvdh\DomPDF\Facade\Pdf;
+use ZipArchive;
 
 class SurveyResultController extends Controller
 {
@@ -113,6 +114,114 @@ class SurveyResultController extends Controller
             ]);
 
 
-        return $pdf->download('khao_sat_' . $survey_id . '.pdf');
+        return $pdf->download($response->code_student . '_' . $response->full_name . '.pdf');
+    }
+    // public function downloadAllPdfs($survey_id)
+    // {
+
+    //     $survey = Survey::findOrFail($survey_id);
+    //     $responses = EmploymentSurveyResponse::with('student')
+
+    //     ->where('survey_period_id', $survey_id)->get();
+    //     set_time_limit(300);
+
+    //     ini_set('memory_limit', '512M');
+
+    //     if ($responses->isEmpty()) {
+    //         return back()->with('error', 'Khảo sát này chưa có thông tin !');
+    //     }
+
+    //     $zipFileName = 'Phieu-khao-sat-viec-lam-SVTN.zip';
+    //     $zipFilePath = storage_path('app/temp/' . $zipFileName);
+
+    //     if (!File::exists(storage_path('app/temp'))) {
+    //         File::makeDirectory(storage_path('app/temp'), 0755, true);
+    //     }
+
+    //     $zip = new ZipArchive;
+    //     if ($zip->open($zipFilePath, ZipArchive::CREATE | ZipArchive::OVERWRITE) !== TRUE) {
+    //         return back()->with('error', 'Không thể tạo file zip.');
+    //     }
+
+    //     foreach ($responses as $response) {
+    //         $pdf = Pdf::loadView('admin.pages.admin.survey.result_detail_2', [
+    //             'response' => $response,
+    //             'survey' => $survey
+    //         ]);
+
+    //         $pdfContent = $pdf->output();
+
+    //         $pdfFileName = 'SV_' . $response->code_student . '.pdf';
+
+    //         $zip->addFromString($pdfFileName, $pdfContent);
+    //     }
+
+    //     $zip->close();
+    //     $cookie = cookie('download_token', 'completed', 1, '/');
+    //     return response()
+    //         ->download($zipFilePath, $zipFileName)
+    //         ->deleteFileAfterSend(true)
+    //     ;
+    // }
+
+    public function downloadAllPdfs($survey_id)
+    {
+        $survey = Survey::findOrFail($survey_id);
+
+        $responses = EmploymentSurveyResponse::with('student')
+            ->where('survey_period_id', $survey_id)
+            ->get();
+
+        set_time_limit(300);
+        ini_set('memory_limit', '512M');
+
+        if ($responses->isEmpty()) {
+            return back()->with('error', 'Khảo sát này chưa có thông tin !');
+        }
+
+        $major = Major::query()->pluck('name', 'id')->toArray();
+
+        $yearString = $responses->first()->nam_tot_nghiep ?? 'N/A';
+
+        $zipFileName = 'Phieu-khao-sat-viec-lam-SVTN' . $yearString . '.zip';
+        $zipFilePath = storage_path('app/temp/' . $zipFileName);
+
+        if (!File::exists(storage_path('app/temp'))) {
+            File::makeDirectory(storage_path('app/temp'), 0755, true);
+        }
+
+        $zip = new ZipArchive;
+        if ($zip->open($zipFilePath, ZipArchive::CREATE | ZipArchive::OVERWRITE) !== TRUE) {
+            return back()->with('error', 'Không thể tạo file zip.');
+        }
+
+        foreach ($responses as $response) {
+
+            $viewData = [
+                'response' => $response,
+                'student' => $response->student,
+                'survey' => $survey,
+                'major' => $major,
+            ];
+
+            $pdf = Pdf::loadView('admin.pages.admin.survey.result_detail_2', $viewData)
+                ->setOptions([
+                    'defaultFont' => 'DejaVu Sans',
+                    'isHtml5ParserEnabled' => true,
+                    'isPhpEnabled' => true,
+                    'isRemoteEnabled' => true,
+                    'defaultPaperSize' => 'a4',
+                ]);
+
+            $pdfContent = $pdf->output();
+            $pdfFileName = $response->code_student . '_' . $response->full_name . '.pdf';
+            $zip->addFromString($pdfFileName, $pdfContent);
+        }
+
+        $zip->close();
+
+        return response()
+            ->download($zipFilePath, $zipFileName)
+            ->deleteFileAfterSend(true);
     }
 }

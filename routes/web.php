@@ -257,3 +257,6 @@ Route::get('ket-qua/{id}', [SurveyResultController::class, 'show'])->name('resul
 Route::any('exportPdf_v2/{resultId}', [SurveyResultController::class, 'exportPdf'])->name('export_pdf_v2');
 Route::get('/export-survey', [ReportController::class, 'export'])->name('surveys.export');
 Route::get('/report/export', [ReportController::class, 'export'])->name('surveys.export');
+// tải hết file pdf 
+Route::get('/admin/surveys/{survey}/download-all-pdfs', [SurveyResultController::class, 'downloadAllPdfs'])
+    ->name('admin.surveys.downloadAllPdfs');
