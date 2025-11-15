@@ -96,7 +96,7 @@
                                     <i class="bi bi-award-fill"></i>
                                 </a>
                                 <a href="{{ route('admin.survey.result_detail', ['id' => $item->id]) }}"
-                                    class="btn btn-sm btn-outline-info" title="Xem chi tiết kết quả">
+                                    class="btn btn-sm btn-outline-info" title="Xem kết quả phản hồi">
                                     <i class="bi bi-info-lg"></i>
                                 </a>
                                 <button class="btn btn-sm btn-outline-danger" title="Xuất PDF"

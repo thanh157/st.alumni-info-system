@@ -60,7 +60,7 @@
         <!-- 10. Tình trạng việc làm hiện tại -->
         <div class="mb-4">
             <label class="form-label fw-bold">10. Anh/Chị vui lòng cho biết tình trạng việc làm hiện tại</label>
-            @php $tinh_trang = ['Đã có việc làm', 'Đang học tiếp/học văn bằng 2', 'Chưa có việc làm', 'Chưa đi làm']; @endphp
+            @php $tinh_trang = ['Đã có việc làm', 'Đang học tiếp/học văn bằng 2', 'Chưa có việc làm', 'Chưa đi tìm việc']; @endphp
             @foreach ($tinh_trang as $index => $value)
                 <div class="form-check mb-2">
                     <input class="form-check-input" type="radio" name="vieclam_hientai"
