@@ -60,7 +60,8 @@
                         ← Quay lại ds khảo sát
                     </a>
                 @endif
-                <a id="dowloadzip" href="{{ route('admin.surveys.downloadAllPdfs', $survey->id) }}" class="btn btn-success">
+                <a id="dowloadzip" href="{{ route('admin.surveys.downloadAllPdfs', $survey->id) }}" class="btn btn-success"
+                    download>
                     <i class="bi bi-file-earmark-zip-fill"></i> Tải tất cả PDF (Zip)
                 </a>
             </div>

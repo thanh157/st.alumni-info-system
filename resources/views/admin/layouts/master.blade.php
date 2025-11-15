@@ -9,7 +9,8 @@
     <!--/Main navbar-->
 
     <!-- Loading overlay -->
-    <div id="loading-overlay" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;z-index:1050;background:rgba(255,255,255,0.8);display:flex;align-items:center;justify-content:center;">
+    <div id="loading-overlay"
+        style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;z-index:1050;background:rgba(255,255,255,0.8);display:flex;align-items:center;justify-content:center;">
         <div class="wave-loader">
             <span></span><span></span><span></span><span></span><span></span>
         </div>
@@ -21,6 +22,7 @@
             justify-content: center;
             align-items: center;
         }
+
         .wave-loader span {
             display: block;
             width: 5px;
@@ -29,18 +31,38 @@
             background: #0d6efd;
             animation: wave 1.2s infinite ease-in-out;
         }
+
         table thead tr td {
             font-weight: 600;
         }
 
-        .wave-loader span:nth-child(2) { animation-delay: -1.1s; }
-        .wave-loader span:nth-child(3) { animation-delay: -1.0s; }
-        .wave-loader span:nth-child(4) { animation-delay: -0.9s; }
-        .wave-loader span:nth-child(5) { animation-delay: -0.8s; }
+        .wave-loader span:nth-child(2) {
+            animation-delay: -1.1s;
+        }
+
+        .wave-loader span:nth-child(3) {
+            animation-delay: -1.0s;
+        }
+
+        .wave-loader span:nth-child(4) {
+            animation-delay: -0.9s;
+        }
+
+        .wave-loader span:nth-child(5) {
+            animation-delay: -0.8s;
+        }
 
         @keyframes wave {
-            0%, 40%, 100% { transform: scaleY(0.4); }
-            20% { transform: scaleY(1); }
+
+            0%,
+            40%,
+            100% {
+                transform: scaleY(0.4);
+            }
+
+            20% {
+                transform: scaleY(1);
+            }
         }
     </style>
 
@@ -81,9 +103,7 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            const links = document.querySelectorAll("a[href]:not([target='_blank']):not([href^='#']):not([href^='javascript'])");
-
-            links.forEach(link => {
+            const links = document.querySelectorAll("a[href]:not([target='_blank']):not([href^='#']):not([href^='javascript']):not([download])"); links.forEach(link => {
                 link.addEventListener("click", function (e) {
                     const href = link.getAttribute("href");
                     if (href && !href.startsWith("#") && !href.startsWith("javascript")) {
