@@ -9,12 +9,15 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Graduation;
+use App\Models\GraduationSurvey;
 use App\Services\StudentService;
 use Illuminate\Support\Facades\Http;
 use Throwable;
 
 class SurveyController extends Controller
 {
+    public function __construct (private StudentService $studentService) {}
+
     public function index()
     {
         $data = Survey::with(['graduations'=>function( $query){
@@ -22,57 +25,50 @@ class SurveyController extends Controller
         }
         , 'employmentSurveyResponse'])->orderBy('title', 'desc')->paginate(10);
         $viewData = [
-            'data' => $data
+            'data' => $data,
         ];
         return view('admin.pages.admin.survey.index', $viewData);
     }
 
-    private function getAllGraduations()
+    private function getAllGraduations(): array
     {
-        try {
-            $user = auth()->user();
+        $apiUrl = config('auth.student.ip') . '/api/v1/external/graduation-ceremonies';
+        return $this->fetchPaginatedApi($apiUrl);
+    }
+    
 
-            // Nếu chưa có token thì gọi lại verify
-            if (empty($user->st_students_token)) {
-                $tokenData = $this->studentService->getAccessTokenVerify();
-                if (!$tokenData || empty($tokenData['token'])) {
-                    throw new \Exception('Không lấy được access token của sinh viên.');
-                }
-                $user->update(['st_students_token' => $tokenData['token']]);
+    private function getAllSchoolYears() : array
+    {
+        $graduations = $this->getAllGraduations();
+        $schoolYears = [];
+        foreach ($graduations as $graduation) {
+            if (isset($graduation['school_year']) && !in_array($graduation['school_year'], $schoolYears)) {
+                $schoolYears[] = $graduation['school_year'];
             }
-
-            $apiUrl = config('auth.student.ip') . '/api/v1/external/graduation-ceremonies/73/students';
-            $allData = [];
-            $page = 1;
-
-            do {
-                $response = Http::withToken($user->st_students_token)
-                    ->timeout(10)
-                    ->get($apiUrl, ['page' => $page])
-                    ->json();
-
-                if (empty($response['data'])) break;
-
-                $allData = array_merge($allData, $response['data']);
-
-                $lastPage = $response['meta']['last_page'] ?? 1;
-                $page++;
-            } while ($page <= $lastPage);
-
-            return $allData;
-
-        } catch (Throwable $th) {
-            Log::error('getGraduations error: ' . $th->getMessage());
-            return [];
         }
+        return $schoolYears;  
+    }
+
+    private function getAllStudentsByGraduationIds(array $graduationIds = []): array
+    {
+        $allData = [];
+
+        foreach ($graduationIds as $id) {
+            $apiUrl = config('auth.student.ip') . "/api/v1/external/graduation-ceremonies/{$id}/students";
+            $allData = array_merge($allData, $this->fetchPaginatedApi($apiUrl));
+        }
+
+        return $allData;
     }
 
     public function create()
     {
-        // dd($this->getAllGraduations());
-        $namTotNghiep = Graduation::select('school_year')->groupBy('school_year')->pluck('school_year')->toArray();
-        $dotTotNghiep = Graduation::get();
-
+        // $namTotNghiep = Graduation::select('school_year')->groupBy('school_year')->pluck('school_year')->toArray();
+        // $dotTotNghiep = Graduation::get();
+        
+        $namTotNghiep = $this->getAllSchoolYears();
+        $dotTotNghiep = $this->getAllGraduations();
+        // dd($dotTotNghiep);
         $viewData = [
             'namTotNghiep' => $namTotNghiep,
             'dotTotNghiep' => $dotTotNghiep,
@@ -98,16 +94,26 @@ class SurveyController extends Controller
             if ($validator->fails()) {
                 return back()->withErrors($validator)->withInput();
             }
-
+            
+            $total = count($this->getAllStudentsByGraduationIds($request->graduation_id));
+            
             $survey = Survey::create([
                 'title' => $request->title,
                 'description' => $request->description,
                 'start_time' => $request->start_time,
                 'end_time' => $request->end_time,
-                'status' => Survey::STATUS_ACTIVE
+                'status' => Survey::STATUS_ACTIVE,
+                'total_graduations' => $total,
             ]);
 
-            $survey->graduations()->attach($request->graduation_id);
+            // Tạo liên kết đợt tốt nghiệp trong bảng pivot
+            // Lưu các graduation_id vào bảng trung gian
+            foreach ($request->graduation_id as $gradId) {
+                GraduationSurvey::create([
+                    'survey_id' => $survey->id,
+                    'graduation_id' => $gradId,
+                ]);
+            }
 
             DB::commit();
             return redirect()->route('admin.survey.index')->with('success', 'Tạo khảo sát thành công!');
@@ -118,18 +124,39 @@ class SurveyController extends Controller
         }
     }
 
+    // public function edit($id)
+    // {
+    //     $survey = Survey::with('graduations')->findOrFail($id);
+
+    //     // Lấy danh sách năm tốt nghiệp duy nhất
+    //     $namTotNghiep = Graduation::select('school_year')->distinct()->orderBy('school_year', 'desc')->pluck('school_year');
+
+    //     // Lấy tất cả đợt tốt nghiệp
+    //     $allDotTotNghiep = Graduation::orderBy('school_year', 'desc')->get();
+
+    //     // Lấy các ID đợt tốt nghiệp đã được chọn
+    //     $selectedGraduationIds = $survey->graduations->pluck('id')->toArray();
+
+    //     return view('admin.pages.admin.survey.edit', compact(
+    //         'survey',
+    //         'namTotNghiep',
+    //         'allDotTotNghiep',
+    //         'selectedGraduationIds'
+    //     ));
+    // }
+
     public function edit($id)
     {
-        $survey = Survey::with('graduations')->findOrFail($id);
+        $survey = Survey::findOrFail($id);
 
-        // Lấy danh sách năm tốt nghiệp duy nhất
-        $namTotNghiep = Graduation::select('school_year')->distinct()->orderBy('school_year', 'desc')->pluck('school_year');
+        // Lấy graduation_id từ pivot
+        $selectedGraduationIds = GraduationSurvey::where('survey_id', $survey->id)
+            ->pluck('graduation_id')
+            ->toArray();
 
-        // Lấy tất cả đợt tốt nghiệp
-        $allDotTotNghiep = Graduation::orderBy('school_year', 'desc')->get();
-
-        // Lấy các ID đợt tốt nghiệp đã được chọn
-        $selectedGraduationIds = $survey->graduations->pluck('id')->toArray();
+        // Lấy tất cả đợt tốt nghiệp từ API
+        $allDotTotNghiep = $this->getAllGraduations(); // hàm từ controller cũ
+        $namTotNghiep = $this->getAllSchoolYears();    // danh sách năm duy nhất
 
         return view('admin.pages.admin.survey.edit', compact(
             'survey',
@@ -139,6 +166,51 @@ class SurveyController extends Controller
         ));
     }
 
+    // public function update($id, Request $request)
+    // {
+    //     DB::beginTransaction();
+    //     try {
+    //         $rules = [
+    //             'title' => 'required|string|max:255',
+    //             'description' => 'nullable|string',
+    //             'start_time' => 'required|date',
+    //             'end_time' => 'required|date|after_or_equal:start_time',
+    //             'status' => 'required|in:0,1',
+    //         ];
+
+    //         // Nếu đang bật khảo sát → bắt buộc phải chọn đợt tốt nghiệp
+    //         if ($request->status == 1) {
+    //             $rules['graduation_id'] = 'required|array|min:1';
+    //         }
+
+    //         $validated = $request->validate($rules, [
+    //             'graduation_id.required' => 'Vui lòng chọn ít nhất một đợt tốt nghiệp.',
+    //             'end_time.after_or_equal' => 'Thời gian kết thúc không được trước thời gian bắt đầu.',
+    //         ]);
+
+    //         $survey = Survey::findOrFail($id);
+
+    //         $survey->update([
+    //             'title' => $request->title,
+    //             'description' => $request->description,
+    //             'start_time' => $request->start_time,
+    //             'end_time' => $request->end_time,
+    //             'status' => $request->status,
+    //         ]);
+
+    //         if ($request->status == 1) {
+    //             $graduationIds = $request->graduation_id ?? $survey->graduations->pluck('id')->toArray();
+    //             $survey->graduations()->sync($graduationIds);
+    //         }
+
+    //         DB::commit();
+    //         return redirect()->route('admin.survey.index')->with('success', 'Cập nhật khảo sát thành công!');
+    //     } catch (\Exception $e) {
+    //         DB::rollBack();
+    //         Log::error($e);
+    //         return redirect()->route('admin.survey.index')->with('error', 'Lỗi cập nhật khảo sát');
+    //     }
+    // }
 
     public function update($id, Request $request)
     {
@@ -150,12 +222,8 @@ class SurveyController extends Controller
                 'start_time' => 'required|date',
                 'end_time' => 'required|date|after_or_equal:start_time',
                 'status' => 'required|in:0,1',
+                'graduation_id' => 'required|array|min:1',
             ];
-
-            // Nếu đang bật khảo sát → bắt buộc phải chọn đợt tốt nghiệp
-            if ($request->status == 1) {
-                $rules['graduation_id'] = 'required|array|min:1';
-            }
 
             $validated = $request->validate($rules, [
                 'graduation_id.required' => 'Vui lòng chọn ít nhất một đợt tốt nghiệp.',
@@ -163,21 +231,30 @@ class SurveyController extends Controller
             ]);
 
             $survey = Survey::findOrFail($id);
-
+            $total = count($this->getAllStudentsByGraduationIds($request->graduation_id));
             $survey->update([
                 'title' => $request->title,
                 'description' => $request->description,
                 'start_time' => $request->start_time,
                 'end_time' => $request->end_time,
                 'status' => $request->status,
+                'total_graduations' => $total,
             ]);
 
-            if ($request->status == 1) {
-                $graduationIds = $request->graduation_id ?? $survey->graduations->pluck('id')->toArray();
-                $survey->graduations()->sync($graduationIds);
+            // Cập nhật pivot graduation_survey
+            // Xoá các ID cũ
+            GraduationSurvey::where('survey_id', $survey->id)->delete();
+
+            // Thêm ID mới
+            foreach ($request->graduation_id as $gradId) {
+                GraduationSurvey::create([
+                    'survey_id' => $survey->id,
+                    'graduation_id' => $gradId,
+                ]);
             }
 
             DB::commit();
+
             return redirect()->route('admin.survey.index')->with('success', 'Cập nhật khảo sát thành công!');
         } catch (\Exception $e) {
             DB::rollBack();
@@ -185,7 +262,6 @@ class SurveyController extends Controller
             return redirect()->route('admin.survey.index')->with('error', 'Lỗi cập nhật khảo sát');
         }
     }
-
 
     public function destroy($id)
     {
@@ -220,10 +296,49 @@ class SurveyController extends Controller
         return view('admin.pages.admin.survey.form', $viewData);
     }
 
-    public function getDotTotNghiep()
+    // public function getDotTotNghiep()
+    // {
+    //     $nam = request('school_year');
+    //     $data = Graduation::query()->where('school_year', $nam)->get();
+    //     return response()->json($data);
+    // }
+
+    private function fetchPaginatedApi(string $url, ?string $token = null): array
     {
-        $nam = request('school_year');
-        $data = Graduation::query()->where('school_year', $nam)->get();
-        return response()->json($data);
+        try {
+            $user = auth()->user();
+
+            if (!$token) {
+                if (empty($user->st_students_token)) {
+                    $tokenData = $this->studentService->getAccessTokenVerify();
+                    if (!$tokenData || empty($tokenData['token'])) {
+                        throw new \Exception('Không lấy được access token của sinh viên.');
+                    }
+                    $user->update(['st_students_token' => $tokenData['token']]);
+                }
+                $token = $user->st_students_token;
+            }
+
+            $allData = [];
+            $page = 1;
+
+            do {
+                $response = Http::withToken($token)
+                    ->timeout(10)
+                    ->get($url, ['page' => $page])
+                    ->json();
+
+                if (empty($response['data'])) break;
+
+                $allData = array_merge($allData, $response['data']);
+                $lastPage = $response['meta']['last_page'] ?? 1;
+                $page++;
+            } while ($page <= $lastPage);
+
+            return $allData;
+        } catch (Throwable $th) {
+            Log::error("fetchPaginatedApi error: " . $th->getMessage());
+            return [];
+        }
     }
 }

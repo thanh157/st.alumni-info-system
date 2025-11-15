@@ -23,6 +23,7 @@ class Survey extends Model
         'status',
         'start_time',
         'end_time',
+        'total_graduations',
         'school_year',
         'created_at',
         'updated_at',
