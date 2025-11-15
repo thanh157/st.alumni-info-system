@@ -345,9 +345,7 @@
                         <label class="form-label">13. Địa chỉ đơn vị</label>
                         <input type="text" class="form-control mb-1" value="{{ $response->recruit_partner_address }}"
                             readonly>
-                        <label class="form-label">Tỉnh/Thành phố</label>
-                        <input type="text" class="form-control mb-1"
-                            value="{{ $response->recruit_partner_province ?? '' }}" readonly>
+                       
                     </div>
 
                     <div class="mb-3">
