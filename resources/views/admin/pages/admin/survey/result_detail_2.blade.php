@@ -101,14 +101,12 @@
             color: #555;
         }
 
-        /* ===== SỬA CHECKBOX KHÔNG XUỐNG DÒNG VÀ CĂN CHỈNH ===== */
-        .form-check {
+         .form-check {
             position: relative;
             padding-left: 25px;
             margin-bottom: 0.6rem;
             page-break-inside: avoid;
-            /* Thêm để giữ checkbox và label không bị ngắt */
-        }
+         }
 
         .form-check-input {
             position: absolute;
@@ -126,8 +124,7 @@
             display: block;
         }
 
-        /* ===== KẾT THÚC SỬA CHECKBOX ===== */
-
+ 
         .row {
             display: flex;
             flex-wrap: wrap;
@@ -363,8 +360,7 @@
 
                 <h6 class="mb-4 fw-bold">Phần II: Nội dung khảo sát</h6>
                 
-                 @if ($response->employment_status == 1)
-                    <div class="mb-4">
+                     <div class="mb-4">
                         <label class="form-label fw-bold">16. Đơn vị Anh/Chị đang làm việc thuộc khu vực nào?</label>
                         @foreach (config('config.work_area') as $index => $item)
                             @if (!empty($item)) {{-- Kiểm tra giá trị rỗng --}}
@@ -548,8 +544,7 @@
                             </div>
                         @endif
                     </div>
-                @endif
-                {{-- KẾT THÚC: ẨN CÁC CÂU 16-26 --}}
+              
 
                 <div class="mb-4">
                     <label class="form-label fw-bold">27. Theo Anh/Chị, những giải pháp nào sau đây giúp tăng tỷ lệ có
