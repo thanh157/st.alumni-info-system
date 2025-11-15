@@ -331,7 +331,10 @@
                             @endif
                         @endforeach
                     </div>
-                    
+                     <i class="question-10" style="font-size: 14px; color:rgb(94, 6, 6)"> *Nếu chưa có việc làm
+                                    hoặc
+                                    đang tiếp tục học, anh/chị trả lời tiếp câu 27.
+                                    Nếu đã có việc làm, anh/chị trả lời tiếp các câu sau</i>
                      @if ($response->employment_status == 1)
                         <div class="mb-3">
                             <label class="form-label">12. Tên đơn vị tuyển dụng</label>
