@@ -375,7 +375,14 @@
                                                     <hr class="dropdown-divider">
                                                 </li>
 
-                                                <!-- Xóa (Cuối cùng) -->
+                                                <li>
+                                                    <a class="dropdown-item"
+                                                        href="{{ route('admin.surveys.downloadAllPdfs', $item->id) }}" download>
+                                                        <i class="bi bi-file-earmark-zip-fill text-info"></i>
+                                                        <span>Tải toàn bộ file PDF (ZIP)</span>
+                                                    </a>
+                                                </li>
+                                                <hr class="dropdown-divider">
                                                 <li>
                                                     <a class="dropdown-item text-danger" href="javascript:void(0);"
                                                         onclick="showDeleteModal('{{ $item->id }}', '{{ addslashes($item->title) }}')">
@@ -384,13 +391,6 @@
                                                     </a>
                                                 </li>
 
-                                                <li>
-                                                    <a class="dropdown-item"
-                                                        href="{{ route('admin.surveys.downloadAllPdfs', $item->id) }}" download>
-                                                        <i class="bi bi-file-earmark-zip-fill text-info"></i>
-                                                        <span>Tải toàn bộ file PDF (ZIP)</span>
-                                                    </a>
-                                                </li>
                                             </ul>
                                         </div>
                                     </div>
@@ -545,21 +545,21 @@
             const icon = type === 'success' ? 'check-circle-fill' : 'x-circle-fill';
 
             const toastHTML = `
-                            <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 9999">
-                                <div class="toast show align-items-center text-white border-0" 
-                                     style="background-color: ${bgColor}; box-shadow: 0 4px 12px rgba(0,0,0,0.15); border-radius: 8px;" 
-                                     role="alert">
-                                    <div class="d-flex">
-                                        <div class="toast-body d-flex align-items-center gap-2 py-3">
-                                            <i class="bi bi-${icon}"></i>
-                                            <span>${message}</span>
+                                        <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 9999">
+                                            <div class="toast show align-items-center text-white border-0" 
+                                                 style="background-color: ${bgColor}; box-shadow: 0 4px 12px rgba(0,0,0,0.15); border-radius: 8px;" 
+                                                 role="alert">
+                                                <div class="d-flex">
+                                                    <div class="toast-body d-flex align-items-center gap-2 py-3">
+                                                        <i class="bi bi-${icon}"></i>
+                                                        <span>${message}</span>
+                                                    </div>
+                                                    <button type="button" class="btn-close btn-close-white me-2 m-auto" 
+                                                            onclick="this.closest('.toast').remove()"></button>
+                                                </div>
+                                            </div>
                                         </div>
-                                        <button type="button" class="btn-close btn-close-white me-2 m-auto" 
-                                                onclick="this.closest('.toast').remove()"></button>
-                                    </div>
-                                </div>
-                            </div>
-                        `;
+                                    `;
 
             document.body.insertAdjacentHTML('beforeend', toastHTML);
 
