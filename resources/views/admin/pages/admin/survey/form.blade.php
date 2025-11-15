@@ -3,16 +3,16 @@
 @section('title', 'Form-student')
 
 @section('content')
-    <style>
+  <style>
         body {
             background-color: #f1f3f4;
         }
 
         .google-form-style {
-            max-width: 900px;
+            max-width: 800px;
             margin: auto;
             background-color: white;
-            padding: 2rem;
+            padding: 3rem 5rem;
             border-radius: 10px;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
@@ -23,58 +23,215 @@
             margin-bottom: 1.5rem;
         }
 
+        .form-header-logo {
+            width: 60%;
+            height: auto;
+        }
+
         .google-form-style label {
             font-weight: 500;
             margin-bottom: 0.4rem;
         }
 
-        .google-form-style input,
-        .google-form-style select,
-        .google-form-style textarea {
+        .google-form-style input {
             border-radius: 8px;
             transition: border-color 0.3s;
         }
 
-        .google-form-style input:focus,
-        .google-form-style select:focus,
-        .google-form-style textarea:focus {
+        .google-form-style input:focus {
             border-color: #1a73e8;
-            box-shadow: 0 0 0 2px rgba(26, 115, 232, 0.12);
+            box-shadow: 0 0 0 2px rgba(26, 115, 232, 0.2);
         }
 
-        .other-input { display: none; }
+        /* Thụt dòng đầu tiên của mô tả */
+        .first-line-indent {
+            text-indent: 30px;
+        }
+
+        /* Dòng địa chỉ và điện thoại */
+        .contact-info {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            font-style: italic;
+            font-size: 0.85rem;
+        }
+
+        .contact-info span:first-child {
+            text-align: center !important
+                /* align-self: center; */
+                padding-right: 0;
+        }
+
+        /* --- Responsive --- */
+        @media (max-width: 992px) {
+
+            /* Tablet */
+            .google-form-style {
+                padding: 2rem 3rem;
+            }
+
+            /* Logo và cột phải co nhỏ */
+            .form-header-logo {
+                width: 90px !important;
+            }
+
+            .form-header-logo-col {
+                flex: 0 0 30%;
+                max-width: 30%;
+            }
+
+            .form-header-right-col {
+                flex: 0 0 70%;
+                max-width: 70%;
+                text-align: center !important;
+            }
+
+            /* Font co nhỏ */
+            .form-header-right div,
+            .form-header-right p {
+                font-size: 0.7rem !important;
+            }
+
+            ..form-header-right p {
+                text-align: center !important
+            }
+
+            .form-header-right h6 {
+                font-size: 0.65rem !important;
+            }
+
+            .contact-info {
+                font-size: 0.65rem;
+                align-items: center;
+            }
+
+            /* .form-title h5 {
+                                        font-size: 0.9rem;
+                                    } */
+
+            .first-line-indent {
+                text-indent: 18px;
+            }
+        }
+
+        @media (max-width: 576px) {
+
+            /* Điện thoại */
+            .google-form-style {
+                padding: 1rem 1rem;
+            }
+
+            /* Logo và cột phải co nhỏ */
+            .form-header-logo {
+                width: 70px !important;
+            }
+
+            .form-header-logo-col {
+                flex: 0 0 25%;
+                max-width: 25%;
+            }
+
+            .form-header-right-col {
+                flex: 0 0 75%;
+                max-width: 75%;
+                text-align: center !important;
+            }
+
+            /* Font co nhỏ */
+            .form-header-right div,
+            .form-header-right p {
+                font-size: 0.5rem !important;
+            }
+
+            .form-header-right h6 {
+                font-size: 0.6rem !important;
+            }
+
+            .contact-info {
+                font-size: 0.4rem;
+                align-items: center;
+            }
+
+            /* .form-title h5 {
+                                        font-size: 0.4rem;
+                                    } */
+
+            .first-line-indent {
+                text-indent: 12px;
+            }
+
+            .text-center.mt-5 {
+                margin-top: 1rem !important;
+            }
+        }
     </style>
+    <!-- 🧾 Form khảo sát chính (ẩn lúc đầu) -->
 
     <div class="container py-4">
         <div class="google-form-style">
             <!-- Header -->
-            <div class="text-center mb-4">
-                <img src="{{ asset('assets/client/images/logo-vnua.jpg') }}" width="90" class="mb-2">
-                <h6 class="fw-bold mb-1 text-uppercase">Bộ Nông nghiệp và Môi trường</h6>
-                <p class="mb-1 text-uppercase fw-semibold">Học Viện Nông Nghiệp Việt Nam</p>
-                <small class="text-muted fst-italic">Xã Gia Lâm, Thành phố Hà Nội | Điện thoại: 024.62617586 - Fax:
-                    024.62617586</small>
-            </div>
+            <div class="container mt-3 mb-4">
+                <div class="row align-items-center">
 
-            <!-- Title -->
-            <div class="form-section">
-               <h5 class="fw-bold text-center">{{ $survey->title }}</h5>
-                <p class="fw-semibold fst-italic text-center mt-4">
-                    Thân gửi Anh/Chị cựu sinh viên của Học viện Nông nghiệp Việt Nam!
-                </p>
-                <p class="text-justify">
-                    {{ $survey->description }}
-                </p>
-                <p class="fst-italic text-muted text-center mt-2">
-                    Trân trọng cảm ơn sự cộng tác của các Anh/Chị!
-                </p>
-                <p class="text-end mt-2">
-                    <small class="text-muted fst-italic">
-                        Ngày: {{ now()->format('d/m/Y') }}
-                    </small>
-                </p>
-            </div>
+                    <!-- Cột logo -->
+                    <div class="col-5 d-flex justify-content-center align-items-center form-header-logo-col"
+                        style="min-height: 130px;">
+                        <img src="{{ asset('assets/client/images/logo-vnua.jpg') }}" class="img-fluid form-header-logo"
+                            alt="Logo Học viện">
+                    </div>
 
+                    <!-- Cột nội dung bên phải -->
+                    <div class="col-7 text-end mb-2 position-relative form-header-right form-header-right-col">
+                        <div class="fst-italic mb-3" style="font-size: 13px;">
+                            Ngày {{ now()->format('d') }} / {{ now()->format('m') }} / {{ now()->format('Y') }}
+                        </div>
+
+                        <p class="mb-1 fw-semibold text-uppercase" style="font-size: 15px;">
+                            BỘ NÔNG NGHIỆP VÀ MÔI TRƯỜNG
+                        </p>
+                        <h6 class="mb-1 text-uppercase fw-bold">
+                            HỌC VIỆN NÔNG NGHIỆP VIỆT NAM
+                        </h6>
+                        <small class="fst-italic d-flex flex-column contact-info">
+                            <span>Xã Gia Lâm, Thành phố Hà Nội</span>
+                            <span>Điện thoại: 024.62617586 - Fax: 024.62617586</span>
+                        </small>
+                    </div>
+
+                    <!-- Tiêu đề phiếu -->
+                    <div class="text-center mt-5 form-title">
+                        <h5 class="fw-bold text-uppercase mb-1">PHIẾU KHẢO SÁT</h5>
+                        <h5 class="fw-bold text-uppercase">TÌNH HÌNH VIỆC LÀM CỦA SINH VIÊN TỐT NGHIỆP</h5>
+                        <h5 class="fw-bold text-uppercase">NĂM 2024</h5>
+                    </div>
+
+                    {{-- <div class="text-center mt-5 form-title">
+                        <h5 class="fw-bold text-center">{{ $survey->title }}</h5>
+                        <p class="text-justify">
+                            {{ $survey->description }}
+                        </p>
+                    </div> --}}
+
+                    <!-- Phần thân gửi -->
+                    <div class="mt-2">
+                        <p class="fw-semibold fst-italic text-center mt-4">
+                            Thân gửi Anh/Chị cựu sinh viên của Học viện Nông Nghiệp Việt Nam!
+                        </p>
+
+                        <p class="text-justify fst-italic first-line-indent">
+                            {{ $survey->description }}
+                        </p>
+
+                        <p class="fst-italic text-center mt-2">
+                            Trân trọng cảm ơn sự cộng tác của các Anh/Chị!
+                        </p>
+
+                        {{-- @if ($outDate)
+                            <div class="text-danger text-center fw-bold">ĐÃ HẾT HẠN KHẢO SÁT</div>
+                        @endif --}}
+                    </div>
+                </div>
             <!-- Form Start -->
             <form action="{{ route('survey.submit') }}" method="POST" id="form-wrapper">
                 @csrf
