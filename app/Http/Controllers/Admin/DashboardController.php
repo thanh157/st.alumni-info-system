@@ -16,7 +16,7 @@ class DashboardController extends Controller
     {
         $totalResponses = (int) DB::table('employment_survey_responses_v2')->count();
 
-        $totalEmployed  = (int) DB::table('employment_survey_responses_v2')
+        $totalEmployed = (int) DB::table('employment_survey_responses_v2')
             ->where('employment_status', 1)
             ->count();
 
@@ -38,8 +38,10 @@ class DashboardController extends Controller
     public function getChartData(): JsonResponse
     {
         $rows = DB::table('employment_survey_responses_v2 as esr')
+            ->join('survey', 'esr.survey_period_id', '=', 'survey.id')
             ->select(
                 'esr.survey_period_id',
+                'survey.title',
                 DB::raw('SUM(CASE WHEN esr.employment_status = 1 THEN 1 ELSE 0 END) as employed_count'),
                 DB::raw('SUM(CASE WHEN esr.employment_status != 1 OR esr.employment_status IS NULL THEN 1 ELSE 0 END) as unemployed_count'),
                 DB::raw('SUM(CASE WHEN esr.employment_status = 1 AND esr.trained_field IN (1,2) THEN 1 ELSE 0 END) as related_field_count'),
@@ -52,42 +54,42 @@ class DashboardController extends Controller
             ->get();
 
         $totals = [
-            'employed'   => 0,
+            'employed' => 0,
             'unemployed' => 0,
-            'related'    => 0,
-            'unrelated'  => 0,
-            'domestic'   => 0,
-            'foreign'    => 0,
+            'related' => 0,
+            'unrelated' => 0,
+            'domestic' => 0,
+            'foreign' => 0,
         ];
 
         $bar = [];
 
         foreach ($rows as $r) {
             // Cast an toàn
-            $employed   = (int) ($r->employed_count ?? 0);
+            $employed = (int) ($r->employed_count ?? 0);
             $unemployed = (int) ($r->unemployed_count ?? 0);
-            $related    = (int) ($r->related_field_count ?? 0);
-            $unrelated  = (int) ($r->unrelated_field_count ?? 0);
-            $domestic   = (int) ($r->domestic_count ?? 0);
-            $foreign    = (int) ($r->foreign_count ?? 0);
+            $related = (int) ($r->related_field_count ?? 0);
+            $unrelated = (int) ($r->unrelated_field_count ?? 0);
+            $domestic = (int) ($r->domestic_count ?? 0);
+            $foreign = (int) ($r->foreign_count ?? 0);
 
             // Tổng
-            $totals['employed']   += $employed;
+            $totals['employed'] += $employed;
             $totals['unemployed'] += $unemployed;
-            $totals['related']    += $related;
-            $totals['unrelated']  += $unrelated;
-            $totals['domestic']   += $domestic;
-            $totals['foreign']    += $foreign;
-
+            $totals['related'] += $related;
+            $totals['unrelated'] += $unrelated;
+            $totals['domestic'] += $domestic;
+            $totals['foreign'] += $foreign;
+            $year = mb_substr($r->title, -4, null, 'UTF-8');
             // Dòng bar
             $bar[] = [
-                'term'       => 'Đợt Khảo Sát ' . $r->survey_period_id,
-                'employed'   => $employed,
+                'term' => 'Đợt khảo sát năm ' . $year,
+                'employed' => $employed,
                 'unemployed' => $unemployed,
-                'related'    => $related,
-                'unrelated'  => $unrelated,
-                'domestic'   => $domestic,
-                'foreign'    => $foreign,
+                'related' => $related,
+                'unrelated' => $unrelated,
+                'domestic' => $domestic,
+                'foreign' => $foreign,
             ];
         }
 
@@ -95,8 +97,8 @@ class DashboardController extends Controller
             // 3 bộ pie (theo chế độ)
             'employed' => [
                 'pie' => [
-                    ['category' => 'Có việc làm',       'value' => $totals['employed']],
-                    ['category' => 'Chưa có việc làm',  'value' => $totals['unemployed']],
+                    ['category' => 'Có việc làm', 'value' => $totals['employed']],
+                    ['category' => 'Chưa có việc làm', 'value' => $totals['unemployed']],
                 ],
             ],
             'location' => [
