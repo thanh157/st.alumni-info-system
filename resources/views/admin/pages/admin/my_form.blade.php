@@ -107,8 +107,8 @@
             }
 
             /* .form-title h5 {
-                                    font-size: 0.9rem;
-                                } */
+                                        font-size: 0.9rem;
+                                    } */
 
             .first-line-indent {
                 text-indent: 18px;
@@ -154,8 +154,8 @@
             }
 
             /* .form-title h5 {
-                                    font-size: 0.4rem;
-                                } */
+                                        font-size: 0.4rem;
+                                    } */
 
             .first-line-indent {
                 text-indent: 12px;
@@ -207,6 +207,13 @@
                         <h5 class="fw-bold text-uppercase">NĂM 2024</h5>
                     </div>
 
+                    {{-- <div class="text-center mt-5 form-title">
+                        <h5 class="fw-bold text-center">{{ $survey->title }}</h5>
+                        <p class="text-justify">
+                            {{ $survey->description }}
+                        </p>
+                    </div> --}}
+
                     <!-- Phần thân gửi -->
                     <div class="mt-2">
                         <p class="fw-semibold fst-italic text-center mt-4">
@@ -241,7 +248,7 @@
 
                         <div class="mb-3">
                             <label for="ma_sv">1. Mã sinh viên</label>
-                            <input type="text" class="form-control" id="code_student" name="code_student" value="622222"
+                            <input type="text" class="form-control" id="code_student" name="code_student" value=""
                                 readonly required placeholder="Nhập mã sinh viên">
                         </div>
 
@@ -290,8 +297,8 @@
                             </div>
                             <div class="col-12 col-md-6 mb-3">
                                 <label class="form-label">8. Tên ngành được đào tạo</label>
-                                <input type="text" id="ten_nganh_hien_thi" class="form-control"
-                                    placeholder="" readonly>
+                                <input type="text" id="ten_nganh_hien_thi" class="form-control" placeholder=""
+                                    readonly>
                                 <input type="hidden" name="training_industry_id" id="training_industry_id">
                             </div>
                             <script>
