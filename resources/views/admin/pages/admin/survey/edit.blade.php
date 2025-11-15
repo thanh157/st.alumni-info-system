@@ -24,7 +24,46 @@
 
 @push('script')
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-    <script src="{{ asset('assets/admin/js/survey/index.js') }}"></script>
+    {{-- <script src="{{ asset('assets/admin/js/survey/index.js') }}"></script> --}}
+    <script>
+        $('#school_years').select2({
+            placeholder: "-- Chọn năm tốt nghiệp --"
+        });
+        $('#graduation_id').select2({
+            placeholder: "-- Chọn đợt tốt nghiệp --"
+        });
+
+        const ceremonies = @json($allDotTotNghiep);
+        let selectedIds = @json($selectedGraduationIds);
+
+        // Hàm load options cho graduation_id dựa trên năm đã chọn
+        function loadGraduations() {
+            const selectedYears = $('#school_years').val() || [];
+            const select = $('#graduation_id');
+
+            select.empty();
+
+            if (selectedYears.length === 0) return;
+
+            const filtered = ceremonies.filter(c => selectedYears.includes(c.school_year));
+
+            filtered.forEach(item => {
+                const isSelected = selectedIds.includes(item.id);
+                const option = new Option(`${item.name} (${item.school_year})`, item.id, isSelected, isSelected);
+                select.append(option);
+            });
+
+            select.trigger('change');
+        }
+
+        // Load lần đầu
+        loadGraduations();
+
+        // Event khi chọn hoặc bỏ chọn năm
+        $('#school_years').on('change', function() {
+            loadGraduations();
+        });
+    </script>
 @endpush
 
 @section('content')
@@ -94,7 +133,7 @@
                     <div class="card p-4 shadow-sm h-100">
                         <h6 class="mb-3">Thông tin tốt nghiệp</h6>
 
-                        <div class="mb-3">
+                        {{-- <div class="mb-3">
                             <label class="form-label">Năm tốt nghiệp</label>
                             <select class="form-select" multiple id="school_years"
                                 {{ $survey->isInActive() ? 'disabled' : '' }}>
@@ -115,6 +154,40 @@
                                     <option value="{{ $dot->id }}"
                                         {{ in_array($dot->id, $selectedGraduationIds) ? 'selected' : '' }}>
                                         {{ $dot->name }} ({{ $dot->school_year }})
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div> --}}
+                        @php
+                            // Lấy tất cả năm từ các graduation đã chọn
+                            $selectedYears = collect($allDotTotNghiep)
+                                                ->whereIn('id', $selectedGraduationIds)
+                                                ->pluck('school_year')
+                                                ->unique()
+                                                ->toArray();
+                        @endphp
+
+                        <div class="mb-3">
+                            <label class="form-label">Năm tốt nghiệp</label>
+                            <select class="form-select" multiple id="school_years"
+                                {{ $survey->isInActive() ? 'disabled' : '' }}>
+                                @foreach ($namTotNghiep as $year)
+                                    <option value="{{ $year }}"
+                                        {{ in_array($year, $selectedYears) ? 'selected' : '' }}>
+                                        {{ $year }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Đợt tốt nghiệp</label>
+                            <select class="form-select" multiple name="graduation_id[]" id="graduation_id"
+                                {{ $survey->isInActive() ? 'disabled' : '' }}>
+                                @foreach ($allDotTotNghiep as $dot)
+                                    <option value="{{ $dot['id'] }}"
+                                        {{ in_array($dot['id'], $selectedGraduationIds) ? 'selected' : '' }}>
+                                        {{ $dot['name'] }} ({{ $dot['school_year'] }})
                                     </option>
                                 @endforeach
                             </select>
@@ -142,7 +215,7 @@
         </form>
     </div>
 
-    @push('script')
+    {{-- @push('script')
     <script>
         $(document).ready(function() {
             $('#school_years').select2();
@@ -188,6 +261,5 @@
             @endif
         });
     </script>
-    @endpush
-
+    @endpush --}}
 @endsection

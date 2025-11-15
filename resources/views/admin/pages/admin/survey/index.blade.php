@@ -32,7 +32,7 @@
                         <tr>
                             <td><strong>Tiêu đề khảo sát</strong></td>
                             <td><strong>Trạng thái</strong></td>
-                            <td><strong>Đợt tốt nghiệp</strong></td>
+                            <td><strong>Số lượng khảo sát</strong></td>
                             <td><strong>Bắt đầu</strong></td>
                             <td><strong>Kết thúc</strong></td>
                             <td><strong>Phản hồi</strong></td>
@@ -45,20 +45,7 @@
                             <tr>
                                 <td>{{ $item->title }}</td>
                                 <td>{{ $item->isActive() ? 'Hoạt động' : 'Ẩn' }}</td>
-
-                                <td>
-                                    @if ($item->graduations->count() > 0)
-                                        @foreach ($item->graduations as $dot)
-                                            <a target="_blank"
-                                                href="{{ route('admin.graduation-student.show', ['id' => $dot->id]) }}"
-                                                class="d-block text-decoration-none text-primary mb-1">
-                                                {{ $dot->name }}
-                                            </a>
-                                            <hr />
-                                        @endforeach
-                                    @endif
-                                </td>
-
+                                <td>{{ $item->total_graduations }}</td>
                                 <td>{{ \Carbon\Carbon::parse($item->start_time)->format('d/m/Y') }}</td>
                                 <td>{{ \Carbon\Carbon::parse($item->end_time)->format('d/m/Y') }}</td>
 
@@ -68,14 +55,10 @@
                                             'survey_period_id',
                                             $item->id,
                                         )->count();
-                                        $countDot = $item->graduations()->pluck('id')->toArray();
-                                        $countStudent = \App\Models\GraduationStudent::query()
-                                            ->whereIn('graduation_id', $countDot)
-                                            ->count();
                                     @endphp
 
                                     <strong class="text-primary">
-                                        {{ $totalPhanHoi }} / {{ $countStudent }}
+                                        {{ $totalPhanHoi }} / {{ $item->total_graduations }}
                                     </strong>
                                 </td>
 
