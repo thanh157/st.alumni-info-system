@@ -291,7 +291,7 @@
             <!-- Message -->
             <p class="thank-you-message">
                 Học viện đã ghi nhận phản hồi của Anh/Chị.<br>
-                Cảm ơn Anh/Chị đã dành thời gian quý báu để giúp chúng tôi cải thiện chất lượng đào tạo.
+                Cảm ơn Anh/Chị đã dành thời gian quý báu để giúp Nhà trường cải thiện chất lượng đào tạo.
             </p>
 
             <!-- Optional Button -->

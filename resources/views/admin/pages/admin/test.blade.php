@@ -72,7 +72,7 @@
                             </div>
                             <div class="form-check">
                                 <input class="form-check-input" type="radio" name="vieclam_hientai" id="chua_di_lam"
-                                    value="Chưa đi làm">
+                                    value="Chưa đi tìm việc">
                                 <label class="form-check-label" for="chua_di_lam">Chưa đi làm</label>
                             </div>
                         </div>
