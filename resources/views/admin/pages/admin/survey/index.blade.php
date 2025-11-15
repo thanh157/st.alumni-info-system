@@ -251,7 +251,7 @@
                                     $item->id,
                                 )->count();
                             
-                                $percentage = $countStudent > 0 ? round(($totalPhanHoi /  $item->total_graduations) * 100, 1) : 0;
+                                $percentage = $item->total_graduations > 0 ? round(($totalPhanHoi /  $item->total_graduations) * 100, 1) : 0;
                             @endphp
                             <tr>
                                 <td>{{ $item->title }}</td>
