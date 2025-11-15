@@ -24,6 +24,31 @@
 @push('script')
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script src="{{ asset('assets/admin/js/survey/index.js') }}"></script>
+    <script>
+        $('#graduation_id').select2({
+            placeholder: "-- Chọn đợt tốt nghiệp --"
+        });
+
+        const ceremonies = @json($dotTotNghiep);
+
+        document.getElementById('school_year').addEventListener('change', function () {
+            const year = this.value;
+            const select = document.getElementById('graduation_id');
+
+            // reset options
+            select.innerHTML = '';
+
+            // filter ceremonies theo year
+            const filtered = ceremonies.filter(c => c.school_year == year);
+
+            filtered.forEach(item => {
+                let option = document.createElement('option');
+                option.value = item.id;
+                option.textContent = item.name + ' (' + item.school_year + ')';
+                select.appendChild(option);
+            });
+        });
+    </script>
 @endpush
 
 @section('content')
@@ -108,7 +133,7 @@
                             <select class="form-select" name="school_year" required id="school_year">
                                 <option selected disabled value="">-- Chọn năm --</option>
                                 @foreach($namTotNghiep as $nam)
-                                    <option {{ old('school_year') == $nam ? "selected" : "" }} value="{{ $nam }}">{{ $nam }}</option>
+                                    <option value="{{ $nam }}">{{ $nam }}</option>
                                 @endforeach
                             </select>
                         </div>
