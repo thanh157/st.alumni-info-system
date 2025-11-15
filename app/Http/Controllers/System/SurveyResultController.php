@@ -109,6 +109,7 @@ class SurveyResultController extends Controller
                 'isHtml5ParserEnabled' => true,
                 'isPhpEnabled' => true,
                 'isRemoteEnabled' => true,
+                'defaultPaperSize' => 'a4',
             ]);
 
 
