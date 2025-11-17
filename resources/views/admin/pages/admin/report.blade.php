@@ -146,41 +146,45 @@
                         <li>
                             <h6 class="dropdown-header">Chọn loại báo cáo</h6>
                         </li>
+
                         <li>
-                            <a class="dropdown-item"
-                                href="{{ route('surveys.export', array_merge(request()->all(), ['type' => 'tab1'])) }}"
-                                download>
-                                <i class="bi bi-file-earmark-text"></i> Mẫu báo cáo 1
+                            <a class="dropdown-item download-link2"
+                                href="{{ route('surveys.export', array_merge(request()->all(), ['type' => 'tab1'])) }}" download
+                                onclick="handleFileDownload(event, this)"> {{-- 1. Thêm onclick --}}
+                                <i class="bi bi-file-earmark-text"></i>
+                                <span>Mẫu báo cáo 1</span> {{-- 2. Bọc text bằng <span> --}}
                             </a>
                         </li>
                         <li>
-                            <a class="dropdown-item"
-                                href="{{ route('surveys.export', array_merge(request()->all(), ['type' => 'tab2'])) }}"
-                                download>
-                                <i class="bi bi-file-earmark-spreadsheet"></i> Mẫu báo cáo 2
+                            <a class="dropdown-item download-link2"
+                                href="{{ route('surveys.export', array_merge(request()->all(), ['type' => 'tab2'])) }}" download
+                                onclick="handleFileDownload(event, this)"> {{-- 1. Thêm onclick --}}
+                                <i class="bi bi-file-earmark-spreadsheet"></i>
+                                <span>Mẫu báo cáo 2</span> {{-- 2. Bọc text bằng <span> --}}
                             </a>
                         </li>
                         <li>
-                            <a class="dropdown-item"
-                                href="{{ route('surveys.export', array_merge(request()->all(), ['type' => 'tab3'])) }}"
-                                download>
-                                <i class="bi bi-file-earmark-bar-graph"></i> Mẫu báo cáo 3
+                            <a class="dropdown-item download-link2"
+                                href="{{ route('surveys.export', array_merge(request()->all(), ['type' => 'tab3'])) }}" download
+                                onclick="handleFileDownload(event, this)"> {{-- 1. Thêm onclick --}}
+                                <i class="bi bi-file-earmark-bar-graph"></i>
+                                <span>Mẫu báo cáo 3</span> {{-- 2. Bọc text bằng <span> --}}
                             </a>
                         </li>
-                        {{-- <li>
-                            <a class="dropdown-item"
-                                href="{{ route('surveys.export', array_merge(request()->all(), ['type' => 'tab4'])) }}"
-                                download>
-                                <i class="bi bi-file-earmark-person"></i> Mẫu báo cáo 4
-                            </a>
-                        </li> --}}
+
+                        {{-- (Nút 4 này vẫn để comment) --}}
+                        {{-- <li> ... </li> --}}
+
                         <li>
                             <hr class="dropdown-divider">
                         </li>
+
                         <li>
-                            <a class="dropdown-item fw-bold text-primary"
-                                href="{{ route('surveys.export', array_merge(request()->all(), ['type' => 'all'])) }}" download>
-                                <i class="bi bi-file-earmark-zip"></i> Tải tất cả (3 báo cáo)
+                            <a class="dropdown-item fw-bold text-primary download-link" {{-- (Đổi class thành download-link cho
+                                20s) --}} href="{{ route('surveys.export', array_merge(request()->all(), ['type' => 'all'])) }}"
+                                download onclick="handleZipDownload(event, this)"> {{-- 1. Gọi hàm ZIP --}}
+                                <i class="bi bi-file-earmark-zip"></i>
+                                <span>Tải tất cả (3 báo cáo)</span> {{-- 2. Bọc text bằng <span> --}}
                             </a>
                         </li>
                     </ul>

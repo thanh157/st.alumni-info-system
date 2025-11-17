@@ -142,82 +142,60 @@
         @if(Session::has('warning'))
             toastr.warning("{{ Session::get('warning') }}");
         @endif
+        function handleDownloadClick(event, timeoutMs) {
+            event.preventDefault();
+
+            const button = $(event.currentTarget);
+            const downloadUrl = button.attr('href');
+
+            if (button.data('loading') === true) {
+                return;
+            }
+
+
+            button.data('loading', true);
+            const originalHtml = button.html();
+
+            if (button.hasClass('btn')) {
+                button.prop('disabled', true).html('<i class="spinner-border spinner-border-sm"></i> Đang xử lý...');
+            } else {
+                button.find('span').text('Đang xử lý...');
+            }
+
+
+            if (typeof toastr !== 'undefined') {
+                toastr.info('Server đang xử lý. Vui lòng chờ...', 'Đang xử lý', {
+                    timeOut: timeoutMs,
+                    progressBar: true
+                });
+            }
+
+
+            const link = document.createElement('a');
+            link.href = downloadUrl;
+            link.setAttribute('download', '');
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+
+
+            setTimeout(function () {
+                button.data('loading', false);
+                button.prop('disabled', false);
+                button.html(originalHtml);
+            }, timeoutMs);
+        }
 
         $(document).ready(function () {
-            $('#dowloadzip').on('click', function (event) {
 
-                event.preventDefault();
 
-                const button = $(this); //  <a>
-                const downloadUrl = button.attr('href');
-
-                if (button.data('loading') === true) {
-                    return;
-                }
-
-                button.data('loading', true);
-                button.prop('disabled', true).html('<i class="spinner-border spinner-border-sm"></i> Đang nén...');
-
-                if (typeof toastr !== 'undefined') {
-                    toastr.info('Server đang nén file. Vui lòng chờ...', 'Đang xử lý', {
-                        timeOut: 20000,
-                        progressBar: true
-                    });
-                } else {
-                    alert('Đang nén file, vui lòng chờ...');
-                }
-
-                const link = document.createElement('a');
-                link.href = downloadUrl;
-                link.setAttribute('download', '');
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-
-                setTimeout(function () {
-                    button.data('loading', false);
-                    button.prop('disabled', false);
-                    button.html('<i class="bi bi-file-earmark-zip-fill"></i> Tải tất cả PDF (Zip)');
-                }, 20000);
+            $('.download-link').on('click', function (e) {
+                handleDownloadClick(e, 20000); // 20 giây
             });
-        });
-        $(document).ready(function () {
-            $('.download-zip-link').on('click', function (event) {
-
-                event.preventDefault();
-
-                const button = $(this); //  <a>
-                const downloadUrl = button.attr('href');
-
-                if (button.data('loading') === true) {
-                    return;
-                }
-
-                button.data('loading', true);
-                button.prop('disabled', true).html('<i class="spinner-border spinner-border-sm"></i> Đang nén...');
-
-                if (typeof toastr !== 'undefined') {
-                    toastr.info('Server đang nén file. Vui lòng chờ...', 'Đang xử lý', {
-                        timeOut: 20000,
-                        progressBar: true
-                    });
-                } else {
-                    alert('Đang nén file, vui lòng chờ...');
-                }
-
-                const link = document.createElement('a');
-                link.href = downloadUrl;
-                link.setAttribute('download', '');
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-
-                setTimeout(function () {
-                    button.data('loading', false);
-                    button.prop('disabled', false);
-                    button.html('<i class="bi bi-file-earmark-zip-fill"></i> Tải tất cả PDF (Zip)');
-                }, 20000);
+            $('.download-link2').on('click', function (e) {
+                handleDownloadClick(e, 5000); // 8 giây
             });
+
         });
     </script>
 
