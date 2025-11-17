@@ -84,9 +84,9 @@
                 <li class="nav-item">
                     <a class="nav-link" data-bs-toggle="tab" href="#tab3">Mẫu báo cáo 3</a>
                 </li>
-                <li class="nav-item">
+                {{-- <li class="nav-item">
                     <a class="nav-link" data-bs-toggle="tab" href="#tab4">Mẫu báo cáo 4</a>
-                </li>
+                </li> --}}
             </ul>
 
             {{-- Filter Form --}}
@@ -148,35 +148,39 @@
                         </li>
                         <li>
                             <a class="dropdown-item"
-                                href="{{ route('surveys.export', array_merge(request()->all(), ['type' => 'tab1'])) }}">
+                                href="{{ route('surveys.export', array_merge(request()->all(), ['type' => 'tab1'])) }}"
+                                download>
                                 <i class="bi bi-file-earmark-text"></i> Mẫu báo cáo 1
                             </a>
                         </li>
                         <li>
                             <a class="dropdown-item"
-                                href="{{ route('surveys.export', array_merge(request()->all(), ['type' => 'tab2'])) }}">
+                                href="{{ route('surveys.export', array_merge(request()->all(), ['type' => 'tab2'])) }}"
+                                download>
                                 <i class="bi bi-file-earmark-spreadsheet"></i> Mẫu báo cáo 2
                             </a>
                         </li>
                         <li>
                             <a class="dropdown-item"
-                                href="{{ route('surveys.export', array_merge(request()->all(), ['type' => 'tab3'])) }}">
+                                href="{{ route('surveys.export', array_merge(request()->all(), ['type' => 'tab3'])) }}"
+                                download>
                                 <i class="bi bi-file-earmark-bar-graph"></i> Mẫu báo cáo 3
                             </a>
                         </li>
-                        <li>
+                        {{-- <li>
                             <a class="dropdown-item"
-                                href="{{ route('surveys.export', array_merge(request()->all(), ['type' => 'tab4'])) }}">
+                                href="{{ route('surveys.export', array_merge(request()->all(), ['type' => 'tab4'])) }}"
+                                download>
                                 <i class="bi bi-file-earmark-person"></i> Mẫu báo cáo 4
                             </a>
-                        </li>
+                        </li> --}}
                         <li>
                             <hr class="dropdown-divider">
                         </li>
                         <li>
                             <a class="dropdown-item fw-bold text-primary"
-                                href="{{ route('surveys.export', array_merge(request()->all(), ['type' => 'all'])) }}">
-                                <i class="bi bi-file-earmark-zip"></i> Tải tất cả (4 báo cáo)
+                                href="{{ route('surveys.export', array_merge(request()->all(), ['type' => 'all'])) }}" download>
+                                <i class="bi bi-file-earmark-zip"></i> Tải tất cả (3 báo cáo)
                             </a>
                         </li>
                     </ul>
@@ -253,14 +257,14 @@
                                         // Tỷ lệ có việc làm / phản hồi
                                         $tyLeCoViecPhanHoi =
                                             $r1['total_res'] > 0
-                                                ? round(($totalCoViecLam / $r1['total_res']) * 100, 2)
-                                                : 0;
+                                            ? round(($totalCoViecLam / $r1['total_res']) * 100, 2)
+                                            : 0;
 
                                         // Tỷ lệ có việc làm / tốt nghiệp
                                         $tyLeCoViecTotNghiep =
                                             $r1['total_student'] > 0
-                                                ? round(($totalCoViecLam / $r1['total_student']) * 100, 2)
-                                                : 0;
+                                            ? round(($totalCoViecLam / $r1['total_student']) * 100, 2)
+                                            : 0;
                                     @endphp
                                     <tr>
                                         <td>1</td>
@@ -510,40 +514,49 @@
                                             <td>{{ $item->city_work_id }}</td>
                                             @foreach (config('config.employed_since', []) as $k => $v)
                                                 <td>
-                                                    {{ $k == $item->employed_since ? 'x' : '' }}</td>
+                                                    {{ $k == $item->employed_since ? 'x' : '' }}
+                                                </td>
                                             @endforeach
                                             @foreach (config('config.level_knowledge_acquired', []) as $k => $v)
                                                 <td>
-                                                    {{ $k == $item->level_knowledge_acquired ? 'x' : '' }}</td>
+                                                    {{ $k == $item->level_knowledge_acquired ? 'x' : '' }}
+                                                </td>
                                             @endforeach
                                             @foreach (config('config.average_income', []) as $k => $v)
                                                 <td>
-                                                    {{ $k == $item->average_income ? 'x' : '' }}</td>
+                                                    {{ $k == $item->average_income ? 'x' : '' }}
+                                                </td>
                                             @endforeach
 
                                             @foreach (config('config.recruitment_type', []) as $k => $v)
                                                 @php $data = json_decode($item->recruitment_type, true); @endphp <td>
-                                                    {{ in_array($k, data_get($data, 'value', [])) ? 'x' : '' }}</td>
+                                                    {{ in_array($k, data_get($data, 'value', [])) ? 'x' : '' }}
+                                                </td>
                                             @endforeach
                                             @foreach (config('config.recruitment_type', []) as $k => $v)
                                                 @php $data = json_decode($item->recruitment_type, true); @endphp <td>
-                                                    {{ in_array($k, data_get($data, 'value', [])) ? 'x' : '' }}</td>
+                                                    {{ in_array($k, data_get($data, 'value', [])) ? 'x' : '' }}
+                                                </td>
                                             @endforeach
                                             @foreach (config('job_search_method', []) as $k => $v)
                                                 @php $data = json_decode($item->soft_skills_required, true); @endphp <td>
-                                                    {{ in_array($k, data_get($data, 'value', [])) ? 'x' : '' }}</td>
+                                                    {{ in_array($k, data_get($data, 'value', [])) ? 'x' : '' }}
+                                                </td>
                                             @endforeach
                                             @foreach (config('config.soft_skills_required', []) as $k => $v)
                                                 @php $data = json_decode($item->must_attended_courses, true); @endphp <td>
-                                                    {{ in_array($k, data_get($data, 'value', [])) ? 'x' : '' }}</td>
+                                                    {{ in_array($k, data_get($data, 'value', [])) ? 'x' : '' }}
+                                                </td>
                                             @endforeach
                                             @foreach (config('config.must_attended_courses', []) as $k => $v)
                                                 @php $data = json_decode($item->must_attended_courses, true); @endphp <td>
-                                                    {{ in_array($k, data_get($data, 'value', [])) ? 'x' : '' }}</td>
+                                                    {{ in_array($k, data_get($data, 'value', [])) ? 'x' : '' }}
+                                                </td>
                                             @endforeach
                                             @foreach (config('config.solutions_get_job', []) as $k => $v)
                                                 @php $data = json_decode($item->solutions_get_job, true); @endphp <td>
-                                                    {{ in_array($k, data_get($data, 'value', [])) ? 'x' : '' }}</td>
+                                                    {{ in_array($k, data_get($data, 'value', [])) ? 'x' : '' }}
+                                                </td>
                                             @endforeach
                                         </tr>
                                     @empty
@@ -673,10 +686,10 @@
     </div>
 
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
+        document.addEventListener("DOMContentLoaded", function () {
             const tabLinks = document.querySelectorAll('.nav-link[data-bs-toggle="tab"]');
             tabLinks.forEach(link => {
-                link.addEventListener('click', function() {
+                link.addEventListener('click', function () {
                     localStorage.setItem('activeReportTab', this.getAttribute('href'));
                 });
             });

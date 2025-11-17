@@ -63,7 +63,7 @@ class ReportExport implements WithMultipleSheets
                 ->get()
                 ->keyBy('student_id');
         }
-     }
+    }
 
     public function sheets(): array
     {
@@ -126,7 +126,7 @@ class ReportExport implements WithMultipleSheets
                     $this->r2,
                     $this->majors
                 );
-                $sheets[] = new ReportSheet4($this->alumniData);
+                // $sheets[] = new ReportSheet4($this->alumniData);
                 break;
         }
 
