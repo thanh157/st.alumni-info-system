@@ -65,7 +65,7 @@
             color: #dc3545 !important;
         }
 
-        /* Response Percentage - Compact like Badge */
+        /* Response Percentage - Dynamic Color */
         .response-wrapper {
             position: relative;
             display: inline-block;
@@ -77,22 +77,69 @@
             justify-content: center;
             font-size: 0.75rem;
             font-weight: 600;
-            color: #28a745;
             cursor: help;
             padding: 0.4rem 0.8rem;
             border-radius: 20px;
-            background: #d4edda;
-            border: 1px solid #c3e6cb;
+            border: 1px solid;
             transition: all 0.2s ease;
             min-width: auto;
         }
 
-        .response-percentage:hover {
+        /* Màu xanh: >= 70% */
+        .response-high {
+            color: #28a745;
+            background: #d4edda;
+            border-color: #c3e6cb;
+        }
+
+        .response-high:hover {
             background: #28a745;
             color: white;
             border-color: #28a745;
+        }
+
+        /* Màu vàng/cam: 30% - 69% */
+        .response-medium {
+            color: #856404;
+            background: #fff3cd;
+            border-color: #ffeaa7;
+        }
+
+        .response-medium:hover {
+            background: #ffc107;
+            color: white;
+            border-color: #ffc107;
+        }
+
+        /* Màu đỏ: < 30% */
+        .response-low {
+            color: #721c24;
+            background: #f8d7da;
+            border-color: #f5c6cb;
+        }
+
+        .response-low:hover {
+            background: #dc3545;
+            color: white;
+            border-color: #dc3545;
+        }
+
+        /* Màu xám: 0% */
+        .response-zero {
+            color: #6c757d;
+            background: #e9ecef;
+            border-color: #dee2e6;
+        }
+
+        .response-zero:hover {
+            background: #6c757d;
+            color: white;
+            border-color: #6c757d;
+        }
+
+        .response-percentage:hover {
             transform: scale(1.05);
-            box-shadow: 0 2px 6px rgba(40, 167, 69, 0.3);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
         }
 
         /* Compact Tooltip */
@@ -134,6 +181,27 @@
         .tooltip-count {
             font-weight: 700;
             color: #4ade80;
+        }
+
+        /* Result Button with Count */
+        .btn-result-count {
+            position: relative;
+            padding-right: 2.5rem !important;
+        }
+
+        .result-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #28a745;
+            color: white;
+            border-radius: 10px;
+            padding: 0.2rem 0.4rem;
+            font-size: 0.65rem;
+            font-weight: 700;
+            line-height: 1;
+            min-width: 20px;
+            text-align: center;
         }
 
         /* Modal xác nhận xóa */
@@ -197,19 +265,9 @@
         }
 
         @keyframes shake {
-
-            0%,
-            100% {
-                transform: translateX(0);
-            }
-
-            25% {
-                transform: translateX(-10px);
-            }
-
-            75% {
-                transform: translateX(10px);
-            }
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
         }
 
         .is-invalid {
@@ -244,13 +302,13 @@
                 <table class="table align-middle mb-0 table-bordered">
                     <thead>
                         <tr>
-                            <td><strong>Tiêu đề khảo sát</strong></td>
-                            <td><strong>Trạng thái</strong></td>
-                            <td><strong>Số lượng khảo sát</strong></td>
-                            <td><strong>Bắt đầu</strong></td>
-                            <td><strong>Kết thúc</strong></td>
-                            <td><strong>Phản hồi</strong></td>
-                            <td><strong>Hành động</strong></td>
+                            <th><strong>Tiêu đề khảo sát</strong></th>
+                            <th class="text-center"><strong>Trạng thái</strong></th>
+                            <th><strong>Đợt tốt nghiệp</strong></th>
+                            <th class="text-center"><strong>Bắt đầu</strong></th>
+                            <th class="text-center"><strong>Kết thúc</strong></th>
+                            <th class="text-center"><strong>Phản hồi</strong></th>
+                            <th class="text-center"><strong>Hành động</strong></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -260,8 +318,25 @@
                                     'survey_period_id',
                                     $item->id,
                                 )->count();
+                                
+                                $countDot = $item->graduations()->pluck('id')->toArray();
+                                $countStudent = \App\Models\GraduationStudent::query()
+                                    ->whereIn('graduation_id', $countDot)
+                                    ->count();
 
-                                $percentage = $item->total_graduations > 0 ? round(($totalPhanHoi / $item->total_graduations) * 100, 1) : 0;
+                                // Tính % phản hồi
+                                $percentage = $countStudent > 0 ? round(($totalPhanHoi / $countStudent) * 100, 1) : 0;
+                                
+                                // Xác định class màu theo tỷ lệ
+                                if ($percentage == 0) {
+                                    $colorClass = 'response-zero';
+                                } elseif ($percentage >= 70) {
+                                    $colorClass = 'response-high';
+                                } elseif ($percentage >= 30) {
+                                    $colorClass = 'response-medium';
+                                } else {
+                                    $colorClass = 'response-low';
+                                }
                             @endphp
                             <tr>
                                 <td>{{ $item->title }}</td>
@@ -273,14 +348,17 @@
                                 <td>
                                     @if ($item->graduations->count() > 0)
                                         @foreach ($item->graduations as $dot)
-                                            <a target="_blank" href="{{ route('admin.graduation-student.show', ['id' => $dot->id]) }}"
+                                            <a target="_blank"
+                                                href="{{ route('admin.graduation-student.show', ['id' => $dot->id]) }}"
                                                 class="d-block text-decoration-none text-primary mb-1">
                                                 {{ $dot->name }}
                                             </a>
                                             @if (!$loop->last)
-                                                <hr />
+                                                <hr class="my-1" />
                                             @endif
                                         @endforeach
+                                    @else
+                                        <span class="text-muted fst-italic small">Chưa có</span>
                                     @endif
                                 </td>
 
@@ -294,13 +372,12 @@
                                     {{ \Carbon\Carbon::parse($item->end_time)->format('d/m/Y') }}
                                 </td>
 
-                                <!-- Phản hồi (Badge nhỏ giống Trạng thái) -->
+                                <!-- Phản hồi (Badge với màu động) -->
                                 <td class="text-center">
                                     <div class="response-wrapper">
-                                        <span class="response-percentage">{{ $percentage }}%</span>
+                                        <span class="response-percentage {{ $colorClass }}">{{ $percentage }}%</span>
                                         <span class="response-tooltip">
-                                            <span class="tooltip-count">{{ $totalPhanHoi }}</span> /
-                                            {{  $item->total_graduations }} sinh viên
+                                            <span class="tooltip-count">{{ $totalPhanHoi }}</span> / {{ $countStudent }} sinh viên
                                         </span>
                                     </div>
                                 </td>
@@ -310,26 +387,31 @@
                                     <div class="action-group">
                                         <!-- 1. Xem trước form -->
                                         <a href="{{ route('admin.survey.form', ['id' => $item->id]) }}"
-                                            class="btn btn-sm btn-outline-primary btn-action" title="Xem trước form"
+                                            class="btn btn-sm btn-outline-primary btn-action" 
+                                            title="Xem trước form"
                                             target="_blank">
                                             <i class="bi bi-eye"></i>
                                         </a>
 
                                         <!-- 2. Lấy link khảo sát -->
-                                        <button class="btn btn-sm btn-outline-info btn-action" title="Lấy link khảo sát"
+                                        <button class="btn btn-sm btn-outline-info btn-action" 
+                                            title="Lấy link khảo sát"
                                             data-link="{{ route('my_form', ['survey_id' => $item->id]) }}"
                                             onclick="copySurveyLink(this)">
                                             <i class="bi bi-link-45deg"></i>
                                         </button>
 
-                                        <!-- 3. Xem kết quả (chỉ hiện khi có phản hồi) -->
+                                        <!-- 3. Xem kết quả với số lượng -->
                                         @if ($totalPhanHoi > 0)
                                             <a href="{{ route('admin.survey.result', ['id' => $item->id]) }}"
-                                                class="btn btn-sm btn-outline-success btn-action" title="Xem kết quả phản hồi">
+                                                class="btn btn-sm btn-outline-success btn-action btn-result-count" 
+                                                title="Xem kết quả ({{ $totalPhanHoi }} phản hồi)">
                                                 <i class="bi bi-bar-chart-fill"></i>
+                                                <span class="result-badge">{{ $totalPhanHoi }}</span>
                                             </a>
                                         @else
-                                            <button class="btn btn-sm btn-outline-secondary btn-action" title="Chưa có phản hồi"
+                                            <button class="btn btn-sm btn-outline-secondary btn-action" 
+                                                title="Chưa có phản hồi"
                                                 disabled>
                                                 <i class="bi bi-bar-chart"></i>
                                             </button>
@@ -338,13 +420,16 @@
                                         <!-- Dropdown menu (3 chấm) -->
                                         <div class="dropdown">
                                             <button class="btn btn-sm btn-outline-secondary btn-action dropdown-toggle"
-                                                type="button" id="dropdownMenu{{ $item->id }}" data-bs-toggle="dropdown"
-                                                aria-expanded="false" title="Thêm tùy chọn">
+                                                type="button" 
+                                                id="dropdownMenu{{ $item->id }}"
+                                                data-bs-toggle="dropdown" 
+                                                aria-expanded="false" 
+                                                title="Thêm tùy chọn">
                                                 <i class="bi bi-three-dots-vertical"></i>
                                             </button>
                                             <ul class="dropdown-menu dropdown-menu-end"
                                                 aria-labelledby="dropdownMenu{{ $item->id }}">
-                                                <!-- Gửi email (Chức năng hay dùng) -->
+                                                <!-- Gửi email -->
                                                 <li>
                                                     <form action="{{ route('send_mail', $item->id) }}" method="POST"
                                                         onsubmit="return confirm('Xác nhận gửi email khảo sát đến sinh viên?');"
@@ -358,9 +443,18 @@
                                                     </form>
                                                 </li>
 
+                                                <li><hr class="dropdown-divider"></li>
+
+                                                <!-- Tải PDF -->
                                                 <li>
-                                                    <hr class="dropdown-divider">
+                                                    <a class="dropdown-item"
+                                                        href="{{ route('admin.surveys.downloadAllPdfs', $item->id) }}">
+                                                        <i class="bi bi-file-earmark-zip-fill text-info"></i>
+                                                        <span>Tải toàn bộ file PDF (ZIP)</span>
+                                                    </a>
                                                 </li>
+
+                                                <li><hr class="dropdown-divider"></li>
 
                                                 <!-- Chỉnh sửa -->
                                                 <li>
@@ -371,26 +465,17 @@
                                                     </a>
                                                 </li>
 
-                                                <li>
-                                                    <hr class="dropdown-divider">
-                                                </li>
+                                                <li><hr class="dropdown-divider"></li>
 
+                                                <!-- Xóa -->
                                                 <li>
-                                                    <a class="dropdown-item"
-                                                        href="{{ route('admin.surveys.downloadAllPdfs', $item->id) }}" download>
-                                                        <i class="bi bi-file-earmark-zip-fill text-info"></i>
-                                                        <span>Tải toàn bộ file PDF (ZIP)</span>
-                                                    </a>
-                                                </li>
-                                                <hr class="dropdown-divider">
-                                                <li>
-                                                    <a class="dropdown-item text-danger" href="javascript:void(0);"
+                                                    <a class="dropdown-item text-danger" 
+                                                        href="javascript:void(0);"
                                                         onclick="showDeleteModal('{{ $item->id }}', '{{ addslashes($item->title) }}')">
                                                         <i class="bi bi-trash"></i>
                                                         <span>Xóa khảo sát</span>
                                                     </a>
                                                 </li>
-
                                             </ul>
                                         </div>
                                     </div>
@@ -436,8 +521,11 @@
                     <p class="mb-2">
                         <strong>Để xác nhận, vui lòng nhập chính xác tên đợt khảo sát bên trên:</strong>
                     </p>
-                    <input type="text" class="form-control confirm-input" id="confirmSurveyName"
-                        placeholder="Nhập tên đợt khảo sát..." autocomplete="off">
+                    <input type="text" 
+                        class="form-control confirm-input" 
+                        id="confirmSurveyName"
+                        placeholder="Nhập tên đợt khảo sát..." 
+                        autocomplete="off">
 
                     <small class="text-muted d-block mt-2">
                         <i class="bi bi-info-circle"></i>
@@ -494,7 +582,6 @@
             const modal = new bootstrap.Modal(document.getElementById('deleteModal'));
             modal.show();
 
-            // Focus vào input khi modal mở
             setTimeout(() => {
                 document.getElementById('confirmSurveyName').focus();
             }, 500);
@@ -505,14 +592,11 @@
             const errorMessage = document.getElementById('errorMessage');
 
             if (inputName === currentSurveyName) {
-                // Tên khớp - cho phép xóa
                 document.getElementById('deleteForm').submit();
             } else {
-                // Tên không khớp - hiện thông báo lỗi
                 errorMessage.classList.remove('d-none');
                 document.getElementById('confirmSurveyName').classList.add('is-invalid');
 
-                // Shake animation
                 const input = document.getElementById('confirmSurveyName');
                 input.style.animation = 'shake 0.5s';
                 setTimeout(() => {
@@ -521,17 +605,15 @@
             }
         }
 
-        // Xóa error khi người dùng gõ lại
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function() {
             const confirmInput = document.getElementById('confirmSurveyName');
             if (confirmInput) {
-                confirmInput.addEventListener('input', function () {
+                confirmInput.addEventListener('input', function() {
                     document.getElementById('errorMessage').classList.add('d-none');
                     this.classList.remove('is-invalid');
                 });
 
-                // Enter để submit
-                confirmInput.addEventListener('keypress', function (e) {
+                confirmInput.addEventListener('keypress', function(e) {
                     if (e.key === 'Enter') {
                         e.preventDefault();
                         confirmDelete();
@@ -545,21 +627,21 @@
             const icon = type === 'success' ? 'check-circle-fill' : 'x-circle-fill';
 
             const toastHTML = `
-                                            <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 9999">
-                                                <div class="toast show align-items-center text-white border-0" 
-                                                     style="background-color: ${bgColor}; box-shadow: 0 4px 12px rgba(0,0,0,0.15); border-radius: 8px;" 
-                                                     role="alert">
-                                                    <div class="d-flex">
-                                                        <div class="toast-body d-flex align-items-center gap-2 py-3">
-                                                            <i class="bi bi-${icon}"></i>
-                                                            <span>${message}</span>
-                                                        </div>
-                                                        <button type="button" class="btn-close btn-close-white me-2 m-auto" 
-                                                                onclick="this.closest('.toast').remove()"></button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        `;
+                <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 9999">
+                    <div class="toast show align-items-center text-white border-0" 
+                         style="background-color: ${bgColor}; box-shadow: 0 4px 12px rgba(0,0,0,0.15); border-radius: 8px;" 
+                         role="alert">
+                        <div class="d-flex">
+                            <div class="toast-body d-flex align-items-center gap-2 py-3">
+                                <i class="bi bi-${icon}"></i>
+                                <span>${message}</span>
+                            </div>
+                            <button type="button" class="btn-close btn-close-white me-2 m-auto" 
+                                    onclick="this.closest('.toast').remove()"></button>
+                        </div>
+                    </div>
+                </div>
+            `;
 
             document.body.insertAdjacentHTML('beforeend', toastHTML);
 
