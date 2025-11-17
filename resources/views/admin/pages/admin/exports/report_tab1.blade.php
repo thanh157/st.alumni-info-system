@@ -84,8 +84,7 @@
             <td>{{ $r1['total_res'] }}</td>
             <td>{{ $r1['total_res_nu'] }}</td>
 
-            <td>{{ $r1_trained_field->dung_nganh + $r1_trained_field->lien_quan + $r1_trained_field->khong_lien_quan }}
-            </td>
+
             <td>{{ $r1_trained_field->dung_nganh }}</td>
             <td>{{ $r1_trained_field->lien_quan }}</td>
             <td>{{ $r1_trained_field->khong_lien_quan }}</td>
@@ -94,23 +93,23 @@
             <td>{{ $r2->where('employment_status', 3)->count() }}</td>
 
             <td>{{ $r1['total_res'] > 0
-                ? round(
-                        (($r1_trained_field->dung_nganh + $r1_trained_field->lien_quan + $r1_trained_field->khong_lien_quan) /
-                            $r1['total_res']) *
-                            100,
-                        2,
-                    ) . '%'
-                : '0%' }}
+    ? round(
+        (($r1_trained_field->dung_nganh + $r1_trained_field->lien_quan + $r1_trained_field->khong_lien_quan) /
+            $r1['total_res']) *
+        100,
+        2,
+    ) . '%'
+    : '0%' }}
             </td>
 
             <td>{{ $r1['total_student'] > 0
-                ? round(
-                        (($r1_trained_field->dung_nganh + $r1_trained_field->lien_quan + $r1_trained_field->khong_lien_quan) /
-                            $r1['total_student']) *
-                            100,
-                        2,
-                    ) . '%'
-                : '0%' }}
+    ? round(
+        (($r1_trained_field->dung_nganh + $r1_trained_field->lien_quan + $r1_trained_field->khong_lien_quan) /
+            $r1['total_student']) *
+        100,
+        2,
+    ) . '%'
+    : '0%' }}
             </td>
 
             <td>{{ $r1_work_area->nha_nuoc }}</td>

@@ -234,7 +234,6 @@
                                         <th>Nữ</th>
                                         <th>Tổng số</th>
                                         <th>Nữ</th>
-                                        {{-- ĐÃ THÊM: Cột Tổng số cho nhóm Có việc làm --}}
                                         {{-- <th>Tổng số</th> --}}
                                         <th>Đúng ngành đào tạo</th>
                                         <th>Liên quan đến ngành đào tạo</th>
@@ -274,8 +273,7 @@
                                         <td>{{ $r1['total_nu'] }}</td>
                                         <td>{{ $r1['total_res'] }}</td>
                                         <td>{{ $r1['total_res_nu'] }}</td>
-                                        {{-- CỘT TỔNG SỐ CÓ VIỆC LÀM ĐÃ ĐƯỢC CHUYỂN VÀO ĐÂY --}}
-                                        <td>{{ $totalCoViecLam }}</td>
+
                                         <td>{{ $r1_trained_field->dung_nganh ?? 0 }}</td>
                                         <td>{{ $r1_trained_field->lien_quan ?? 0 }}</td>
                                         <td>{{ $r1_trained_field->khong_lien_quan ?? 0 }}</td>
