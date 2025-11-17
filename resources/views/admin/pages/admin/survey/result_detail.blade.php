@@ -204,7 +204,7 @@
                 <form>
                     <div class="form-section">
                         <h6 class="fw-bold">Phần I. Thông tin cá nhân</h6>
-                        
+
                         <div class="mb-3">
                             <label for="ma_sv">1. Mã sinh viên</label>
                             <input type="text" class="form-control" value="{{ $response->code_student }}" readonly>
@@ -216,10 +216,16 @@
                         </div>
 
                         <div class="row">
-                            <div class="col-12 col-md-6 mb-3">
+                            {{-- <div class="col-12 col-md-6 mb-3">
                                 <label class="form-label">3. Giới tính</label>
                                 <input type="text" class="form-control"
                                     value="{{ $response->gender == 'male' ? 'Nam' : 'Nữ' }}" readonly>
+                            </div> --}}
+                            <div class="col-12 col-md-6 mb-3">
+                                <label class="form-label">3. Giới tính</label>
+                                <input type="text" class="form-control"
+                                    value="{{ $response->gender == 'male' ? 'Nam' : ($response->gender == 'female' ? 'Nữ' : $response->gender) }}"
+                                    readonly>
                             </div>
                             <div class="col-12 col-md-6 mb-3">
                                 <label class="form-label">4. Ngày sinh</label>
@@ -255,9 +261,10 @@
                             <div class="col-12 col-md-6 mb-3">
                                 <label class="form-label">8. Tên ngành được đào tạo</label>
                                 @php
-                                    $tenNganh = $response->training_industry_id == 1 
-                                        ? 'Công Nghệ Thông Tin' 
-                                        : 'Mạng Máy Tính Và Truyền Thông Dữ Liệu';
+                                    $tenNganh =
+                                        $response->training_industry_id == 1
+                                            ? 'Công Nghệ Thông Tin'
+                                            : 'Mạng Máy Tính Và Truyền Thông Dữ Liệu';
                                 @endphp
                                 <input type="text" class="form-control" readonly value="{{ $tenNganh }}">
                             </div>
@@ -276,44 +283,49 @@
 
                         <!-- Câu 11: Tình trạng việc làm -->
                         <div class="mb-4">
-                            <label class="form-label fw-bold">11. Anh/Chị vui lòng cho biết tình trạng việc làm hiện tại của Anh/Chị</label>
-                            @php 
+                            <label class="form-label fw-bold">11. Anh/Chị vui lòng cho biết tình trạng việc làm hiện tại của
+                                Anh/Chị</label>
+                            @php
                                 $tinh_trang = config('config.tinh_trang');
                                 $employedValue = array_key_first($tinh_trang);
                             @endphp
                             @foreach ($tinh_trang as $index => $value)
                                 <div class="form-check mb-2">
-                                    <input class="form-check-input" disabled type="radio" 
-                                        id="tt_{{ $index }}" 
+                                    <input class="form-check-input" disabled type="radio" id="tt_{{ $index }}"
                                         {{ $index == $response->employment_status ? 'checked' : '' }}>
                                     <label class="form-check-label fw-normal" for="tt_{{ $index }}">
                                         {{ $value }}
                                     </label>
                                 </div>
                             @endforeach
-                            <i class="text-muted small">*Nếu chưa có việc làm hoặc đang tiếp tục học, câu trả lời sẽ chuyển đến câu 27</i>
+                            <i class="text-muted small">*Nếu chưa có việc làm hoặc đang tiếp tục học, câu trả lời sẽ chuyển
+                                đến câu 27</i>
                         </div>
 
                         <!-- Các câu hỏi 12-26: Chỉ hiện nếu có việc làm -->
                         <div class="employment-details">
                             <div class="mb-3">
                                 <label class="form-label">12. Tên đơn vị tuyển dụng</label>
-                                <input type="text" class="form-control" value="{{ $response->recruit_partner_name }}" readonly>
+                                <input type="text" class="form-control" value="{{ $response->recruit_partner_name }}"
+                                    readonly>
                             </div>
 
                             <div class="mb-3">
                                 <label class="form-label">13. Địa chỉ đơn vị</label>
-                                <input type="text" class="form-control" value="{{ $response->recruit_partner_address }}" readonly>
+                                <input type="text" class="form-control"
+                                    value="{{ $response->recruit_partner_address }}" readonly>
                             </div>
 
                             <div class="mb-3">
                                 <label class="form-label">14. Thời gian tuyển dụng</label>
-                                <input type="date" class="form-control" value="{{ $response->recruit_partner_date }}" readonly>
+                                <input type="date" class="form-control" value="{{ $response->recruit_partner_date }}"
+                                    readonly>
                             </div>
 
                             <div class="mb-3">
                                 <label class="form-label">15. Chức vụ, vị trí việc làm</label>
-                                <input type="text" class="form-control" value="{{ $response->recruit_partner_position }}" readonly>
+                                <input type="text" class="form-control"
+                                    value="{{ $response->recruit_partner_position }}" readonly>
                             </div>
 
                             {{-- PHẦN II: NỘI DUNG KHẢO SÁT --}}
@@ -321,7 +333,8 @@
 
                             <!-- Câu 16: Khu vực làm việc -->
                             <div class="mb-4">
-                                <label class="form-label fw-bold">16. Đơn vị Anh/Chị đang làm việc thuộc khu vực làm việc nào?</label>
+                                <label class="form-label fw-bold">16. Đơn vị Anh/Chị đang làm việc thuộc khu vực làm việc
+                                    nào?</label>
                                 @foreach (config('config.work_area') as $index => $item)
                                     <div class="form-check mb-2">
                                         <input class="form-check-input" type="radio" disabled
@@ -333,7 +346,8 @@
 
                             <!-- Câu 17: Thời gian có việc -->
                             <div class="mb-4">
-                                <label class="form-label fw-bold">17. Sau khi tốt nghiệp, Anh/Chị có việc làm từ khi nào?</label>
+                                <label class="form-label fw-bold">17. Sau khi tốt nghiệp, Anh/Chị có việc làm từ khi
+                                    nào?</label>
                                 @foreach (config('config.employed_since') as $key => $item)
                                     <div class="form-check mb-2">
                                         <input class="form-check-input" type="radio" disabled
@@ -345,7 +359,8 @@
 
                             <!-- Câu 18: Phù hợp ngành -->
                             <div class="mb-4">
-                                <label class="form-label fw-bold">18. Công việc Anh/Chị đang đảm nhận có phù hợp với ngành đào tạo không?</label>
+                                <label class="form-label fw-bold">18. Công việc Anh/Chị đang đảm nhận có phù hợp với ngành
+                                    đào tạo không?</label>
                                 @foreach (config('config.trained_field') as $key => $item)
                                     <div class="form-check mb-2">
                                         <input class="form-check-input" type="radio" disabled
@@ -357,7 +372,8 @@
 
                             <!-- Câu 19: Phù hợp trình độ -->
                             <div class="mb-4">
-                                <label class="form-label fw-bold">19. Công việc Anh/Chị đang đảm nhận có phù hợp với trình độ chuyên môn không?</label>
+                                <label class="form-label fw-bold">19. Công việc Anh/Chị đang đảm nhận có phù hợp với trình
+                                    độ chuyên môn không?</label>
                                 @foreach (config('config.professional_qualification_field') as $key => $item)
                                     <div class="form-check mb-2">
                                         <input class="form-check-input" type="radio" disabled
@@ -369,7 +385,8 @@
 
                             <!-- Câu 20: Kiến thức kỹ năng -->
                             <div class="mb-4">
-                                <label class="form-label fw-bold">20. Anh/chị có học được các kiến thức và kỹ năng cần thiết từ nhà trường cho công việc theo ngành tốt nghiệp không?</label>
+                                <label class="form-label fw-bold">20. Anh/chị có học được các kiến thức và kỹ năng cần
+                                    thiết từ nhà trường cho công việc theo ngành tốt nghiệp không?</label>
                                 @foreach (config('config.level_knowledge_acquired') as $key => $item)
                                     <div class="form-check mb-2">
                                         <input class="form-check-input" type="radio" disabled
@@ -381,13 +398,16 @@
 
                             <!-- Câu 21: Lương khởi điểm -->
                             <div class="mb-4">
-                                <label class="form-label fw-bold">21. Mức lương khởi điểm của Anh/Chị (triệu đồng/tháng)</label>
-                                <input type="text" class="form-control" value="{{ $response->starting_salary }}" readonly>
+                                <label class="form-label fw-bold">21. Mức lương khởi điểm của Anh/Chị (triệu
+                                    đồng/tháng)</label>
+                                <input type="text" class="form-control" value="{{ $response->starting_salary }}"
+                                    readonly>
                             </div>
 
                             <!-- Câu 22: Thu nhập hiện tại -->
                             <div class="mb-4">
-                                <label class="form-label fw-bold">22. Mức thu nhập bình quân/tháng tính theo VNĐ của Anh/Chị hiện nay</label>
+                                <label class="form-label fw-bold">22. Mức thu nhập bình quân/tháng tính theo VNĐ của
+                                    Anh/Chị hiện nay</label>
                                 @foreach (config('config.average_income') as $key => $item)
                                     <div class="form-check mb-2">
                                         <input class="form-check-input" disabled type="radio"
@@ -399,7 +419,8 @@
 
                             <!-- Câu 23: Hình thức tìm việc -->
                             <div class="mb-4">
-                                <label class="form-label fw-bold">23. Anh/Chị tìm được việc làm thông qua những hình thức nào? <span class="fw-normal">(Có thể chọn nhiều lựa chọn)</span></label>
+                                <label class="form-label fw-bold">23. Anh/Chị tìm được việc làm thông qua những hình thức
+                                    nào? <span class="fw-normal">(Có thể chọn nhiều lựa chọn)</span></label>
                                 @php
                                     $tim_viec = config('config.recruitment_type');
                                     $recruit = json_decode($response->recruitment_type, true);
@@ -413,7 +434,8 @@
                                 @endforeach
                                 @if (!empty($recruit['content_other']))
                                     <div class="mt-2">
-                                        <input type="text" readonly class="form-control" value="{{ $recruit['content_other'] }}">
+                                        <input type="text" readonly class="form-control"
+                                            value="{{ $recruit['content_other'] }}">
                                     </div>
                                 @endif
                             </div>
@@ -433,14 +455,16 @@
                                 @endforeach
                                 @if (!empty($job_search_method_value['content_other']))
                                     <div class="mt-2">
-                                        <input type="text" readonly class="form-control" value="{{ $job_search_method_value['content_other'] }}">
+                                        <input type="text" readonly class="form-control"
+                                            value="{{ $job_search_method_value['content_other'] }}">
                                     </div>
                                 @endif
                             </div>
 
                             <!-- Câu 25: Kỹ năng mềm -->
                             <div class="mb-4">
-                                <label class="form-label fw-bold">25. Trong quá trình làm việc, Anh/Chị cần những kỹ năng mềm nào sau đây? <span class="fw-normal">(Có thể chọn nhiều lựa chọn)</span></label>
+                                <label class="form-label fw-bold">25. Trong quá trình làm việc, Anh/Chị cần những kỹ năng
+                                    mềm nào sau đây? <span class="fw-normal">(Có thể chọn nhiều lựa chọn)</span></label>
                                 @php
                                     $ky_nang = config('config.soft_skills_required');
                                     $soft_skills_required = json_decode($response->soft_skills_required, true);
@@ -454,14 +478,17 @@
                                 @endforeach
                                 @if (!empty($soft_skills_required['content_other']))
                                     <div class="mt-2">
-                                        <input type="text" readonly class="form-control" value="{{ $soft_skills_required['content_other'] }}">
+                                        <input type="text" readonly class="form-control"
+                                            value="{{ $soft_skills_required['content_other'] }}">
                                     </div>
                                 @endif
                             </div>
 
                             <!-- Câu 26: Khóa học nâng cao -->
                             <div class="mb-4">
-                                <label class="form-label fw-bold">26. Sau khi được tuyển dụng, Anh/Chị có phải tham gia khóa học nâng cao nào dưới đây để đáp ứng công việc không <span class="fw-normal">(Có thể chọn nhiều lựa chọn)</span></label>
+                                <label class="form-label fw-bold">26. Sau khi được tuyển dụng, Anh/Chị có phải tham gia
+                                    khóa học nâng cao nào dưới đây để đáp ứng công việc không <span class="fw-normal">(Có
+                                        thể chọn nhiều lựa chọn)</span></label>
                                 @php
                                     $nang_cao = config('config.must_attended_courses');
                                     $must_attended_courses = json_decode($response->must_attended_courses, true);
@@ -475,7 +502,8 @@
                                 @endforeach
                                 @if (!empty($must_attended_courses['content_other']))
                                     <div class="mt-2">
-                                        <input type="text" readonly class="form-control" value="{{ $must_attended_courses['content_other'] }}">
+                                        <input type="text" readonly class="form-control"
+                                            value="{{ $must_attended_courses['content_other'] }}">
                                     </div>
                                 @endif
                             </div>
@@ -484,7 +512,9 @@
                         <!-- Câu 27: Luôn hiển thị -->
                         <div class="question-27">
                             <div class="mb-4">
-                                <label class="form-label fw-bold">27. Theo Anh/Chị, những giải pháp nào sau đây giúp tăng tỷ lệ có việc làm đúng ngành của sinh viên tốt nghiệp từ chương trình đào tạo mà Anh/Chị đã học? <span class="fw-normal">(Có thể chọn nhiều lựa chọn)</span></label>
+                                <label class="form-label fw-bold">27. Theo Anh/Chị, những giải pháp nào sau đây giúp tăng
+                                    tỷ lệ có việc làm đúng ngành của sinh viên tốt nghiệp từ chương trình đào tạo mà Anh/Chị
+                                    đã học? <span class="fw-normal">(Có thể chọn nhiều lựa chọn)</span></label>
                                 @php
                                     $giai_phap = config('config.solutions_get_job');
                                     $solutions_get_job = json_decode($response->solutions_get_job, true);
@@ -498,7 +528,8 @@
                                 @endforeach
                                 @if (!empty($solutions_get_job['content_other']))
                                     <div class="mt-2">
-                                        <input type="text" readonly class="form-control" value="{{ $solutions_get_job['content_other'] }}">
+                                        <input type="text" readonly class="form-control"
+                                            value="{{ $solutions_get_job['content_other'] }}">
                                     </div>
                                 @endif
                             </div>
@@ -527,7 +558,7 @@
 
         // Logic hiển thị câu hỏi dựa trên employment_status
         document.addEventListener('DOMContentLoaded', function() {
-            const employedValue = '{{ array_key_first(config("config.tinh_trang")) }}';
+            const employedValue = '{{ array_key_first(config('config.tinh_trang')) }}';
             const selectedStatus = '{{ $response->employment_status }}';
 
             if (selectedStatus == employedValue) {
