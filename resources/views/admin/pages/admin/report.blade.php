@@ -150,41 +150,40 @@
                         <li>
                             <a class="dropdown-item download-link2"
                                 href="{{ route('surveys.export', array_merge(request()->all(), ['type' => 'tab1'])) }}" download
-                                onclick="handleFileDownload(event, this)"> {{-- 1. Thêm onclick --}}
+                                onclick="handleFileDownload(event, this)">
                                 <i class="bi bi-file-earmark-text"></i>
-                                <span>Mẫu báo cáo 1</span> {{-- 2. Bọc text bằng <span> --}}
+                                <span>Mẫu báo cáo 1</span>
                             </a>
                         </li>
                         <li>
                             <a class="dropdown-item download-link2"
                                 href="{{ route('surveys.export', array_merge(request()->all(), ['type' => 'tab2'])) }}" download
-                                onclick="handleFileDownload(event, this)"> {{-- 1. Thêm onclick --}}
+                                onclick="handleFileDownload(event, this)">
                                 <i class="bi bi-file-earmark-spreadsheet"></i>
-                                <span>Mẫu báo cáo 2</span> {{-- 2. Bọc text bằng <span> --}}
+                                <span>Mẫu báo cáo 2</span>
                             </a>
                         </li>
                         <li>
                             <a class="dropdown-item download-link2"
                                 href="{{ route('surveys.export', array_merge(request()->all(), ['type' => 'tab3'])) }}" download
-                                onclick="handleFileDownload(event, this)"> {{-- 1. Thêm onclick --}}
+                                onclick="handleFileDownload(event, this)">
                                 <i class="bi bi-file-earmark-bar-graph"></i>
-                                <span>Mẫu báo cáo 3</span> {{-- 2. Bọc text bằng <span> --}}
+                                <span>Mẫu báo cáo 3</span>
                             </a>
                         </li>
 
-                        {{-- (Nút 4 này vẫn để comment) --}}
-                        {{-- <li> ... </li> --}}
+
 
                         <li>
                             <hr class="dropdown-divider">
                         </li>
 
                         <li>
-                            <a class="dropdown-item fw-bold text-primary download-link" {{-- (Đổi class thành download-link cho
-                                20s) --}} href="{{ route('surveys.export', array_merge(request()->all(), ['type' => 'all'])) }}"
-                                download onclick="handleZipDownload(event, this)"> {{-- 1. Gọi hàm ZIP --}}
+                            <a class="dropdown-item fw-bold text-primary download-link2"
+                                href="{{ route('surveys.export', array_merge(request()->all(), ['type' => 'all'])) }}" download
+                                onclick="handleFileDownload(event, this)">
                                 <i class="bi bi-file-earmark-zip"></i>
-                                <span>Tải tất cả (3 báo cáo)</span> {{-- 2. Bọc text bằng <span> --}}
+                                <span>Tải tất cả (3 báo cáo)</span>
                             </a>
                         </li>
                     </ul>

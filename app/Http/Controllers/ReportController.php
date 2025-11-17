@@ -106,8 +106,8 @@ class ReportController extends Controller
         $survey = null;
         $schoolYear = null;
         $r1 = [];
-        $r1_trained_field = (object)['dung_nganh' => 0, 'lien_quan' => 0, 'khong_lien_quan' => 0];
-        $r1_work_area = (object)['nha_nuoc' => 0, 'tu_nhan' => 0, 'tu_tao' => 0, 'nuoc_ngoai' => 0];
+        $r1_trained_field = (object) ['dung_nganh' => 0, 'lien_quan' => 0, 'khong_lien_quan' => 0];
+        $r1_work_area = (object) ['nha_nuoc' => 0, 'tu_nhan' => 0, 'tu_tao' => 0, 'nuoc_ngoai' => 0];
         $studentTab2 = collect();
         $r2 = collect();
         $alumniData = collect();
