@@ -52,10 +52,8 @@ class DashboardController extends Controller
     public function getChartData(): JsonResponse
     {
         $rows = DB::table('employment_survey_responses_v2 as esr')
-            ->join('survey', 'esr.survey_period_id', '=', 'survey.id')
             ->select(
                 'esr.survey_period_id',
-                'survey.title',
                 DB::raw('SUM(CASE WHEN esr.employment_status = 1 THEN 1 ELSE 0 END) as employed_count'),
                 DB::raw('SUM(CASE WHEN esr.employment_status != 1 OR esr.employment_status IS NULL THEN 1 ELSE 0 END) as unemployed_count'),
                 DB::raw('SUM(CASE WHEN esr.employment_status = 1 AND esr.trained_field IN (1,2) THEN 1 ELSE 0 END) as related_field_count'),
@@ -94,28 +92,22 @@ class DashboardController extends Controller
             $totals['unrelated'] += $unrelated;
             $totals['domestic'] += $domestic;
             $totals['foreign'] += $foreign;
-            $year = mb_substr($r->title, -4, null, 'UTF-8');
-            $term_name = 'Khảo sát ' . $r->survey_period_id;
-            if ($r->title) {
-                preg_match('/(20\d{2})/', $r->title, $matches);
-                if (isset($matches[1])) {
-                    $term_name = 'Đợt khảo sát năm ' . $matches[1];
-                }
-
-                $bar[] = [
-                    'term' => $term_name,
-                    'employed' => $employed,
-                    'unemployed' => $unemployed,
-                    'related' => $related,
-                    'unrelated' => $unrelated,
-                    'domestic' => $domestic,
-                    'foreign' => $foreign,
-
-                ];
-            }
 
 
+            $bar[] = [
+                'term' => 'Đợt Khảo Sát ' . $r->survey_period_id,
+                'employed' => $employed,
+                'unemployed' => $unemployed,
+                'related' => $related,
+                'unrelated' => $unrelated,
+                'domestic' => $domestic,
+                'foreign' => $foreign,
+
+            ];
         }
+
+
+
 
         $data = [
             // 3 bộ pie (theo chế độ)
