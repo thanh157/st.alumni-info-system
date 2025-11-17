@@ -53,12 +53,12 @@
                             class="p-3 rounded shadow-sm d-flex flex-column justify-content-between h-100 bg-white kpi-card">
                             <div class="d-flex justify-content-between align-items-start">
                                 <div>
-                                    <p class="fw-semibold text-muted mb-1 small text-uppercase">LỚP HỌC</p>
-                                    <h4 class="mb-0">{{ $totalClasses ?? 0 }}</h4>
+                                    <p class="fw-semibold text-muted mb-1 small text-uppercase">TỶ LỆ CHƯA CÓ VIỆC LÀM</p>
+                                    <h4 class="mb-0">{{ $unemploymentRate ?? 0 }}%</h4>
                                 </div>
-                                <span class="kpi-icon kpi-purple"><i class="fa-solid fa-users-line"></i></span>
+                                <span class="kpi-icon kpi-amber"><i class="fa-solid fa-user-clock"></i></span>
                             </div>
-                            <small class="text-muted mt-2">Tổng số lớp học trong hệ thống</small>
+                            <small class="text-muted mt-2">Tỷ lệ sinh viên chưa có việc làm</small>
                         </div>
                     </div>
 
@@ -67,28 +67,27 @@
                             class="p-3 rounded shadow-sm d-flex flex-column justify-content-between h-100 bg-white kpi-card">
                             <div class="d-flex justify-content-between align-items-start">
                                 <div>
-                                    <p class="fw-semibold text-muted mb-1 small text-uppercase">ĐỢT TỐT NGHIỆP</p>
-                                    <h4 class="mb-0">{{ $totalGraduations ?? 0 }}</h4>
+                                    <p class="fw-semibold text-muted mb-1 small text-uppercase">TỶ LỆ ĐÚNG NGÀNH</p>
+                                    <h4 class="mb-0">{{ $relatedRate ?? 0 }}%</h4>
                                 </div>
-                                <span class="kpi-icon kpi-amber"><i class="fa-solid fa-calendar-check"></i></span>
+                                <span class="kpi-icon kpi-purple"><i class="fa-solid fa-bullseye"></i></span>
                             </div>
-                            <small class="text-muted mt-2">Số đợt tốt nghiệp đã khảo sát</small>
+                            <small class="text-muted mt-2">Tỷ lệ SV có việc làm đúng/liên quan ngành</small>
                         </div>
                     </div>
                 </div>
             </div>
 
-             
+
             <div style="max-width: 1100px; margin: 30px auto; position: relative;">
                 <h3 class="charts-title">Thống kê việc làm sinh viên theo đợt tốt nghiệp</h3>
 
-                 <a href = "{{route('admin.charts.index')}}"
-                   class="btn btn-outline-primary btn-sm"
-                   style="position: absolute; top: 0; right: 0; font-weight: 600;">
+                <a href="{{route('admin.charts.index')}}" class="btn btn-outline-primary btn-sm"
+                    style="position: absolute; top: 0; right: 0; font-weight: 600;">
                     <i class="fa-solid fa-table-list me-1"></i>
                     Xem chi tiết
                 </a>
-           
+
 
 
                 <div class="text-center mb-3">
@@ -266,8 +265,8 @@
 
     {{-- Charts --}}
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            am5.ready(function() {
+        document.addEventListener("DOMContentLoaded", function () {
+            am5.ready(function () {
                 const chartLoading = document.getElementById('chartLoading');
                 const chartContainer = document.getElementById('chartContainer');
                 const chartTypeSelect = document.getElementById('chartTypeSelect');

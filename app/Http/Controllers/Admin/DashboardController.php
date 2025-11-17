@@ -14,24 +14,38 @@ class DashboardController extends Controller
     /** Hiển thị dashboard */
     public function index(): View
     {
+        // tống
         $totalResponses = (int) DB::table('employment_survey_responses_v2')->count();
-
+        // tổng số có vc làm 
         $totalEmployed = (int) DB::table('employment_survey_responses_v2')
             ->where('employment_status', 1)
             ->count();
-
+        // tính %
         $employmentRate = $totalResponses > 0
             ? (int) round(($totalEmployed / $totalResponses) * 100)
             : 0;
+        // đúng ngành/phù hợp
+        $totalRelated = (int) DB::table('employment_survey_responses_v2')
+            ->where('employment_status', 1)
+            ->whereIn('trained_field', [1, 2])
+            ->count();
+        // chưa có vc làm 
+        $totalUnemployed = $totalResponses - $totalEmployed;
+        // tỷ lệ chưa có vc 
+        $unemploymentRate = $totalResponses > 0
+            ? (int) round(($totalUnemployed / $totalResponses) * 100)
+            : 0;
+        // tỷ lệ đúng ngành
+        $relatedRate = $totalEmployed > 0
+            ? (int) round(($totalRelated / $totalEmployed) * 100)
+            : 0;
 
-        $totalGraduations = (int) Graduation::count();
 
-        $totalClasses = 15;
         return view('admin.pages.admin.dashboard', compact(
             'totalResponses',
             'employmentRate',
-            'totalGraduations',
-            'totalClasses'
+            'unemploymentRate',
+            'relatedRate'
         ));
     }
 

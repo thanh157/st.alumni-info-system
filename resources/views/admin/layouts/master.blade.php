@@ -118,6 +118,106 @@
                 NProgress.done();
                 document.getElementById("loading-overlay").style.display = "none";
             });
+
+        });
+        toastr.options = {
+            "closeButton": true,
+            "progressBar": true,
+            "positionClass": "toast-top-right",
+            "timeOut": "5000"
+        };
+
+        @if(Session::has('success'))
+            toastr.success("{{ Session::get('success') }}");
+        @endif
+
+        @if(Session::has('error'))
+            toastr.error("{{ Session::get('error') }}");
+        @endif
+
+        @if(Session::has('info'))
+            toastr.info("{{ Session::get('info') }}");
+        @endif
+
+        @if(Session::has('warning'))
+            toastr.warning("{{ Session::get('warning') }}");
+        @endif
+
+        $(document).ready(function () {
+            $('#dowloadzip').on('click', function (event) {
+
+                event.preventDefault();
+
+                const button = $(this); //  <a>
+                const downloadUrl = button.attr('href');
+
+                if (button.data('loading') === true) {
+                    return;
+                }
+
+                button.data('loading', true);
+                button.prop('disabled', true).html('<i class="spinner-border spinner-border-sm"></i> Đang nén...');
+
+                if (typeof toastr !== 'undefined') {
+                    toastr.info('Server đang nén file. Vui lòng chờ...', 'Đang xử lý', {
+                        timeOut: 20000,
+                        progressBar: true
+                    });
+                } else {
+                    alert('Đang nén file, vui lòng chờ...');
+                }
+
+                const link = document.createElement('a');
+                link.href = downloadUrl;
+                link.setAttribute('download', '');
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+
+                setTimeout(function () {
+                    button.data('loading', false);
+                    button.prop('disabled', false);
+                    button.html('<i class="bi bi-file-earmark-zip-fill"></i> Tải tất cả PDF (Zip)');
+                }, 20000);
+            });
+        });
+        $(document).ready(function () {
+            $('.download-zip-link').on('click', function (event) {
+
+                event.preventDefault();
+
+                const button = $(this); //  <a>
+                const downloadUrl = button.attr('href');
+
+                if (button.data('loading') === true) {
+                    return;
+                }
+
+                button.data('loading', true);
+                button.prop('disabled', true).html('<i class="spinner-border spinner-border-sm"></i> Đang nén...');
+
+                if (typeof toastr !== 'undefined') {
+                    toastr.info('Server đang nén file. Vui lòng chờ...', 'Đang xử lý', {
+                        timeOut: 20000,
+                        progressBar: true
+                    });
+                } else {
+                    alert('Đang nén file, vui lòng chờ...');
+                }
+
+                const link = document.createElement('a');
+                link.href = downloadUrl;
+                link.setAttribute('download', '');
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+
+                setTimeout(function () {
+                    button.data('loading', false);
+                    button.prop('disabled', false);
+                    button.html('<i class="bi bi-file-earmark-zip-fill"></i> Tải tất cả PDF (Zip)');
+                }, 20000);
+            });
         });
     </script>
 

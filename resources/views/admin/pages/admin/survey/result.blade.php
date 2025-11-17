@@ -4,7 +4,6 @@
 
 @section('content')
     <div class="container py-4">
-        <!-- Header thông tin khảo sát -->
         <div class="mb-4 border-bottom pb-3">
             <h4 class="fw-bold text-primary mb-2">Khảo sát: {{ $survey->title }}</h4>
             <nav aria-label="breadcrumb">
@@ -37,9 +36,7 @@
             </div>
         </div>
 
-        <!-- Tìm kiếm và quay lại -->
         <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-3 gap-2">
-            <!-- Tìm kiếm -->
             <form action="" method="GET" class="d-flex flex-grow-1 flex-md-grow-0 w-100" style="max-width: 500px;">
                 <div class="input-group">
                     <input type="text" name="search" value="{{ request('search') }}" class="form-control"
@@ -48,7 +45,6 @@
                 </div>
             </form>
 
-            <!-- Quay lại -->
             <div>
 
                 @if (request()->has('search'))
@@ -69,7 +65,6 @@
 
         @include('admin.layouts.noti')
 
-        <!-- Bảng dữ liệu -->
         <div class="card shadow-sm">
             <div class="table-responsive">
                 <table class="table table-bordered align-middle text-nowrap mb-0">
@@ -118,7 +113,6 @@
                     </tbody>
                 </table>
 
-                <!-- Phân trang -->
                 @if ($data->hasPages())
                     <div class="d-flex justify-content-center mt-3">
                         {{ $data->links('pagination::bootstrap-5') }}
@@ -128,7 +122,6 @@
         </div>
     </div>
 
-    <!-- Script Export PDF -->
     <script>
         function downloadPdf(resultId) {
             const link = document.createElement('a');
@@ -138,6 +131,7 @@
             link.click();
             document.body.removeChild(link);
         }
+
 
 
     </script>
