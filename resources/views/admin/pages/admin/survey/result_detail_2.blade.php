@@ -212,12 +212,10 @@
                 </table>
 
                 <div style="text-align: center; margin-top: 25px;">
-                    <h5 style="font-weight: bold; text-transform: uppercase; font-size: 16px; margin: 0 0 5px 0;">PHIẾU
-                        KHẢO SÁT</h5>
+                   
                     <h5 style="font-weight: bold; text-transform: uppercase; font-size: 16px; margin: 0 0 5px 0;">
                         {{ $survey->title }}</h5>
-                    <h5 style="font-weight: bold; text-transform: uppercase; font-size: 16px; margin: 0 0 5px 0;">NĂM
-                        2024</h5>
+                     
                 </div>
 
                 <div style="margin-top: 25px;">
@@ -231,7 +229,7 @@
                         {{ $survey->description }}
                     </p>
 
-                    <p style="font-style: italic; text-align: right; margin-top: 15px; margin-right: 30px;">
+                    <p style="font-weight: 600; font-style: italic; text-align: left; margin-left: 22px;">
                         <b>
                             Trân trọng cảm ơn sự cộng tác của các Anh/Chị!
                         </b>
