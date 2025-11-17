@@ -194,8 +194,7 @@
                             <div style="font-style: italic; margin-bottom: 15px; font-size: 13px; text-align: right;">
                                 Ngày {{ now()->format('d') }} / {{ now()->format('m') }} / {{ now()->format('Y') }}
                             </div>
-                            <div
-                                style="font-size: 14px; text-transform: uppercase; color: #1f2937; font-weight: 700; margin-bottom: 6px; text-align: right;">
+                           <div style="font-size: 14px; text-transform: uppercase; color: #1f2937; font-weight:normal;; margin-bottom: 6px; text-align: right;">
                                 BỘ NÔNG NGHIỆP VÀ MÔI TRƯỜNG
                             </div>
                             <div
@@ -230,9 +229,9 @@
                     </p>
 
                     <p style="font-weight: 600; font-style: italic; text-align: left; margin-left: 22px;">
-                        <b>
+                         
                             Trân trọng cảm ơn sự cộng tác của các Anh/Chị!
-                        </b>
+                         
                     </p>
                 </div>
 
