@@ -314,7 +314,7 @@
                         <tr>
                             <th><strong>Tiêu đề khảo sát</strong></th>
                             <th class="text-center"><strong>Trạng thái</strong></th>
-                            <th><strong>Đợt tốt nghiệp</strong></th>
+                            <th><strong>Số lượng khảo sát</strong></th>
                             <th class="text-center"><strong>Bắt đầu</strong></th>
                             <th class="text-center"><strong>Kết thúc</strong></th>
                             <th class="text-center"><strong>Phản hồi</strong></th>
@@ -329,13 +329,8 @@
                                     $item->id,
                                 )->count();
 
-                                $countDot = $item->graduations()->pluck('id')->toArray();
-                                $countStudent = \App\Models\GraduationStudent::query()
-                                    ->whereIn('graduation_id', $countDot)
-                                    ->count();
-
                                 // Tính % phản hồi
-                                $percentage = $countStudent > 0 ? round(($totalPhanHoi / $countStudent) * 100, 1) : 0;
+                                $percentage = $item->total_graduations > 0 ? round(($totalPhanHoi / $item->total_graduations) * 100, 1) : 0;
 
                                 // Xác định class màu theo tỷ lệ
                                 if ($percentage == 0) {
@@ -356,19 +351,7 @@
                                     </span>
                                 </td>
                                 <td>
-                                    @if ($item->graduations->count() > 0)
-                                        @foreach ($item->graduations as $dot)
-                                            <a target="_blank" href="{{ route('admin.graduation-student.show', ['id' => $dot->id]) }}"
-                                                class="d-block text-decoration-none text-primary mb-1">
-                                                {{ $dot->name }}
-                                            </a>
-                                            @if (!$loop->last)
-                                                <hr class="my-1" />
-                                            @endif
-                                        @endforeach
-                                    @else
-                                        <span class="text-muted fst-italic small">Chưa có</span>
-                                    @endif
+                                    {{ $item->total_graduations }} sinh viên
                                 </td>
 
                                 <!-- Bắt đầu -->
@@ -386,7 +369,7 @@
                                     <div class="response-wrapper">
                                         <span class="response-percentage {{ $colorClass }}">{{ $percentage }}%</span>
                                         <span class="response-tooltip">
-                                            <span class="tooltip-count">{{ $totalPhanHoi }}</span> / {{ $countStudent }} sinh
+                                            <span class="tooltip-count">{{ $totalPhanHoi }}</span> / {{ $item->total_graduations }} sinh
                                             viên
                                         </span>
                                     </div>

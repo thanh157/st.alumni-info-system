@@ -30,14 +30,20 @@ class SurveyController extends Controller
         return view('admin.pages.admin.survey.index', $viewData);
     }
 
-    private function getAllGraduations(): array
+    private function getAllGraduations()
     {
-        $apiUrl = config('auth.student.ip') . '/api/v1/external/graduation-ceremonies';
-        return $this->fetchPaginatedApi($apiUrl);
+        $apiUrl = config('auth.student.ip') . '/api/v1/external/graduation-ceremonies/all';
+        return $this->fetchApi($apiUrl);
     }
     
+    private function getTotalSurveyStuents(array $graduationIds = [])
+    {
+        $apiUrl = config('auth.student.ip') . '/api/v1/external/graduation-ceremonies/total';
+        $respone = $this->fetchApi($apiUrl, ['ids' => $graduationIds]);
+        return $respone['survey_students'] ?? 0;
+    }
 
-    private function getAllSchoolYears() : array
+    private function getAllSchoolYears()
     {
         $graduations = $this->getAllGraduations();
         $schoolYears = [];
@@ -49,26 +55,11 @@ class SurveyController extends Controller
         return $schoolYears;  
     }
 
-    private function getAllStudentsByGraduationIds(array $graduationIds = []): array
-    {
-        $allData = [];
-
-        foreach ($graduationIds as $id) {
-            $apiUrl = config('auth.student.ip') . "/api/v1/external/graduation-ceremonies/{$id}/students";
-            $allData = array_merge($allData, $this->fetchPaginatedApi($apiUrl));
-        }
-
-        return $allData;
-    }
-
     public function create()
     {
-        // $namTotNghiep = Graduation::select('school_year')->groupBy('school_year')->pluck('school_year')->toArray();
-        // $dotTotNghiep = Graduation::get();
-        
         $namTotNghiep = $this->getAllSchoolYears();
         $dotTotNghiep = $this->getAllGraduations();
-        // dd($dotTotNghiep);
+        
         $viewData = [
             'namTotNghiep' => $namTotNghiep,
             'dotTotNghiep' => $dotTotNghiep,
@@ -95,7 +86,7 @@ class SurveyController extends Controller
                 return back()->withErrors($validator)->withInput();
             }
             
-            $total = count($this->getAllStudentsByGraduationIds($request->graduation_id));
+            $total =$this->getTotalSurveyStuents($request->graduation_id);
             
             $survey = Survey::create([
                 'title' => $request->title,
@@ -231,7 +222,7 @@ class SurveyController extends Controller
             ]);
 
             $survey = Survey::findOrFail($id);
-            $total = count($this->getAllStudentsByGraduationIds($request->graduation_id));
+            $total =$this->getTotalSurveyStuents($request->graduation_id);
             $survey->update([
                 'title' => $request->title,
                 'description' => $request->description,
@@ -303,41 +294,32 @@ class SurveyController extends Controller
     //     return response()->json($data);
     // }
 
-    private function fetchPaginatedApi(string $url, ?string $token = null): array
+    private function fetchApi(string $url, array $params = []): array
     {
         try {
             $user = auth()->user();
 
-            if (!$token) {
-                if (empty($user->st_students_token)) {
-                    $tokenData = $this->studentService->getAccessTokenVerify();
-                    if (!$tokenData || empty($tokenData['token'])) {
-                        throw new \Exception('Không lấy được access token của sinh viên.');
-                    }
-                    $user->update(['st_students_token' => $tokenData['token']]);
+            // Lấy access token nếu chưa có
+            if (empty($user->st_students_token)) {
+                $tokenData = $this->studentService->getAccessTokenVerify();
+                if (!$tokenData || empty($tokenData['token'])) {
+                    throw new \Exception('Không lấy được access token của sinh viên.');
                 }
-                $token = $user->st_students_token;
             }
 
-            $allData = [];
-            $page = 1;
+            // Gọi API
+            $response = Http::withToken($user->st_students_token)
+                ->timeout(10)
+                ->get($url, $params)
+                ->json();
 
-            do {
-                $response = Http::withToken($token)
-                    ->timeout(10)
-                    ->get($url, ['page' => $page])
-                    ->json();
-
-                if (empty($response['data'])) break;
-
-                $allData = array_merge($allData, $response['data']);
-                $lastPage = $response['meta']['last_page'] ?? 1;
-                $page++;
-            } while ($page <= $lastPage);
-
-            return $allData;
+            if (!isset($response['data'])) {
+                throw new \Exception('API trả về dữ liệu không hợp lệ.');
+            }
+            return $response['data'];
+           
         } catch (Throwable $th) {
-            Log::error("fetchPaginatedApi error: " . $th->getMessage());
+            Log::error("getAllGraduations error: " . $th->getMessage());
             return [];
         }
     }
