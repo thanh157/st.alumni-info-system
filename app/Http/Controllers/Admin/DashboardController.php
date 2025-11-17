@@ -81,16 +81,26 @@ class DashboardController extends Controller
             $totals['domestic'] += $domestic;
             $totals['foreign'] += $foreign;
             $year = mb_substr($r->title, -4, null, 'UTF-8');
-            // Dòng bar
-            $bar[] = [
-                'term' => 'Đợt khảo sát năm ' . $year,
-                'employed' => $employed,
-                'unemployed' => $unemployed,
-                'related' => $related,
-                'unrelated' => $unrelated,
-                'domestic' => $domestic,
-                'foreign' => $foreign,
-            ];
+            $term_name = 'Khảo sát ' . $r->survey_period_id;
+            if ($r->title) {
+                preg_match('/(20\d{2})/', $r->title, $matches);
+                if (isset($matches[1])) {
+                    $term_name = 'Đợt khảo sát năm ' . $matches[1];
+                }
+
+                $bar[] = [
+                    'term' => $term_name,
+                    'employed' => $employed,
+                    'unemployed' => $unemployed,
+                    'related' => $related,
+                    'unrelated' => $unrelated,
+                    'domestic' => $domestic,
+                    'foreign' => $foreign,
+
+                ];
+            }
+
+
         }
 
         $data = [
