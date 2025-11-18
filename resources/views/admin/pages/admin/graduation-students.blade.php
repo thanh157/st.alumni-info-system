@@ -18,7 +18,7 @@
     <div class="container py-4">
         <div class="d-flex justify-content-between align-items-center mb-3">
             <div>
-                <h4 class="fw-bold mb-0">Danh sách sinh viên - {{ $graduation['name'] }}</h4>
+                <h4 class="fw-bold mb-0">Danh sách sinh viên - {{ $graduationName }}</h4>
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb mb-0">
                         <li class="breadcrumb-item"><a href="{{ route('admin.graduation.index') }}">Đợt tốt nghiệp</a></li>
@@ -103,7 +103,7 @@
                                 </form>
                             </th>
                             <th>Ngày sinh</th>
-                            <th>Ngày cập nhật</th>
+                            {{-- <th>Ngày cập nhật</th> --}}
                         </tr>
                     </thead>
 
@@ -117,7 +117,7 @@
                                 <td>{{ $student['phone'] ?? '—' }}</td>
                                 <td>{{ $student['class_name'] ?? '—' }}</td> <!-- Cột lớp -->
                                 <td>{{ $student['dob'] ? date('d-m-Y', strtotime($student['dob'])) : '—' }}</td>
-                                <td>{{ \Carbon\Carbon::parse($student['created_at'])->format('d/m/Y H:i') }}</td>
+                                {{-- <td>{{ \Carbon\Carbon::parse($student['created_at'])->format('d/m/Y H:i') }}</td> --}}
                             </tr>
                         @empty
                             <tr>
