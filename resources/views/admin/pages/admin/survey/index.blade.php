@@ -47,12 +47,64 @@
                                 <td>{{ $item->isActive() ? 'Hoạt động' : 'Ẩn' }}</td>
 
                                 <td>
+<<<<<<< Updated upstream
                                     @if ($item->graduations->count() > 0)
                                         @foreach ($item->graduations as $dot)
                                             <a target="_blank"
                                                 href="{{ route('admin.graduation-student.show', ['id' => $dot->id]) }}"
                                                 class="d-block text-decoration-none text-primary mb-1">
                                                 {{ $dot->name }}
+=======
+                                    {{ $item->total_graduations }} sinh viên
+                                </td>
+
+                                <!-- Bắt đầu -->
+                                <td class="text-center">
+                                    {{ \Carbon\Carbon::parse($item->start_time)->format('d/m/Y') }}
+                                </td>
+
+                                <!-- Kết thúc -->
+                                <td class="text-center">
+                                    {{ \Carbon\Carbon::parse($item->end_time)->format('d/m/Y') }}
+                                </td>
+
+                                <!-- Phản hồi (Badge với màu động) -->
+                                <td class="text-center">
+                                    <div class="response-wrapper">
+                                        <span class="response-percentage {{ $colorClass }}">{{ $percentage }}%</span>
+                                        <span class="response-tooltip">
+                                            <span class="tooltip-count">{{ $totalPhanHoi }}</span> /
+                                            {{ $item->total_graduations }} sinh
+                                            viên
+                                        </span>
+                                    </div>
+                                </td>
+
+                                <!-- HÀNH ĐỘNG -->
+                                <td>
+                                    <div class="action-group">
+                                        <!-- 1. Xem trước form -->
+                                        <a href="{{ route('admin.survey.form', ['id' => $item->id]) }}"
+                                            class="btn btn-sm btn-outline-primary btn-action" title="Xem trước form"
+                                            target="_blank">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+
+                                        <!-- 2. Lấy link khảo sát -->
+                                        <button class="btn btn-sm btn-outline-info btn-action" title="Lấy link khảo sát"
+                                            data-link="{{ route('my_form', ['survey_id' => $item->id]) }}"
+                                            onclick="copySurveyLink(this)">
+                                            <i class="bi bi-link-45deg"></i>
+                                        </button>
+
+                                        <!-- 3. Xem kết quả với số lượng -->
+                                        @if ($totalPhanHoi > 0)
+                                            <a href="{{ route('admin.survey.result', ['id' => $item->id]) }}"
+                                                class="btn btn-sm btn-outline-success btn-action btn-result-count"
+                                                title="Xem kết quả ({{ $totalPhanHoi }} phản hồi)">
+                                                <i class="bi bi-bar-chart-fill"></i>
+                                                <span class="result-badge">{{ $totalPhanHoi }}</span>
+>>>>>>> Stashed changes
                                             </a>
                                             <hr />
                                         @endforeach
@@ -78,6 +130,7 @@
                                     </strong>
                                 </td>
 
+<<<<<<< Updated upstream
                                 <td class="text-center d-flex justify-content-center gap-2">
                                     <a href="{{ route('admin.survey.edit', ['id' => $item->id]) }}"
                                         class="btn btn-sm btn-outline-primary" title="Chỉnh sửa"
@@ -91,6 +144,21 @@
                                         onclick="copySurveyLink(this)">
                                         <i class="bi bi-clipboard"></i>
                                     </button>
+=======
+                                                <!-- Tải PDF -->
+                                                <li>
+                                                    <a class="dropdown-item download-link"
+                                                        href="{{ route('admin.surveys.downloadAllPdfs', $item->id) }}" onclick="handleZipDownload(event, this) download>
+
+
+                                                                <span>Tải toàn bộ file PDF (ZIP)</span>
+                                                            </a>
+                                                        </li>
+
+                                                        <li>
+                                                            <hr class=" dropdown-divider">
+                                                </li>
+>>>>>>> Stashed changes
 
                                     <a href="{{ route('admin.survey.form', ['id' => $item->id]) }}"
                                         class="btn btn-sm btn-outline-primary" title="Xem trước form"
@@ -173,5 +241,58 @@
                 el.style.display = 'block';
             }
         }
+<<<<<<< Updated upstream
+=======
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const confirmInput = document.getElementById('confirmSurveyName');
+            if (confirmInput) {
+                confirmInput.addEventListener('input', function () {
+                    document.getElementById('errorMessage').classList.add('d-none');
+                    this.classList.remove('is-invalid');
+                });
+
+                confirmInput.addEventListener('keypress', function (e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        confirmDelete();
+                    }
+                });
+            }
+        });
+
+        function showToast(message, type = 'success') {
+            const bgColor = type === 'success' ? '#28a745' : '#dc3545';
+            const icon = type === 'success' ? 'check-circle-fill' : 'x-circle-fill';
+
+            const toastHTML = `
+                                                    <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 9999">
+                                                        <div class="toast show align-items-center text-white border-0" 
+                                                             style="background-color: ${bgColor}; box-shadow: 0 4px 12px rgba(0,0,0,0.15); border-radius: 8px;" 
+                                                             role="alert">
+                                                            <div class="d-flex">
+                                                                <div class="toast-body d-flex align-items-center gap-2 py-3">
+                                                                    <i class="bi bi-${icon}"></i>
+                                                                    <span>${message}</span>
+                                                                </div>
+                                                                <button type="button" class="btn-close btn-close-white me-2 m-auto" 
+                                                                        onclick="this.closest('.toast').remove()"></button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                `;
+
+            document.body.insertAdjacentHTML('beforeend', toastHTML);
+
+            setTimeout(() => {
+                const toast = document.querySelector('.toast');
+                if (toast) {
+                    toast.style.transition = 'opacity 0.3s ease';
+                    toast.style.opacity = '0';
+                    setTimeout(() => toast.remove(), 300);
+                }
+            }, 3000);
+        }
+>>>>>>> Stashed changes
     </script>
 @endsection
