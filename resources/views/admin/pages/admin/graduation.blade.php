@@ -102,10 +102,14 @@
                         @forelse ($graduations as $graduation)
                             <tr class="text-center">
                                 <td>
-                                    <a href="{{ route('admin.graduation-student.show', $graduation['id']) }}">
+                                    <a href="{{ 
+                                        route('admin.graduation-student.show', [
+                                            'id' => $graduation['id'],
+                                            'name' => base64_encode($graduation['name'])
+                                        ])
+                                    }}">
                                         {{ $graduation['name'] }}
                                     </a>
-
                                 </td>
 
                                 {{-- <td><a href="#">{{ $graduation['name'] }}</a></td> --}}
