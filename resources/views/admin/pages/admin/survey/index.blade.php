@@ -188,7 +188,7 @@
         /* Result Button with Count */
         .btn-result-count {
             position: relative;
-            padding-right: 2.5rem !important;
+            /* padding-right: 2.5rem !important; */
         }
 
         .result-badge {
@@ -401,7 +401,7 @@
                                         <!-- 3. Xem kết quả với số lượng -->
                                         @if ($totalPhanHoi > 0)
                                             <a href="{{ route('admin.survey.result', ['id' => $item->id]) }}"
-                                                class="btn btn-sm btn-outline-success btn-action btn-result-count"
+                                                class="btn btn-sm btn-outline-success btn-action btn-result-count" 
                                                 title="Xem kết quả ({{ $totalPhanHoi }} phản hồi)">
                                                 <i class="bi bi-bar-chart-fill"></i>
                                                 <span class="result-badge">{{ $totalPhanHoi }}</span>
