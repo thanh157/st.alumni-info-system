@@ -183,6 +183,9 @@
                     <!-- Tiêu đề phiếu (Dynamic) -->
                     <div class="text-center mt-5 form-title">
                         <h5 class="fw-bold text-center mb-3">{{ $survey->title }}</h5>
+                        <p class="fw-semibold fst-italic text-center mt-4">
+                            Thân gửi Anh/Chị cựu sinh viên của Học viện Nông Nghiệp Việt Nam!
+                        </p>
                         <p class="text-justify" style="line-height: 1.7; color: #4a5568;">
                             {{ $survey->description }}
                         </p>
@@ -190,9 +193,9 @@
 
                     <!-- Phần thân gửi -->
                     <div class="mt-2">
-                        <p class="fw-semibold fst-italic text-center mt-4">
+                        {{-- <p class="fw-semibold fst-italic text-center mt-4">
                             Thân gửi Anh/Chị cựu sinh viên của Học viện Nông Nghiệp Việt Nam!
-                        </p>
+                        </p> --}}
 
                         <p class="fst-italic text-center mt-2">
                             Trân trọng cảm ơn sự cộng tác của các Anh/Chị!
