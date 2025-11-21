@@ -45,6 +45,10 @@ class GraduationController extends Controller
                 ->json();
 
             if (!isset($response['data'])) {
+                Log::error('Graduation API invalid response', [
+                    'api_url'   => $apiUrl,
+                    'response'  => $response,
+                ]);
                 throw new \Exception('API trả về dữ liệu không hợp lệ.');
             }
 
