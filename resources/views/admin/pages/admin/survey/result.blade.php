@@ -22,11 +22,11 @@
                             <h6 class="fw-bold text-secondary mb-3">
                                 <i class="bi bi-info-circle-fill text-primary me-2"></i>Thông tin khảo sát
                             </h6>
-                            
+
                             <div class="mb-3">
                                 <p class="mb-2">
                                     <i class="bi bi-calendar-event text-primary me-2"></i>
-                                    <strong>Năm khảo sát:</strong> 
+                                    <strong>Năm khảo sát:</strong>
                                     <span class="badge bg-primary-subtle text-primary">{{ $schoolYear }}</span>
                                 </p>
                             </div>
@@ -37,15 +37,14 @@
                                     <strong>Đợt khảo sát:</strong>
                                 </p>
                                 <ul class="list-unstyled ms-4 mb-0">
-                                    @foreach($allDotTotNghiep as $item)
+                                    @foreach ($allDotTotNghiep as $item)
                                         <li class="mb-1">
                                             <i class="bi bi-chevron-right text-muted small me-1"></i>
-                                            <a href="{{ 
-                                                route('admin.graduation-student.show', [
-                                                    'id' => $item['id'],
-                                                    'name' => base64_encode($item['name'])
-                                                ])
-                                            }}" target="_blank" class="text-decoration-none">
+                                            <a href="{{ route('admin.graduation-student.show', [
+                                                'id' => $item['id'],
+                                                'name' => base64_encode($item['name']),
+                                            ]) }}"
+                                                target="_blank" class="text-decoration-none">
                                                 {{ $item['name'] }}
                                             </a>
                                         </li>
@@ -54,8 +53,14 @@
                             </div>
 
                             @php
-                                $totalPhanHoi = App\Models\EmploymentSurveyResponse::where('survey_period_id', $survey->id)->count();
-                                $phanTramPhanHoi = $survey->total_graduations > 0 ? round(($totalPhanHoi / $survey->total_graduations) * 100, 1) : 0;
+                                $totalPhanHoi = App\Models\EmploymentSurveyResponse::where(
+                                    'survey_period_id',
+                                    $survey->id,
+                                )->count();
+                                $phanTramPhanHoi =
+                                    $survey->total_graduations > 0
+                                        ? round(($totalPhanHoi / $survey->total_graduations) * 100, 1)
+                                        : 0;
                             @endphp
 
                             <div class="p-3 bg-light rounded">
@@ -66,7 +71,8 @@
                                     </div>
                                     <div class="text-end">
                                         <h5 class="mb-0 fw-bold text-success">
-                                            {{ $totalPhanHoi }} <small class="text-muted">/ {{ $survey->total_graduations }}</small>
+                                            {{ $totalPhanHoi }} <small class="text-muted">/
+                                                {{ $survey->total_graduations }}</small>
                                         </h5>
                                         <small class="text-muted">
                                             <i class="bi bi-graph-up-arrow"></i> {{ $phanTramPhanHoi }}% đã phản hồi
@@ -75,11 +81,9 @@
                                 </div>
                                 {{-- Progress bar --}}
                                 <div class="progress mt-2" style="height: 6px;">
-                                    <div class="progress-bar bg-success" role="progressbar" 
-                                         style="width: {{ $phanTramPhanHoi }}%;" 
-                                         aria-valuenow="{{ $phanTramPhanHoi }}" 
-                                         aria-valuemin="0" 
-                                         aria-valuemax="100">
+                                    <div class="progress-bar bg-success" role="progressbar"
+                                        style="width: {{ $phanTramPhanHoi }}%;" aria-valuenow="{{ $phanTramPhanHoi }}"
+                                        aria-valuemin="0" aria-valuemax="100">
                                     </div>
                                 </div>
                             </div>
@@ -96,11 +100,9 @@
                                     <i class="bi bi-bar-chart-fill text-primary me-2"></i>Thống kê tổng quan
                                 </h6>
                                 {{-- Nút Popover cho Summary Box --}}
-                                
-                                <i class="bi bi-question-circle-fill me-1 text-secondary" 
-                                    data-bs-toggle="popover"
-                                    data-bs-trigger="hover focus"
-                                    data-bs-placement="bottom"
+
+                                <i class="bi bi-question-circle-fill me-1 text-secondary" data-bs-toggle="popover"
+                                    data-bs-trigger="hover focus" data-bs-placement="bottom"
                                     data-bs-content=
                                     '
                                         <div class="small text-muted">
@@ -113,28 +115,29 @@
                                                 <strong>Số lượng có việc làm phù hợp</strong> = SV có việc làm đúng ngành + SV có việc làm liên quan
                                             </div>
                                         </div>
-                                    '
-                                ></i>
-                                
+                                    '></i>
+
                             </div>
                             <div class="row g-3">
                                 {{-- Card 1: Tỷ lệ SV có việc làm / tổng SV phản hồi --}}
-                                @php 
+                                @php
                                     $percentCoViec = $totalPhanHoi > 0 ? round(($coViec / $totalPhanHoi) * 100, 2) : 0;
                                 @endphp
                                 <div class="col-4">
                                     <div class="stat-card p-3 rounded border border-success bg-success bg-opacity-10 h-100">
                                         <div class="d-flex align-items-start justify-content-between mb-2">
-                                            <div class="stat-icon bg-success text-white rounded-circle d-flex align-items-center justify-content-center" 
-                                                 style="width: 40px; height: 40px;">
+                                            <div class="stat-icon bg-success text-white rounded-circle d-flex align-items-center justify-content-center"
+                                                style="width: 40px; height: 40px;">
                                                 <i class="bi bi-briefcase-fill"></i>
                                             </div>
                                             <span class="badge bg-success">{{ $percentCoViec }}%</span>
                                         </div>
-                                        <h4 class="fw-bold text-success mb-1">{{ $coViec }} / {{ $totalPhanHoi }}</h4>
+                                        <h4 class="fw-bold text-success mb-1">{{ $coViec }} / {{ $totalPhanHoi }}
+                                        </h4>
                                         <p class="text-muted small mb-0">Có việc làm / Phản hồi</p>
                                         <div class="progress mt-2" style="height: 4px;">
-                                            <div class="progress-bar bg-success" style="width: {{ $percentCoViec }}%;"></div>
+                                            <div class="progress-bar bg-success" style="width: {{ $percentCoViec }}%;">
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -143,51 +146,63 @@
                                 <div class="col-4">
                                     <div class="stat-card p-3 rounded border border-danger bg-danger bg-opacity-10 h-100">
                                         <div class="d-flex align-items-start justify-content-between mb-2">
-                                            <div class="stat-icon bg-danger text-white rounded-circle d-flex align-items-center justify-content-center" 
-                                                 style="width: 40px; height: 40px;">
+                                            <div class="stat-icon bg-danger text-white rounded-circle d-flex align-items-center justify-content-center"
+                                                style="width: 40px; height: 40px;">
                                                 <i class="bi bi-x-circle-fill"></i>
                                             </div>
-                                            <span class="badge bg-danger">{{ 100-$percentCoViec }}%</span>
+                                            <span class="badge bg-danger">{{ 100 - $percentCoViec }}%</span>
                                         </div>
-                                        <h4 class="fw-bold text-danger mb-1">{{ $totalPhanHoi - $coViec }} / {{ $totalPhanHoi }}</h4>
+                                        <h4 class="fw-bold text-danger mb-1">{{ $totalPhanHoi - $coViec }} /
+                                            {{ $totalPhanHoi }}</h4>
                                         <p class="text-muted small mb-0">Chưa có việc làm / Phản hồi</p>
                                         <div class="progress mt-2" style="height: 4px;">
-                                            <div class="progress-bar bg-danger" style="width: {{ 100-$percentCoViec }}%;"></div>
+                                            <div class="progress-bar bg-danger"
+                                                style="width: {{ 100 - $percentCoViec }}%;">
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
 
                                 {{-- Card 3: Tỷ lệ SV có việc làm / tổng SV tốt nghiệp --}}
-                                @php 
-                                    $percentEmployment = $survey->total_graduations > 0 ? round(($coViec / $survey->total_graduations) * 100, 2) : 0;
+                                @php
+                                    $percentEmployment =
+                                        $survey->total_graduations > 0
+                                            ? round(($coViec / $survey->total_graduations) * 100, 2)
+                                            : 0;
                                 @endphp
                                 <div class="col-4">
                                     <div class="stat-card p-3 rounded border border-primary bg-primary bg-opacity-10 h-100">
                                         <div class="d-flex align-items-start justify-content-between mb-2">
-                                            <div class="stat-icon bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" 
+                                            <div class="stat-icon bg-primary text-white rounded-circle d-flex align-items-center justify-content-center"
                                                 style="width: 40px; height: 40px;">
                                                 <i class="bi bi-mortarboard-fill fs-5"></i>
                                             </div>
                                             <span class="badge bg-primary">{{ $percentEmployment }}%</span>
                                         </div>
-                                        <h4 class="fw-bold text-primary mb-1">{{ $coViec }} / {{ $survey->total_graduations }}</h4>
+                                        <h4 class="fw-bold text-primary mb-1">{{ $coViec }} /
+                                            {{ $survey->total_graduations }}</h4>
                                         <p class="text-muted small mb-0">Có việc làm / Tốt nghiệp</p>
                                         <div class="progress mt-2" style="height: 4px;">
-                                            <div class="progress-bar bg-primary" style="width: {{ $percentEmployment }}%;"></div>
+                                            <div class="progress-bar bg-primary" style="width: {{ $percentEmployment }}%;">
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
 
                                 {{-- Card 4: Tỷ lệ SV có việc làm phù hợp / tổng SV phản hồi --}}
-                                @php 
+                                @php
                                     $coViecPhuHop = $dungNganh + $lienQuan;
-                                    $tyLeViecPhuHop = $totalPhanHoi > 0 ? round(($coViecPhuHop / $totalPhanHoi) * 100, 2) : 0;
-                                    $tyLeViecPhuHopTrenTotNghiep = $survey->total_graduations > 0 ? round(($coViecPhuHop / $survey->total_graduations) * 100, 2) : 0;
+                                    $tyLeViecPhuHop =
+                                        $totalPhanHoi > 0 ? round(($coViecPhuHop / $totalPhanHoi) * 100, 2) : 0;
+                                    $tyLeViecPhuHopTrenTotNghiep =
+                                        $survey->total_graduations > 0
+                                            ? round(($coViecPhuHop / $survey->total_graduations) * 100, 2)
+                                            : 0;
                                 @endphp
                                 <div class="col-6">
                                     <div class="stat-card p-3 rounded border border-info bg-info bg-opacity-10 h-100">
                                         <div class="d-flex align-items-start justify-content-between mb-2">
-                                            <div class="stat-icon bg-info text-white rounded-circle d-flex align-items-center justify-content-center" 
+                                            <div class="stat-icon bg-info text-white rounded-circle d-flex align-items-center justify-content-center"
                                                 style="width: 40px; height: 40px;">
                                                 <i class="bi bi-check-circle-fill fs-5"></i>
                                             </div>
@@ -196,29 +211,33 @@
                                         <h4 class="fw-bold text-info mb-1">{{ $coViecPhuHop }} / {{ $totalPhanHoi }}</h4>
                                         <p class="text-muted small mb-0">Việc làm phù hợp / Phản hồi</p>
                                         <div class="progress mt-2" style="height: 4px;">
-                                            <div class="progress-bar bg-info" style="width: {{ $tyLeViecPhuHop }}%;"></div>
+                                            <div class="progress-bar bg-info" style="width: {{ $tyLeViecPhuHop }}%;">
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
 
                                 {{-- Card 5: Tỷ lệ SV có việc làm phù hợp / tổng SV tốt nghiệp --}}
                                 <div class="col-6">
-                                    <div class="stat-card p-3 rounded border border-warning bg-warning bg-opacity-10 h-100">
+                                    <div
+                                        class="stat-card p-3 rounded border border-warning bg-warning bg-opacity-10 h-100">
                                         <div class="d-flex align-items-start justify-content-between mb-2">
-                                            <div class="stat-icon bg-warning text-white rounded-circle d-flex align-items-center justify-content-center" 
+                                            <div class="stat-icon bg-warning text-white rounded-circle d-flex align-items-center justify-content-center"
                                                 style="width: 40px; height: 40px;">
                                                 <i class="bi bi-award-fill fs-5"></i>
                                             </div>
                                             <span class="badge bg-warning">{{ $tyLeViecPhuHopTrenTotNghiep }}%</span>
                                         </div>
-                                        <h4 class="fw-bold text-warning mb-1">{{ $coViecPhuHop }} / {{ $survey->total_graduations }}</h4>
+                                        <h4 class="fw-bold text-warning mb-1">{{ $coViecPhuHop }} /
+                                            {{ $survey->total_graduations }}</h4>
                                         <p class="text-muted small mb-0">Việc làm phù hợp / Tốt nghiệp</p>
                                         <div class="progress mt-2" style="height: 4px;">
-                                            <div class="progress-bar bg-warning" style="width: {{ $tyLeViecPhuHopTrenTotNghiep }}%;"></div>
+                                            <div class="progress-bar bg-warning"
+                                                style="width: {{ $tyLeViecPhuHopTrenTotNghiep }}%;"></div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>  
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -227,7 +246,8 @@
 
         {{-- Search and Actions --}}
         <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-3 gap-2">
-            <form action="" method="GET" class="d-flex flex-grow-1 flex-md-grow-0 w-100" style="max-width: 500px;">
+            <form action="" method="GET" class="d-flex flex-grow-1 flex-md-grow-0 w-100"
+                style="max-width: 500px;">
                 <div class="input-group">
                     <input type="text" name="search" value="{{ request('search') }}" class="form-control"
                         placeholder="Tìm theo mã sinh viên hoặc họ tên">
@@ -237,9 +257,43 @@
                 </div>
             </form>
 
+            {{-- THÊM MỚI: Bộ lọc trạng thái việc làm --}}
+            <div class="d-flex gap-2 align-items-center">
+                <form action="" method="GET" class="d-flex gap-2">
+                    {{-- Giữ lại search query nếu có --}}
+                    @if (request('search'))
+                        <input type="hidden" name="search" value="{{ request('search') }}">
+                    @endif
+
+                    <select name="employment_status" class="form-select form-select-sm"
+                        style="width: auto; min-width: 200px;">
+                        <option value="">-- Tất cả trạng thái --</option>
+                        <option value="1" {{ request('employment_status') == '1' ? 'selected' : '' }}>
+                            Đã có việc làm
+                        </option>
+                        <option value="2" {{ request('employment_status') == '2' ? 'selected' : '' }}>
+                            Đang tiếp tục học
+                        </option>
+                        <option value="3,4" {{ request('employment_status') == '3,4' ? 'selected' : '' }}>
+                            Chưa có việc làm
+                        </option>
+                    </select>
+
+                    <button type="submit" class="btn btn-primary btn-sm">
+                        <i class="bi bi-funnel me-1"></i>Lọc
+                    </button>
+
+                    @if (request('employment_status') || request('search'))
+                        <a href="{{ url()->current() }}" class="btn btn-secondary btn-sm">
+                            <i class="bi bi-x-circle me-1"></i>Xóa lọc
+                        </a>
+                    @endif
+                </form>
+            </div>
+
             <div class="d-flex gap-2">
-                @if (request()->has('search'))
-                    <a href="{{ route('admin.contact-survey.results', $survey->id) }}" class="btn btn-secondary btn-sm">
+                @if (request()->has('search') || request()->has('employment_status'))
+                    <a href="{{ url()->current() }}" class="btn btn-secondary btn-sm">
                         <i class="bi bi-arrow-left me-1"></i>Quay lại danh sách
                     </a>
                 @else
@@ -247,11 +301,38 @@
                         <i class="bi bi-arrow-left me-1"></i>Quay lại ds khảo sát
                     </a>
                 @endif
-                <a href="{{ route('admin.surveys.downloadAllPdfs', $survey->id) }}" class="btn btn-success btn-sm download-link">
+                <a href="{{ route('admin.surveys.downloadAllPdfs', $survey->id) }}"
+                    class="btn btn-success btn-sm download-link">
                     <i class="bi bi-file-earmark-zip-fill me-1"></i>Tải tất cả PDF (Zip)
                 </a>
             </div>
         </div>
+        @if (request('employment_status'))
+            <div class="mb-3">
+                <span class="badge bg-info">
+                    <i class="bi bi-funnel-fill me-1"></i>
+                    Đang lọc:
+                    @switch(request('employment_status'))
+                        @case('1')
+                            Đã có việc làm
+                        @break
+
+                        @case('2')
+                            Đang tiếp tục học
+                        @break
+
+                        @case('3')
+                            Chưa có việc làm
+                        @break
+
+                        @case('4')
+                            Chưa đi tìm việc
+                        @break
+                    @endswitch
+                    ({{ $data->total() }} kết quả)
+                </span>
+            </div>
+        @endif
 
         @include('admin.layouts.noti')
 
@@ -336,10 +417,10 @@
         .stat-card {
             transition: all 0.3s ease;
         }
-        
+
         .stat-card:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
 
         .stat-icon {
@@ -351,10 +432,10 @@
         }
 
         .progress {
-            background-color: rgba(0,0,0,0.05);
+            background-color: rgba(0, 0, 0, 0.05);
         }
 
-        .table > :not(caption) > * > * {
+        .table> :not(caption)>*>* {
             padding: 0.75rem 0.5rem;
         }
 
@@ -384,9 +465,9 @@
         }
 
         // Khởi tạo Popovers
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function() {
             var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
-            var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+            var popoverList = popoverTriggerList.map(function(popoverTriggerEl) {
                 return new bootstrap.Popover(popoverTriggerEl, {
                     html: true, // Cho phép nội dung HTML
                     sanitize: false // Quan trọng nếu dùng HTML trong content

@@ -29,12 +29,12 @@ use ZipArchive;
 
 class SurveyResultController extends Controller
 {
-    public function __construct (private StudentService $studentService) {}
+    public function __construct(private StudentService $studentService) {}
     public function index(Request $request, $surveyId)
     {
         try {
             $user = auth()->user();
-    
+
             // Lấy access token nếu chưa có
             if (empty($user->st_students_token)) {
                 $tokenData = $this->studentService->getAccessTokenVerify();
@@ -42,20 +42,20 @@ class SurveyResultController extends Controller
                     throw new \Exception('Không lấy được access token của sinh viên.');
                 }
             }
-    
+
             // Gọi API lấy danh sách sinh viên theo đợt TN
             $apiUrl = config('auth.student.ip') . "/api/v1/external/graduation-ceremonies/survey-graduations";
             $graduationIds = GraduationSurvey::where('survey_id', $surveyId)
                 ->pluck('graduation_id')
                 ->toArray();
-           
+
             $response = Http::withToken($user->st_students_token)
                 ->timeout(10)
                 ->get($apiUrl, [
-                   'ids'=> $graduationIds
+                    'ids' => $graduationIds
                 ])
                 ->json();
-                
+
             if (!isset($response['data'])) {
                 throw new \Exception('API trả về dữ liệu không hợp lệ.');
             }
@@ -80,6 +80,20 @@ class SurveyResultController extends Controller
                         ->orWhere('identification_card_number', 'like', '%' . $searchQuery . '%');
                 });
             }
+
+            //      // ===== THÊM MỚI: Lọc theo trạng thái việc làm =====
+       
+             if ($request->filled('employment_status')) {
+            $employmentStatus = $request->input('employment_status');
+            
+            // Nếu chọn "Chưa có việc làm" (gộp 3,4)
+            if ($employmentStatus == '3,4') {
+                $query->whereIn('employment_status', [3, 4]);
+            } else {
+                // Trạng thái đơn lẻ (1 hoặc 2)
+                $query->where('employment_status', $employmentStatus);
+            }
+        }
             // // Lọc theo mã sinh viên
             // if ($request->filled('student_code')) {
             //     $query->whereHas('student', function ($q) use ($request) {
@@ -104,18 +118,18 @@ class SurveyResultController extends Controller
             $survey = Survey::where('id', $surveyId)->first();
 
             $coViec = EmploymentSurveyResponse::where('survey_period_id', $survey->id)
-                ->whereIn('employment_status', [1,3])
+                ->whereIn('employment_status', [1, 3])
                 ->count();
 
             $dungNganh = EmploymentSurveyResponse::where('survey_period_id', $survey->id)
-                        ->whereIn('employment_status', [1,3])
-                        ->where('trained_field', 1)
-                        ->count();
+                ->whereIn('employment_status', [1, 3])
+                ->where('trained_field', 1)
+                ->count();
 
             $lienQuan = EmploymentSurveyResponse::where('survey_period_id', $survey->id)
-                        ->whereIn('employment_status', [1,3])
-                        ->where('trained_field', 2)
-                        ->count();
+                ->whereIn('employment_status', [1, 3])
+                ->where('trained_field', 2)
+                ->count();
 
             return view('admin.pages.admin.survey.result', [
                 'data' => $data,
