@@ -166,8 +166,7 @@
             }
         }
     </style>
-    <!-- 🧾 Form khảo sát chính (ẩn lúc đầu) -->
-
+    <!-- Form khảo sát chính (ẩn lúc đầu) -->
 
     <div class="container py-4">
         <div class="google-form-style ">
@@ -216,7 +215,7 @@
 
                     <!-- Phần thân gửi -->
                     <div class="mt-2">
-                        <p class="fw-semibold fst-italic text-center mt-4">
+                        <p class="fw-semibold fst-italic ms-4 mt-4">
                             Thân gửi Anh/Chị cựu sinh viên của Học viện Nông Nghiệp Việt Nam!
                         </p>
 
@@ -224,7 +223,7 @@
                             {{ $survey->description }}
                         </p>
 
-                        <p class="fst-italic text-center mt-2">
+                        <p class="fst-italic ms-4 mt-2">
                             Trân trọng cảm ơn sự cộng tác của các Anh/Chị!
                         </p>
 
@@ -669,7 +668,7 @@
                                 <div id="solutions_get_job_other_wrapper" style="display: none;" class="mt-2">
                                     <input type="text" name="solutions_get_job_other" id="solutions_get_job_other"
                                         class="form-control other-input"
-                                        placeholder="Nhập giải pháp khác của bạn tại đây..." autocomplete="off">
+                                        placeholder="Nhập giải pháp khác tại đây..." autocomplete="off">
                                 </div>
                                 <div id="solutions_get_job_error" class="text-danger small d-none"></div>
                             </div>
@@ -708,6 +707,7 @@
                         </div>
                 </form>
             </div>
+            
         </div>
 
 
