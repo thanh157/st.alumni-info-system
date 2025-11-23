@@ -60,7 +60,7 @@
         <!-- 10. Tình trạng việc làm hiện tại -->
         <div class="mb-4">
             <label class="form-label fw-bold">10. Anh/Chị vui lòng cho biết tình trạng việc làm hiện tại</label>
-            @php $tinh_trang = ['Đã có việc làm', 'Đang học tiếp/học văn bằng 2', 'Chưa có việc làm', 'Chưa đi tìm việc']; @endphp
+            @php $tinh_trang = ['Đã có việc làm', 'Đang tiếp tục học', 'Chưa có việc làm', 'Chưa đi tìm việc']; @endphp
             @foreach ($tinh_trang as $index => $value)
                 <div class="form-check mb-2">
                     <input class="form-check-input" type="radio" name="vieclam_hientai"
@@ -102,7 +102,7 @@
     <!-- 15. Khu vực làm việc -->
     <div class="mb-4">
         <label class="form-label fw-bold">15. Đơn vị Anh/Chị đang làm việc thuộc khu vực nào?</label>
-        @foreach (['Nhà nước', 'Tư nhân', 'Có yếu tố nước ngoài', 'Tự tạo việc làm'] as $key => $item)
+        @foreach (['Khu vực Nhà nước', 'Khu vực tư nhân', 'Khu vực có yếu tố nước ngoài', 'Tự tạo việc làm'] as $key => $item)
             <div class="form-check mb-2">
                 <input class="form-check-input" type="radio" name="khu_vuc_lam_viec"
                        id="kv_{{ $key }}" value="{{ $item }}">
@@ -115,7 +115,7 @@
     <!-- 16. Thời gian có việc sau tốt nghiệp -->
     <div class="mb-4">
         <label class="form-label fw-bold">16. Sau khi tốt nghiệp, Anh/Chị có việc làm từ khi nào?</label>
-        @foreach (['Dưới 3 tháng', 'Từ 3-6 tháng', 'Từ 6-12 tháng', 'Trên 12 tháng'] as $key => $item)
+        @foreach (['Dưới 3 tháng', 'Từ 3 tháng đến dưới 6 tháng', 'Từ 6 tháng đến dưới 12 tháng', 'Từ 12 tháng trở lên'] as $key => $item)
             <div class="form-check mb-2">
                 <input class="form-check-input" type="radio" name="thoigian_co_viec"
                        id="tg_{{ $key }}" value="{{ $item }}">

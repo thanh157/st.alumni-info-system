@@ -7,6 +7,7 @@ use App\Models\DotTotnghiep;
 use App\Models\DotTotNghiepStudent;
 use App\Models\EmploymentSurveyResponse;
 use App\Models\GraduationStudent;
+use App\Models\GraduationSurvey;
 use App\Models\Major;
 use App\Models\Student;
 use App\Models\Survey;
@@ -22,63 +23,128 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Carbon;
 use App\Models\Graduation;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Http;
+use Throwable;
 use ZipArchive;
 
 class SurveyResultController extends Controller
 {
+    public function __construct(private StudentService $studentService) {}
     public function index(Request $request, $surveyId)
     {
+        try {
+            $user = auth()->user();
+
+            // Lấy access token nếu chưa có
+            if (empty($user->st_students_token)) {
+                $tokenData = $this->studentService->getAccessTokenVerify();
+                if (!$tokenData || empty($tokenData['token'])) {
+                    throw new \Exception('Không lấy được access token của sinh viên.');
+                }
+            }
+
+            // Gọi API lấy danh sách sinh viên theo đợt TN
+            $apiUrl = config('auth.student.ip') . "/api/v1/external/graduation-ceremonies/survey-graduations";
+            $graduationIds = GraduationSurvey::where('survey_id', $surveyId)
+                ->pluck('graduation_id')
+                ->toArray();
+
+            $response = Http::withToken($user->st_students_token)
+                ->timeout(10)
+                ->get($apiUrl, [
+                    'ids' => $graduationIds
+                ])
+                ->json();
+
+            if (!isset($response['data'])) {
+                throw new \Exception('API trả về dữ liệu không hợp lệ.');
+            }
+
+            $graduations = $response['data']['graduations'];
+            $schoolYear = $graduations[0]['school_year'] ?? '';
+
+            $query = EmploymentSurveyResponse::query()
+                ->with(['student'])
+                ->where('survey_period_id', $surveyId);
 
 
-        $query = EmploymentSurveyResponse::query()
-            ->with(['student'])
-            ->where('survey_period_id', $surveyId);
+            // Tìm kiếm tổng hợp (search)
+            $searchQuery = $request->input('search');
 
+            if ($searchQuery) {
+                $query->where(function ($q) use ($searchQuery) {
+                    $q->where('code_student', 'like', '%' . $searchQuery . '%')
+                        ->orWhere('full_name', 'like', '%' . $searchQuery . '%')
+                        ->orWhere('email', 'like', '%' . $searchQuery . '%')
+                        ->orWhere('phone_number', 'like', '%' . $searchQuery . '%')
+                        ->orWhere('identification_card_number', 'like', '%' . $searchQuery . '%');
+                });
+            }
 
-        // Tìm kiếm tổng hợp (search)
-        $searchQuery = $request->input('search');
-
-        if ($searchQuery) {
-            $query->where(function ($q) use ($searchQuery) {
-                $q->where('code_student', 'like', '%' . $searchQuery . '%')
-                    ->orWhere('full_name', 'like', '%' . $searchQuery . '%')
-                    ->orWhere('email', 'like', '%' . $searchQuery . '%')
-                    ->orWhere('phone_number', 'like', '%' . $searchQuery . '%')
-                    ->orWhere('identification_card_number', 'like', '%' . $searchQuery . '%');
-            });
+            //      // ===== THÊM MỚI: Lọc theo trạng thái việc làm =====
+       
+             if ($request->filled('employment_status')) {
+            $employmentStatus = $request->input('employment_status');
+            
+            // Nếu chọn "Chưa có việc làm" (gộp 3,4)
+            if ($employmentStatus == '3,4') {
+                $query->whereIn('employment_status', [3, 4]);
+            } else {
+                // Trạng thái đơn lẻ (1 hoặc 2)
+                $query->where('employment_status', $employmentStatus);
+            }
         }
-        // // Lọc theo mã sinh viên
-        // if ($request->filled('student_code')) {
-        //     $query->whereHas('student', function ($q) use ($request) {
-        //         $q->where('student_code', 'like', '%' . $request->student_code . '%');
-        //     });
-        // }
+            // // Lọc theo mã sinh viên
+            // if ($request->filled('student_code')) {
+            //     $query->whereHas('student', function ($q) use ($request) {
+            //         $q->where('student_code', 'like', '%' . $request->student_code . '%');
+            //     });
+            // }
 
-        // // Lọc theo tên sinh viên
-        // if ($request->filled('student_name')) {
-        //     $query->whereHas('student', function ($q) use ($request) {
-        //         $q->where('full_name', 'like', '%' . $request->student_name . '%');
-        //     });
-        // }
+            // // Lọc theo tên sinh viên
+            // if ($request->filled('student_name')) {
+            //     $query->whereHas('student', function ($q) use ($request) {
+            //         $q->where('full_name', 'like', '%' . $request->student_name . '%');
+            //     });
+            // }
 
-        // // Lọc theo đợt tốt nghiệp
-        // if ($request->filled('graduation_id')) {
-        //     $query->where('graduation_id', $request->graduation_id);
-        // }
+            // // Lọc theo đợt tốt nghiệp
+            // if ($request->filled('graduation_id')) {
+            //     $query->where('graduation_id', $request->graduation_id);
+            // }
 
-        $data = $query->orderBy('id', 'desc')->paginate(15);
+            $data = $query->orderBy('id', 'desc')->paginate(15);
 
-        $survey = Survey::with('graduations')->findOrFail($surveyId);
-        $allDotTotNghiep = $survey->graduations()->get();
-        $schoolYear = !empty($allDotTotNghiep[0]->school_year) ? $allDotTotNghiep[0]->school_year : '';
+            $survey = Survey::where('id', $surveyId)->first();
 
-        return view('admin.pages.admin.survey.result', [
-            'data' => $data,
-            'schoolYear' => $schoolYear,
-            'allDotTotNghiep' => $allDotTotNghiep,
-            'survey' => $survey,
-            'request' => $request, // Gửi lại input để giữ giá trị trong form
-        ]);
+            $coViec = EmploymentSurveyResponse::where('survey_period_id', $survey->id)
+                ->whereIn('employment_status', [1, 3])
+                ->count();
+
+            $dungNganh = EmploymentSurveyResponse::where('survey_period_id', $survey->id)
+                ->whereIn('employment_status', [1, 3])
+                ->where('trained_field', 1)
+                ->count();
+
+            $lienQuan = EmploymentSurveyResponse::where('survey_period_id', $survey->id)
+                ->whereIn('employment_status', [1, 3])
+                ->where('trained_field', 2)
+                ->count();
+
+            return view('admin.pages.admin.survey.result', [
+                'data' => $data,
+                'schoolYear' => $schoolYear,
+                'allDotTotNghiep' => $graduations,
+                'survey' => $survey,
+                'coViec' => $coViec,
+                'dungNganh' => $dungNganh,
+                'lienQuan' => $lienQuan,
+                'request' => $request, // Gửi lại input để giữ giá trị trong form
+            ]);
+        } catch (Throwable $th) {
+            Log::error(" error: " . $th->getMessage());
+            return [];
+        }
     }
 
     public function show($id)

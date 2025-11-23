@@ -166,8 +166,7 @@
             }
         }
     </style>
-    <!-- 🧾 Form khảo sát chính (ẩn lúc đầu) -->
-
+    <!-- Form khảo sát chính (ẩn lúc đầu) -->
 
     <div class="container py-4">
         <div class="google-form-style ">
@@ -216,7 +215,7 @@
 
                     <!-- Phần thân gửi -->
                     <div class="mt-2">
-                        <p class="fw-semibold fst-italic text-center mt-4">
+                        <p class="fw-semibold fst-italic ms-4 mt-4">
                             Thân gửi Anh/Chị cựu sinh viên của Học viện Nông Nghiệp Việt Nam!
                         </p>
 
@@ -224,7 +223,7 @@
                             {{ $survey->description }}
                         </p>
 
-                        <p class="fst-italic text-center mt-2">
+                        <p class="fst-italic ms-4 mt-2">
                             Trân trọng cảm ơn sự cộng tác của các Anh/Chị!
                         </p>
 
@@ -509,13 +508,13 @@
                                         <span class="fw-normal">(Có thể chọn nhiều lựa chọn)</span></label>
                                     @php $tim_viec = config('config.recruitment_type'); @endphp
                                     @foreach ($tim_viec as $index => $value)
-                                        @if ($value == 'Khác')
+                                        @if ($value == 'Hình thức khác')
                                             <div class="form-check mb-2">
                                                 <input class="form-check-input recruitment_type_other" type="checkbox"
                                                     name="recruitment_type[]" id="ht_{{ $index }}"
                                                     value="{{ $index }}">
                                                 <label class="form-check-label fw-normal"
-                                                    for="ht_{{ $index }}">Khác</label>
+                                                    for="ht_{{ $index }}">Hình thức khác</label>
                                             </div>
                                         @else
                                             <div class="form-check mb-2">
@@ -540,13 +539,13 @@
                                     <label class="form-label fw-bold">24. Anh/chị được tuyển dụng theo hình thức
                                         nào?</label>
                                     @foreach (config('config.job_search_method') as $key => $item)
-                                        @if ($item == 'Khác')
+                                        @if ($item == 'Hình thức khác')
                                             <div class="form-check mb-2">
                                                 <input class="form-check-input job_search_method_other" type="radio"
                                                     name="job_search_method[]" id="ht23_{{ $key }}"
                                                     value="{{ $key }}">
                                                 <label class="form-check-label fw-normal"
-                                                    for="ht23_{{ $key }}">Khác</label>
+                                                    for="ht23_{{ $key }}">Hình thức khác</label>
                                             </div>
                                         @else
                                             <div class="form-check mb-2">
@@ -611,13 +610,13 @@
                                             chọn)</span></label>
                                     @php $nang_cao = config('config.must_attended_courses'); @endphp
                                     @foreach ($nang_cao as $index => $value)
-                                        @if ($value == 'Khác')
+                                        @if ($value == 'Khóa học khác(xin ghi rõ)')
                                             <div class="form-check mb-2">
                                                 <input class="form-check-input must_attended_courses_other"
                                                     type="checkbox" name="must_attended_courses[]"
                                                     id="ht_{{ $index }}" value="{{ $index }}">
                                                 <label class="form-check-label fw-normal"
-                                                    for="ht_{{ $index }}">Khác</label>
+                                                    for="ht_{{ $index }}">Khóa học khác(xin ghi rõ)</label>
                                             </div>
                                         @else
                                             <div class="form-check mb-2">
@@ -632,7 +631,7 @@
                                     <div id="must_attended_courses_other_wrapper" style="display: none;" class="mt-2">
                                         <input type="text" name="must_attended_courses_other"
                                             id="must_attended_courses_other" class="form-control other-input"
-                                            placeholder="Nhập khóa học..123." autocomplete="off">
+                                            placeholder="Nhập khóa học.." autocomplete="off">
                                     </div>
                                     <div id="must_attended_courses_error" class="text-danger small d-none"></div>
                                 </div>
@@ -649,13 +648,13 @@
                                     <span class="fw-normal">(Có thể chọn nhiều lựa chọn)</span></label>
                                 @php $giai_phap = config('config.solutions_get_job'); @endphp
                                 @foreach ($giai_phap as $index => $value)
-                                    @if ($value == 'Khác')
+                                    @if ($value == 'Các giải pháp khác (xin ghi rõ)')
                                         <div class="form-check mb-2">
                                             <input class="form-check-input solutions_get_job_other" type="checkbox"
                                                 name="solutions_get_job[]" id="ht26_{{ $index }}"
                                                 value="{{ $index }}">
                                             <label class="form-check-label fw-normal"
-                                                for="ht26_{{ $index }}">Khác</label>
+                                                for="ht26_{{ $index }}">Các giải pháp khác (xin ghi rõ)</label>
                                         </div>
                                     @else
                                         <div class="form-check mb-2">
@@ -669,7 +668,7 @@
                                 <div id="solutions_get_job_other_wrapper" style="display: none;" class="mt-2">
                                     <input type="text" name="solutions_get_job_other" id="solutions_get_job_other"
                                         class="form-control other-input"
-                                        placeholder="Nhập giải pháp khác của bạn tại đây..." autocomplete="off">
+                                        placeholder="Nhập giải pháp khác tại đây..." autocomplete="off">
                                 </div>
                                 <div id="solutions_get_job_error" class="text-danger small d-none"></div>
                             </div>
@@ -708,6 +707,7 @@
                         </div>
                 </form>
             </div>
+            
         </div>
 
 

@@ -36,6 +36,8 @@
             border-radius: 8px;
             padding: 0.5rem 0;
             min-width: 220px;
+            max-height: none !important;
+            overflow: visible !important;
         }
 
         .dropdown-item {
@@ -186,7 +188,7 @@
         /* Result Button with Count */
         .btn-result-count {
             position: relative;
-            padding-right: 2.5rem !important;
+            /* padding-right: 2.5rem !important; */
         }
 
         .result-badge {
@@ -264,6 +266,10 @@
             border: 1px solid #dee2e6;
         }
 
+        .table-responsive {
+            overflow: visible !important;
+        }
+
         @keyframes shake {
 
             0%,
@@ -312,9 +318,9 @@
                 <table class="table align-middle mb-0 table-bordered">
                     <thead>
                         <tr>
-                            <th><strong>Tiêu đề khảo sát</strong></th>
+                            <th class="text-center"><strong>Tiêu đề khảo sát</strong></th>
                             <th class="text-center"><strong>Trạng thái</strong></th>
-                            <th><strong>Số lượng khảo sát</strong></th>
+                            <th class="text-center text-nowrap"><strong>Số lượng</strong></th>
                             <th class="text-center"><strong>Bắt đầu</strong></th>
                             <th class="text-center"><strong>Kết thúc</strong></th>
                             <th class="text-center"><strong>Phản hồi</strong></th>
@@ -350,18 +356,18 @@
                                         {{ $item->isActive() ? 'Hoạt động' : 'Ẩn' }}
                                     </span>
                                 </td>
-                                <td>
+                                <td class="text-nowrap">
                                     {{ $item->total_graduations }} sinh viên
                                 </td>
 
                                 <!-- Bắt đầu -->
                                 <td class="text-center">
-                                    {{ \Carbon\Carbon::parse($item->start_time)->format('d/m/Y') }}
+                                    {{ \Carbon\Carbon::parse($item->start_time)->format('d/m/Y H:i') }}
                                 </td>
 
                                 <!-- Kết thúc -->
                                 <td class="text-center">
-                                    {{ \Carbon\Carbon::parse($item->end_time)->format('d/m/Y') }}
+                                    {{ \Carbon\Carbon::parse($item->end_time)->format('d/m/Y H:i') }}
                                 </td>
 
                                 <!-- Phản hồi (Badge với màu động) -->
@@ -395,7 +401,7 @@
                                         <!-- 3. Xem kết quả với số lượng -->
                                         @if ($totalPhanHoi > 0)
                                             <a href="{{ route('admin.survey.result', ['id' => $item->id]) }}"
-                                                class="btn btn-sm btn-outline-success btn-action btn-result-count"
+                                                class="btn btn-sm btn-outline-success btn-action btn-result-count" 
                                                 title="Xem kết quả ({{ $totalPhanHoi }} phản hồi)">
                                                 <i class="bi bi-bar-chart-fill"></i>
                                                 <span class="result-badge">{{ $totalPhanHoi }}</span>
