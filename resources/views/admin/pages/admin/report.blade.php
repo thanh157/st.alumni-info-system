@@ -148,7 +148,7 @@
                         </li>
 
                         <li>
-                            <a class="dropdown-item download-link2"
+                            <a class="dropdown-item  "
                                 href="{{ route('surveys.export', array_merge(request()->all(), ['type' => 'tab1'])) }}" download
                                 onclick="handleFileDownload(event, this)">
                                 <i class="bi bi-file-earmark-text"></i>
@@ -156,7 +156,7 @@
                             </a>
                         </li>
                         <li>
-                            <a class="dropdown-item download-link2"
+                            <a class="dropdown-item  "
                                 href="{{ route('surveys.export', array_merge(request()->all(), ['type' => 'tab2'])) }}" download
                                 onclick="handleFileDownload(event, this)">
                                 <i class="bi bi-file-earmark-spreadsheet"></i>
@@ -164,7 +164,7 @@
                             </a>
                         </li>
                         <li>
-                            <a class="dropdown-item download-link2"
+                            <a class="dropdown-item  "
                                 href="{{ route('surveys.export', array_merge(request()->all(), ['type' => 'tab3'])) }}" download
                                 onclick="handleFileDownload(event, this)">
                                 <i class="bi bi-file-earmark-bar-graph"></i>
@@ -179,7 +179,7 @@
                         </li>
 
                         <li>
-                            <a class="dropdown-item fw-bold text-primary download-link2"
+                            <a class="dropdown-item fw-bold text-primary download-link"
                                 href="{{ route('surveys.export', array_merge(request()->all(), ['type' => 'all'])) }}" download
                                 onclick="handleFileDownload(event, this)">
                                 <i class="bi bi-file-earmark-zip"></i>

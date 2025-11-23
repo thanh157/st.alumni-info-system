@@ -302,8 +302,8 @@
                     </a>
                 @endif
                 <a href="{{ route('admin.surveys.downloadAllPdfs', $survey->id) }}"
-                    class="btn btn-success btn-sm download-link">
-                    <i class="bi bi-file-earmark-zip-fill me-1"></i>Tải tất cả PDF (Zip)
+                    class="btn btn-success btn-sm download-link" download>
+                    <i class="bi bi-file-earmark-zip-fill me-1 "></i>Tải tất cả PDF (Zip)
                 </a>
             </div>
         </div>
@@ -382,7 +382,7 @@
                                             class="btn btn-sm btn-outline-primary" title="Xem chi tiết kết quả">
                                             <i class="bi bi-info-circle-fill"></i>
                                         </a>
-                                        <button class="btn btn-sm btn-outline-danger download-link2" title="Xuất PDF"
+                                        <button class="btn btn-sm btn-outline-danger  " title="Xuất PDF"
                                             onclick="downloadPdf({{ $item->id }})">
                                             <i class="bi bi-file-earmark-pdf-fill"></i>
                                         </button>
