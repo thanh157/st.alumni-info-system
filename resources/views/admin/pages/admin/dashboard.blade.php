@@ -10,27 +10,27 @@
                 <i id="greetIcon" class="fa-solid fa-sun me-2 fs-4 mb-2 mb-sm-0"></i>
                 <div>
                     <strong id="greeting" class="fs-4 text-gradient"></strong>
-                    <div class="text-muted small">Chúc bạn có một ngày làm việc hiệu quả, Supper Admin CNTT</div>
+                    <div class="text-muted small">Chúc bạn có một ngày làm việc hiệu quả, Super Admin CNTT</div>
                 </div>
             </div>
         </div>
 
-        {{-- KPI --}}
+        {{-- KPI SECTION --}}
         <div class="card-body pt-0">
             <div class="mb-2">
-                <p class="fw-semibold">Tổng quan</p>
+                <p class="fw-semibold">Tổng Quan</p>
                 <div class="row">
                     <div class="col-12 col-sm-6 col-xl-3 mb-3">
                         <div
                             class="p-3 rounded shadow-sm d-flex flex-column justify-content-between h-100 bg-white kpi-card">
                             <div class="d-flex justify-content-between align-items-start">
                                 <div>
-                                    <p class="fw-semibold text-muted mb-1 small text-uppercase">PHIẾU ĐÃ KHẢO SÁT</p>
-                                    <h4 class="mb-0">{{ $totalResponses ?? 0 }}</h4>
+                                    <p class="fw-semibold text-muted mb-1 small text-uppercase">1) TỶ LỆ PHẢN HỒI</p>
+                                    <h4 class="mb-0">{{ $kpi1_ResponseRate }}%</h4>
                                 </div>
                                 <span class="kpi-icon kpi-blue"><i class="fa-solid fa-file-circle-check"></i></span>
                             </div>
-                            <small class="text-muted mt-2">Tổng số sinh viên đã phản hồi khảo sát</small>
+                            <small class="text-muted mt-2">{{ $totalResponses }}/{{ $totalGraduates }} Sinh viên</small>
                         </div>
                     </div>
 
@@ -39,12 +39,12 @@
                             class="p-3 rounded shadow-sm d-flex flex-column justify-content-between h-100 bg-white kpi-card">
                             <div class="d-flex justify-content-between align-items-start">
                                 <div>
-                                    <p class="fw-semibold text-muted mb-1 small text-uppercase">TỶ LỆ CÓ VIỆC LÀM</p>
-                                    <h4 class="mb-0">{{ $employmentRate ?? 0 }}%</h4>
+                                    <p class="fw-semibold text-muted mb-1 small text-uppercase">2) CÓ VIỆC / PHẢN HỒI</p>
+                                    <h4 class="mb-0">{{ $kpi2_EmployedPerRes }}%</h4>
                                 </div>
                                 <span class="kpi-icon kpi-green"><i class="fa-solid fa-briefcase"></i></span>
                             </div>
-                            <small class="text-muted mt-2">Tỷ lệ sinh viên có việc làm sau tốt nghiệp</small>
+                            <small class="text-muted mt-2">Trên số SV đã trả lời</small>
                         </div>
                     </div>
 
@@ -53,12 +53,12 @@
                             class="p-3 rounded shadow-sm d-flex flex-column justify-content-between h-100 bg-white kpi-card">
                             <div class="d-flex justify-content-between align-items-start">
                                 <div>
-                                    <p class="fw-semibold text-muted mb-1 small text-uppercase">TỶ LỆ CHƯA CÓ VIỆC LÀM</p>
-                                    <h4 class="mb-0">{{ $unemploymentRate ?? 0 }}%</h4>
+                                    <p class="fw-semibold text-muted mb-1 small text-uppercase">3) CÓ VIỆC / TOÀN KHÓA</p>
+                                    <h4 class="mb-0">{{ $kpi3_EmployedPerGrad }}%</h4>
                                 </div>
-                                <span class="kpi-icon kpi-amber"><i class="fa-solid fa-user-clock"></i></span>
+                                <span class="kpi-icon kpi-amber"><i class="fa-solid fa-graduation-cap"></i></span>
                             </div>
-                            <small class="text-muted mt-2">Tỷ lệ sinh viên chưa có việc làm</small>
+                            <small class="text-muted mt-2">Trên tổng số SV tốt nghiệp</small>
                         </div>
                     </div>
 
@@ -67,18 +67,18 @@
                             class="p-3 rounded shadow-sm d-flex flex-column justify-content-between h-100 bg-white kpi-card">
                             <div class="d-flex justify-content-between align-items-start">
                                 <div>
-                                    <p class="fw-semibold text-muted mb-1 small text-uppercase">TỶ LỆ ĐÚNG NGÀNH</p>
-                                    <h4 class="mb-0">{{ $relatedRate ?? 0 }}%</h4>
+                                    <p class="fw-semibold text-muted mb-1 small text-uppercase">4) VIỆC LÀM PHÙ HỢP</p>
+                                    <h4 class="mb-0">{{ $kpi4_RelevantPerGrad }}%</h4>
                                 </div>
-                                <span class="kpi-icon kpi-purple"><i class="fa-solid fa-bullseye"></i></span>
+                                <span class="kpi-icon kpi-purple"><i class="fa-solid fa-star"></i></span>
                             </div>
-                            <small class="text-muted mt-2">Tỷ lệ SV có việc làm đúng/liên quan ngành</small>
+                            <small class="text-muted mt-2">Đúng ngành + Liên quan + Học tiếp</small>
                         </div>
                     </div>
                 </div>
             </div>
 
-
+            {{-- CHARTS SECTION --}}
             <div style="max-width: 1100px; margin: 30px auto; position: relative;">
                 <h3 class="charts-title">Thống kê việc làm sinh viên theo đợt tốt nghiệp</h3>
 
@@ -88,13 +88,13 @@
                     Xem chi tiết
                 </a>
 
-
-
                 <div class="text-center mb-3">
                     <select id="chartTypeSelect" class="select">
                         <option value="employed">Tỉ lệ có việc làm / chưa có việc</option>
-                        <option value="location">Làm trong nước / nước ngoài</option>
-                        <option value="field">Đúng ngành / trái ngành</option>
+                        {{-- <option value="location">Làm trong nước / nước ngoài</option>
+                        <option value="field">Đúng ngành / trái ngành (Gộp)</option> --}}
+                        <option value="status_detail">Chi tiết tình hình việc làm </option>
+                        <option value="area_detail">Chi tiết khu vực làm việc </option>
                     </select>
                 </div>
 
@@ -105,7 +105,6 @@
                 </div>
 
                 <div class="d-none" id="chartContainer">
-                    {{-- THAY ĐỔI 3: Đổi "justify-content-between" thành "justify-content-center" --}}
                     <div class="d-flex justify-content-center gap-4 flex-wrap">
                         <div class="panel flex-fill" style="max-width: 380px;">
                             <h4 class="panel-title">Biểu đồ tròn tổng hợp</h4>
@@ -246,24 +245,16 @@
             const h = new Date().getHours();
             const $txt = document.getElementById("greeting");
             const $ico = document.getElementById("greetIcon");
-            let msg = "Chào buổi tối!",
-                icon = "fa-moon";
-            if (h >= 5 && h < 12) {
-                msg = "Chào buổi sáng!";
-                icon = "fa-sun";
-            } else if (h >= 12 && h < 14) {
-                msg = "Chào buổi trưa!";
-                icon = "fa-sun";
-            } else if (h >= 14 && h < 18) {
-                msg = "Chào buổi chiều!";
-                icon = "fa-cloud-sun";
-            }
+            let msg = "Chào buổi tối!", icon = "fa-moon";
+            if (h >= 5 && h < 12) { msg = "Chào buổi sáng!"; icon = "fa-sun"; }
+            else if (h >= 12 && h < 14) { msg = "Chào buổi trưa!"; icon = "fa-sun"; }
+            else if (h >= 14 && h < 18) { msg = "Chào buổi chiều!"; icon = "fa-cloud-sun"; }
             $txt.textContent = msg;
             $ico.className = `fa-solid ${icon} me-2 fs-4 mb-2 mb-sm-0`;
         })();
     </script>
 
-    {{-- Charts --}}
+    {{-- Charts Logic --}}
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             am5.ready(function () {
@@ -272,117 +263,136 @@
                 const chartTypeSelect = document.getElementById('chartTypeSelect');
 
                 let DATASETS = {};
-                // PIE
+
+                // --- 0. BẢNG MÀU DÙNG CHUNG CHO BAR & PIE ---
+                const MODE_COLORS = {
+                    // Ví dụ: Có việc = xanh, Chưa có việc = vàng
+                    employed: [
+                        am5.color(0x10b981), // Có việc làm
+                        am5.color(0xfacc15), // Chưa có việc làm (vàng)
+                    ],
+                    location: [
+                        am5.color(0x3b82f6), // Trong nước
+                        am5.color(0xf59e0b), // Nước ngoài
+                    ],
+                    field: [
+                        am5.color(0x8b5cf6), // Đúng ngành/LQ
+                        am5.color(0x6b7280), // Trái ngành
+                    ],
+                    status_detail: [
+                        am5.color(0x10b981), // Đúng ngành
+                        am5.color(0x3b82f6), // Liên quan
+                        am5.color(0xf59e0b), // Trái ngành
+                        am5.color(0x8b5cf6), // Tiếp tục học
+                        am5.color(0xef4444), // Chưa có việc
+                    ],
+                    area_detail: [
+                        am5.color(0xe11d48), // Nhà nước
+                        am5.color(0x2563eb), // Tư nhân
+                        am5.color(0x0891b2), // Tự tạo việc
+                        am5.color(0xd97706), // Nước ngoài
+                    ]
+                };
+
+                // --- 1. SETUP PIE CHART ---
                 const rootPie = am5.Root.new("pieChart");
                 rootPie.setThemes([am5themes_Animated.new(rootPie)]);
                 const pieChart = rootPie.container.children.push(am5percent.PieChart.new(rootPie, {
                     layout: rootPie.verticalLayout,
                     innerRadius: am5.percent(58)
+
                 }));
                 const pieSeries = pieChart.series.push(am5percent.PieSeries.new(rootPie, {
                     valueField: "value",
                     categoryField: "category",
                     alignLabels: false
                 }));
-                // Màu + nhãn (ẩn số trên lát)
-                pieSeries.get("colors").set("colors", [
-                    am5.color(0x3b82f6), am5.color(0xef4444),
-                    am5.color(0x10b981), am5.color(0xf59e0b),
-                    am5.color(0x8b5cf6), am5.color(0x667085)
-                ]);
                 pieSeries.slices.template.setAll({
                     strokeOpacity: 0,
                     tooltipText: "{category}: {valuePercentTotal.formatNumber('0.0')}% ({value})"
                 });
                 pieSeries.labels.template.setAll({
                     text: "{valuePercentTotal.formatNumber('0.0')}%",
-                    inside: true,
-                    radius: 0,
-                    fill: am5.color(0xffffff),
-                    fontWeight: "700",
-                    forceHidden: true
+                    inside: true, radius: 0, fill: am5.color(0xffffff),
+                    fontWeight: "700", forceHidden: true
                 });
                 const pieLegend = pieChart.children.push(am5.Legend.new(rootPie, {
-                    centerX: am5.p50,
-                    x: am5.p50,
-                    marginTop: 15,
-                    layout: rootPie.horizontalLayout
+                    centerX: am5.p50, x: am5.p50,
+                    width: am5.percent(100),
+                    marginTop: 25,
+                    layout: rootPie.gridLayout
                 }));
                 pieLegend.valueLabels.template.set("forceHidden", true);
 
-                // BAR
+                // --- 2. SETUP BAR CHART ---
                 const rootBar = am5.Root.new("barChart");
                 rootBar.setThemes([am5themes_Animated.new(rootBar)]);
                 const barChart = rootBar.container.children.push(am5xy.XYChart.new(rootBar, {
-                    panX: false,
-                    panY: false,
-                    wheelX: "panX",
-                    wheelY: "zoomX",
-                    paddingLeft: 30,
-                    paddingBottom: 50,
+                    panX: false, panY: false,
+                    wheelX: "panX", wheelY: "zoomX",
+                    paddingLeft: 30, paddingBottom: 50,
                     layout: rootBar.verticalLayout
                 }));
                 barChart.set("cursor", am5xy.XYCursor.new(rootBar, {}));
 
-                const xRenderer = am5xy.AxisRendererX.new(rootBar, {
-                    minGridDistance: 30
-                });
-                xRenderer.labels.template.setAll({
-                    centerY: am5.p50,
-                    centerX: am5.p50
-                });
+                const xRenderer = am5xy.AxisRendererX.new(rootBar, { minGridDistance: 30 });
+                xRenderer.labels.template.setAll({ centerY: am5.p50, centerX: am5.p50 });
                 const xAxis = barChart.xAxes.push(am5xy.CategoryAxis.new(rootBar, {
-                    categoryField: "term",
-                    renderer: xRenderer,
-                    tooltip: am5.Tooltip.new(rootBar, {}),
-
+                    categoryField: "term", renderer: xRenderer,
                 }));
                 const yAxis = barChart.yAxes.push(am5xy.ValueAxis.new(rootBar, {
-                    min: 0,
-                    renderer: am5xy.AxisRendererY.new(rootBar, {})
+                    min: 0, renderer: am5xy.AxisRendererY.new(rootBar, {})
                 }));
                 const barLegend = barChart.children.push(am5.Legend.new(rootBar, {
-                    centerX: am5.p50,
-                    x: am5.p50,
-                    marginTop: 15,
-                    marginBottom: 8
+                    centerX: am5.p50, x: am5.p50,
+                    marginTop: 15, marginBottom: 8
                 }));
 
+                // NHẬN am5.Color thay vì hex
                 function createSeries(name, field, color) {
                     const s = barChart.series.push(am5xy.ColumnSeries.new(rootBar, {
-                        name,
-                        xAxis,
-                        yAxis,
-                        valueYField: field,
-                        categoryXField: "term",
+                        name, xAxis, yAxis,
+                        valueYField: field, categoryXField: "term",
                         sequencedInterpolation: true,
-                        fill: am5.color(color),
+                        fill: color, // dùng color đã định nghĩa
                         tooltip: am5.Tooltip.new(rootBar, {
                             labelText: "[bold]{name}[/]\n{categoryX}: {valueY}"
                         })
                     }));
                     s.columns.template.setAll({
-                        width: am5.percent(80),
-                        tooltipY: 0,
-                        cornerRadiusTL: 6,
-                        cornerRadiusTR: 6
+                        width: am5.percent(80), tooltipY: 0,
+                        cornerRadiusTL: 6, cornerRadiusTR: 6
                     });
                     s.hide(0);
                     return s;
                 }
 
+                // --- 3. SERIES MAP DÙNG MÀU TỪ MODE_COLORS ---
                 const seriesMap = {
                     employed: [
-                        createSeries("Có việc làm", "employed", 0x10b981),
-                        createSeries("Chưa có việc làm", "unemployed", 0xf97316),
+                        createSeries("Có việc làm", "employed", MODE_COLORS.employed[0]),
+                        createSeries("Chưa có việc làm", "unemployed", MODE_COLORS.employed[1]),
                     ],
                     location: [
-                        createSeries("Trong nước", "domestic", 0x10b981),
-                        createSeries("Nước ngoài", "foreign", 0xf59e0b),
+                        createSeries("Trong nước", "domestic", MODE_COLORS.location[0]),
+                        createSeries("Nước ngoài", "foreign", MODE_COLORS.location[1]),
                     ],
                     field: [
-                        createSeries("Đúng ngành", "related", 0x8b5cf6),
-                        createSeries("Trái ngành", "unrelated", 0x667085),
+                        createSeries("Đúng ngành/LQ", "related", MODE_COLORS.field[0]),
+                        createSeries("Trái ngành", "unrelated", MODE_COLORS.field[1]),
+                    ],
+                    status_detail: [
+                        createSeries("Đúng ngành", "s1", MODE_COLORS.status_detail[0]),
+                        createSeries("Liên quan", "s2", MODE_COLORS.status_detail[1]),
+                        createSeries("Trái ngành", "s3", MODE_COLORS.status_detail[2]),
+                        createSeries("Tiếp tục học", "s4", MODE_COLORS.status_detail[3]),
+                        createSeries("Chưa có việc", "s5", MODE_COLORS.status_detail[4]),
+                    ],
+                    area_detail: [
+                        createSeries("Nhà nước", "a1", MODE_COLORS.area_detail[0]),
+                        createSeries("Tư nhân", "a2", MODE_COLORS.area_detail[1]),
+                        createSeries("Tự tạo việc", "a3", MODE_COLORS.area_detail[2]),
+                        createSeries("Nước ngoài", "a4", MODE_COLORS.area_detail[3]),
                     ]
                 };
 
@@ -390,35 +400,48 @@
                     const mode = chartTypeSelect.value;
                     if (!DATASETS[mode]) return;
 
-                    // Pie
-                    pieSeries.data.setAll(DATASETS[mode].pie);
-                    pieLegend.data.setAll(pieSeries.dataItems);
-                    pieSeries.appear(600, 50);
-
-                    // Bar
+                    // Bar chart
                     const all = Object.values(seriesMap).flat();
                     all.forEach(s => s.hide(0));
+
                     const vs = seriesMap[mode];
-                    barLegend.data.setAll(vs);
-                    vs.forEach(s => s.show(0));
-                    barChart.appear(600, 50);
+                    if (vs) {
+                        barLegend.data.setAll(vs);
+                        vs.forEach(s => s.show(0));
+                        barChart.appear(600, 50);
+                    }
+
+                    // Pie chart
+                    pieSeries.data.setAll(DATASETS[mode].pie);
+
+                    pieSeries.events.once("datavalidated", () => {
+                        pieSeries.dataItems.forEach((item, index) => {
+                            const barColor = seriesMap[mode][index].get("fill");
+                            if (barColor) {
+                                item.get("slice").setAll({
+                                    fill: barColor,
+                                    stroke: barColor
+                                });
+                            }
+                        });
+                    });
+
+                    pieLegend.data.setAll(pieSeries.dataItems);
+                    pieSeries.appear(600, 50);
                 }
 
                 async function boot() {
                     try {
-                        const res = await fetch("{{ url('dashboard/chart-data') }}", {
-                            cache: "no-store"
-                        });
+                        const res = await fetch("{{ url('dashboard/chart-data') }}", { cache: "no-store" });
                         if (!res.ok) throw new Error("Server error " + res.status);
+
                         DATASETS = await res.json();
 
                         if (!DATASETS.bar || DATASETS.bar.length === 0) {
-                            chartLoading.innerHTML =
-                                '<p class="text-muted fw-semibold">Chưa có dữ liệu để hiển thị.</p>';
+                            chartLoading.innerHTML = '<p class="text-muted fw-semibold">Chưa có dữ liệu để hiển thị.</p>';
                             return;
                         }
 
-                        // Bind bar once
                         xAxis.data.setAll(DATASETS.bar);
                         Object.values(seriesMap).flat().forEach(s => s.data.setAll(DATASETS.bar));
 
@@ -429,8 +452,7 @@
                         refresh();
                     } catch (e) {
                         console.error(e);
-                        chartLoading.innerHTML =
-                            `<p class="text-danger fw-semibold">Không thể tải dữ liệu. Vui lòng thử lại sau.<br><small>${e.message}</small></p>`;
+                        chartLoading.innerHTML = `<p class="text-danger fw-semibold">Không thể tải dữ liệu.<br><small>${e.message}</small></p>`;
                     }
                 }
 
@@ -438,4 +460,5 @@
             });
         });
     </script>
+
 @endsection
