@@ -183,7 +183,7 @@
                                 </h6>
                                 {{-- Nút Popover cho Summary Box --}}
 
-                                <i class="bi bi-question-circle-fill me-1 text-secondary" data-bs-toggle="popover"
+                                {{-- <i class="bi bi-question-circle-fill me-1 text-secondary" data-bs-toggle="popover"
                                     data-bs-trigger="hover focus" data-bs-placement="bottom"
                                     data-bs-content=
                                     '
@@ -194,10 +194,20 @@
                                             </div>
                                             <div class="mb-1">
                                                 <i class="bi bi-chevron-right me-1"></i>
-                                                <strong>Số lượng có việc làm phù hợp</strong> = SV có việc làm đúng ngành + SV có việc làm liên quan
+                                                <strong>Số lượng có việc làm phù hợp (Phản hồi)</strong> = SV có việc làm đúng ngành + SV có việc làm liên quan
+                                            </div>
+                                            <div class="mb-1">
+                                                <i class="bi bi-chevron-right me-1"></i>
+                                                <strong>Số lượng có việc làm phù hợp (Tốt nghiệp)</strong> = SV có việc làm đúng ngành + SV có việc làm liên quan + (Tổng SV khảo sát - Tổng phản hồi)/2
                                             </div>
                                         </div>
-                                    '></i>
+                                    '></i> --}}
+                                    <i 
+                                        class="bi bi-question-circle-fill me-1 text-secondary cursor-pointer" 
+                                        id="summary-popover-trigger"
+                                        tabindex="0"
+                                        role="button">
+                                    </i>
 
                             </div>
                             <div class="row g-3">
@@ -276,9 +286,10 @@
                                     $coViecPhuHop = $dungNganh + $lienQuan;
                                     $tyLeViecPhuHop =
                                         $totalPhanHoi > 0 ? round(($coViecPhuHop / $totalPhanHoi) * 100, 2) : 0;
+                                    $coViecPhuHopTrenTotNghiep = $coViecPhuHop + intval(($survey->total_graduations - $totalPhanHoi) / 2);
                                     $tyLeViecPhuHopTrenTotNghiep =
                                         $survey->total_graduations > 0
-                                            ? round(($coViecPhuHop / $survey->total_graduations) * 100, 2)
+                                            ? round(($coViecPhuHopTrenTotNghiep / $survey->total_graduations) * 100, 2)
                                             : 0;
                                 @endphp
                                 <div class="col-4">
@@ -310,7 +321,7 @@
                                             </div>
                                             <span class="badge bg-warning">{{ $tyLeViecPhuHopTrenTotNghiep }}%</span>
                                         </div>
-                                        <h4 class="fw-bold text-warning mb-1">{{ $coViecPhuHop }} /
+                                        <h4 class="fw-bold text-warning mb-1">{{ $coViecPhuHopTrenTotNghiep }} /
                                             {{ $survey->total_graduations }}</h4>
                                         <p class="text-muted small mb-0">Việc làm phù hợp / Tốt nghiệp</p>
                                         <div class="progress mt-2" style="height: 4px;">
@@ -344,6 +355,33 @@
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {{-- Hidden Content for Popover --}}
+            <div id="popover-content-stats" class="d-none">
+                <div class="small text-muted">
+                    <div class="mb-2 d-flex align-items-start">
+                        <i class="bi bi-info-circle text-primary me-2 mt-1"></i>
+                        <div>
+                            <strong>SV có việc làm:</strong><br>
+                            = Đúng ngành + Tiếp tục học
+                        </div>
+                    </div>
+                    <div class="mb-2 d-flex align-items-start">
+                        <i class="bi bi-check2-circle text-success me-2 mt-1"></i>
+                        <div>
+                            <strong>Việc làm phù hợp (Trên phản hồi):</strong><br>
+                            = Đúng ngành + Liên quan
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-start">
+                        <i class="bi bi-calculator text-warning me-2 mt-1"></i>
+                        <div>
+                            <strong>Việc làm phù hợp (Trên tổng SV):</strong><br>
+                            = Đúng ngành + Liên quan + (Tổng SV khảo sát - Tổng phản hồi)/2
                         </div>
                     </div>
                 </div>
@@ -570,15 +608,21 @@
             document.body.removeChild(link);
         }
 
-        // Khởi tạo Popovers
         document.addEventListener('DOMContentLoaded', function() {
-            var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
-            var popoverList = popoverTriggerList.map(function(popoverTriggerEl) {
-                return new bootstrap.Popover(popoverTriggerEl, {
-                    html: true, // Cho phép nội dung HTML
-                    sanitize: false // Quan trọng nếu dùng HTML trong content
-                })
-            })
+            // Lấy nội dung từ div ẩn
+            var popoverContent = document.getElementById('popover-content-stats').innerHTML;
+            
+            var triggerElement = document.getElementById('summary-popover-trigger');
+            
+            if(triggerElement){
+                new bootstrap.Popover(triggerElement, {
+                    html: true,
+                    content: popoverContent,
+                    placement: 'bottom',
+                    trigger: 'hover focus', // Dùng hover focus cho desktop
+                    title: '<span class="fw-bold text-success">Cách tính chỉ số</span>' // Tiêu đề popover
+                });
+            }
         });
     </script>
 @endsection
