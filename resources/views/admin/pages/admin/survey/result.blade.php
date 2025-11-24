@@ -268,12 +268,12 @@
                     <select name="employment_status" class="form-select form-select-sm"
                         style="width: auto; min-width: 200px;">
                         <option value="">-- Tất cả trạng thái --</option>
-                        <option value="1" {{ request('employment_status') == '1' ? 'selected' : '' }}>
+                        <option value="1,2" {{ request('employment_status') == '1,2' ? 'selected' : '' }}>
                             Đã có việc làm
                         </option>
-                        <option value="2" {{ request('employment_status') == '2' ? 'selected' : '' }}>
+                        {{-- <option value="2" {{ request('employment_status') == '2' ? 'selected' : '' }}>
                             Đang tiếp tục học
-                        </option>
+                        </option> --}}
                         <option value="3,4" {{ request('employment_status') == '3,4' ? 'selected' : '' }}>
                             Chưa có việc làm
                         </option>
