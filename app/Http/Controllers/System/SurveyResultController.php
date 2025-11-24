@@ -89,9 +89,9 @@ class SurveyResultController extends Controller
             // Nếu chọn "Chưa có việc làm" (gộp 3,4)
             if ($employmentStatus == '3,4') {
                 $query->whereIn('employment_status', [3, 4]);
-            } else {
-                // Trạng thái đơn lẻ (1 hoặc 2)
-                $query->where('employment_status', $employmentStatus);
+            } elseif ($employmentStatus == '1,2') {
+                $query->whereIn('employment_status', [1, 2]);
+                // $query->where('employment_status', $employmentStatus);
             }
         }
             // // Lọc theo mã sinh viên
@@ -118,16 +118,16 @@ class SurveyResultController extends Controller
             $survey = Survey::where('id', $surveyId)->first();
 
             $coViec = EmploymentSurveyResponse::where('survey_period_id', $survey->id)
-                ->whereIn('employment_status', [1, 3])
+                ->whereIn('employment_status', [1, 2])
                 ->count();
 
             $dungNganh = EmploymentSurveyResponse::where('survey_period_id', $survey->id)
-                ->whereIn('employment_status', [1, 3])
+                ->whereIn('employment_status', [1, 2])
                 ->where('trained_field', 1)
                 ->count();
 
             $lienQuan = EmploymentSurveyResponse::where('survey_period_id', $survey->id)
-                ->whereIn('employment_status', [1, 3])
+                ->whereIn('employment_status', [1, 2])
                 ->where('trained_field', 2)
                 ->count();
 
