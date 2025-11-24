@@ -86,6 +86,88 @@
                                         aria-valuemin="0" aria-valuemax="100">
                                     </div>
                                 </div>
+
+                                {{-- Thanh thời gian còn lại --}}
+                                @php
+                                    $now = \Carbon\Carbon::now();
+                                    $endTime = \Carbon\Carbon::parse($survey->end_time);
+                                    $startTime = \Carbon\Carbon::parse($survey->start_time);
+                                    
+                                    // Tính tổng thời gian và thời gian đã trôi qua
+                                    $totalDuration = $startTime->diffInSeconds($endTime);
+                                    $elapsed = $startTime->diffInSeconds($now);
+                                    $remaining = $now->diffInSeconds($endTime, false); // false để có giá trị âm nếu quá hạn
+                                    
+                                    // Tính phần trăm thời gian đã trôi qua
+                                    $timeProgress = $totalDuration > 0 ? min(100, round(($elapsed / $totalDuration) * 100, 1)) : 0;
+                                    
+                                    // Kiểm tra trạng thái
+                                    $isExpired = $remaining < 0;
+                                    $isNearDeadline = $remaining > 0 && $remaining < 86400 * 3; // 3 ngày
+                                    
+                                    // Màu thanh progress
+                                    $progressColor = $isExpired ? 'danger' : ($isNearDeadline ? 'warning' : 'info');
+                                @endphp
+
+                                <div class="mt-3 pt-3 border-top">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <div>
+                                            <i class="bi bi-clock-history text-{{ $progressColor }} me-2"></i>
+                                            <strong class="text-{{ $progressColor }}">Thời gian khảo sát:</strong>
+                                        </div>
+                                        <div class="text-end">
+                                            @if($isExpired)
+                                                <span class="badge bg-danger">
+                                                    <i class="bi bi-x-circle-fill me-1"></i>Đã kết thúc
+                                                </span>
+                                            @elseif($isNearDeadline)
+                                                <span class="badge bg-warning text-dark">
+                                                    <i class="bi bi-exclamation-triangle-fill me-1"></i>Sắp hết hạn
+                                                </span>
+                                            @else
+                                                <span class="badge bg-info">
+                                                    <i class="bi bi-hourglass-split me-1"></i>Đang diễn ra
+                                                </span>
+                                            @endif
+                                        </div>
+                                    </div>
+
+                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                        <small class="text-muted">
+                                            <i class="bi bi-calendar-check me-1"></i>
+                                            {{ $startTime->format('d/m/Y H:i') }}
+                                        </small>
+                                        <small class="text-muted">
+                                            <i class="bi bi-calendar-x me-1"></i>
+                                            {{ $endTime->format('d/m/Y H:i') }}
+                                        </small>
+                                    </div>
+
+                                    {{-- Progress bar thời gian --}}
+                                    <div class="progress" style="height: 6px;">
+                                        <div class="progress-bar bg-{{ $progressColor }}" 
+                                            role="progressbar" 
+                                            style="width: {{ $timeProgress }}%;" 
+                                            aria-valuenow="{{ $timeProgress }}" 
+                                            aria-valuemin="0" 
+                                            aria-valuemax="100">
+                                        </div>
+                                    </div>
+
+                                    <div class="text-center mt-2">
+                                        @if($isExpired)
+                                            <small class="text-danger fw-bold">
+                                                <i class="bi bi-exclamation-circle-fill me-1"></i>
+                                                Đã quá hạn {{ $now->diffForHumans($endTime, true) }}
+                                            </small>
+                                        @else
+                                            <small class="text-muted">
+                                                <i class="bi bi-hourglass-bottom me-1"></i>
+                                                Còn lại: <strong class="text-{{ $progressColor }}">{{ $now->diffForHumans($endTime, true) }}</strong>
+                                            </small>
+                                        @endif
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -199,7 +281,7 @@
                                             ? round(($coViecPhuHop / $survey->total_graduations) * 100, 2)
                                             : 0;
                                 @endphp
-                                <div class="col-6">
+                                <div class="col-4">
                                     <div class="stat-card p-3 rounded border border-info bg-info bg-opacity-10 h-100">
                                         <div class="d-flex align-items-start justify-content-between mb-2">
                                             <div class="stat-icon bg-info text-white rounded-circle d-flex align-items-center justify-content-center"
@@ -218,7 +300,7 @@
                                 </div>
 
                                 {{-- Card 5: Tỷ lệ SV có việc làm phù hợp / tổng SV tốt nghiệp --}}
-                                <div class="col-6">
+                                <div class="col-4">
                                     <div
                                         class="stat-card p-3 rounded border border-warning bg-warning bg-opacity-10 h-100">
                                         <div class="d-flex align-items-start justify-content-between mb-2">
@@ -234,6 +316,30 @@
                                         <div class="progress mt-2" style="height: 4px;">
                                             <div class="progress-bar bg-warning"
                                                 style="width: {{ $tyLeViecPhuHopTrenTotNghiep }}%;"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {{-- Card 6: Tỷ lệ SV có việc làm ĐÚNG NGÀNH / tổng SV phản hồi --}}
+                                @php
+                                    $tyLeDungNganh = $totalPhanHoi > 0 ? round(($dungNganh / $totalPhanHoi) * 100, 2) : 0;
+                                @endphp
+                                <div class="col-4"> 
+                                    <div
+                                        class="stat-card p-3 rounded border border-secondary bg-secondary bg-opacity-10 h-100">
+                                        <div class="d-flex align-items-start justify-content-between mb-2">
+                                            <div class="stat-icon bg-secondary text-white rounded-circle d-flex align-items-center justify-content-center"
+                                                style="width: 40px; height: 40px;">
+                                                <i class="bi bi-patch-check-fill fs-5"></i>
+                                            </div>
+                                            <span class="badge bg-secondary">{{ $tyLeDungNganh }}%</span>
+                                        </div>
+                                        <h4 class="fw-bold text-secondary mb-1">{{ $dungNganh }} /
+                                            {{ $totalPhanHoi }}</h4>
+                                        <p class="text-muted small mb-0">Đúng ngành / Phản hồi</p>
+                                        <div class="progress mt-2" style="height: 4px;">
+                                            <div class="progress-bar bg-secondary"
+                                                style="width: {{ $tyLeDungNganh }}%;"></div>
                                         </div>
                                     </div>
                                 </div>
