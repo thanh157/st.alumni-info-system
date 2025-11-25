@@ -82,18 +82,23 @@ class SurveyResultController extends Controller
             }
 
             //      // ===== THÊM MỚI: Lọc theo trạng thái việc làm =====
-       
-             if ($request->filled('employment_status')) {
-            $employmentStatus = $request->input('employment_status');
-            
-            // Nếu chọn "Chưa có việc làm" (gộp 3,4)
-            if ($employmentStatus == '3,4') {
-                $query->whereIn('employment_status', [3, 4]);
-            } elseif ($employmentStatus == '1,2') {
-                $query->whereIn('employment_status', [1, 2]);
-                // $query->where('employment_status', $employmentStatus);
+            if ($request->filled('filter')) {
+                $filter = $request->filter;
+
+                // Employment Status (es_)
+                if (str_starts_with($filter, 'es_')) {
+                    $statusList = str_replace('es_', '', $filter); // "1_2"
+                    $statusList = explode('_', $statusList);        // [1, 2]
+                    $query->whereIn('employment_status', $statusList);
+                }
+
+                // Trained Field (tf_)
+                elseif (str_starts_with($filter, 'tf_')) {
+                    $trainedField = str_replace('tf_', '', $filter); // "1" hoặc "2" hoặc "3"
+                    $query->where('trained_field', $trainedField);
+                }
             }
-        }
+
             // // Lọc theo mã sinh viên
             // if ($request->filled('student_code')) {
             //     $query->whereHas('student', function ($q) use ($request) {

@@ -265,29 +265,40 @@
                         <input type="hidden" name="search" value="{{ request('search') }}">
                     @endif
 
-                    <select name="employment_status" class="form-select form-select-sm"
-                        style="width: auto; min-width: 200px;">
-                        <option value="">-- Tất cả trạng thái --</option>
-                        <option value="1,2" {{ request('employment_status') == '1,2' ? 'selected' : '' }}>
+                    <select name="filter" class="form-select form-select-sm" style="width: 250px">
+                        <option value="">-- Chọn loại lọc --</option>
+
+                        {{-- Employment status --}}
+                        <option value="es_1_2" {{ request('filter') == 'es_1_2' ? 'selected' : '' }}>
                             Đã có việc làm
                         </option>
-                        {{-- <option value="2" {{ request('employment_status') == '2' ? 'selected' : '' }}>
-                            Đang tiếp tục học
-                        </option> --}}
-                        <option value="3,4" {{ request('employment_status') == '3,4' ? 'selected' : '' }}>
+                        <option value="es_3_4" {{ request('filter') == 'es_3_4' ? 'selected' : '' }}>
                             Chưa có việc làm
                         </option>
+
+                        {{-- Trained field --}}
+                        <option value="tf_1" {{ request('filter') == 'tf_1' ? 'selected' : '' }}>
+                            Đúng ngành đào tạo
+                        </option>
+                        <option value="tf_2" {{ request('filter') == 'tf_2' ? 'selected' : '' }}>
+                            Liên quan ngành đào tạo
+                        </option>
+                        <option value="tf_3" {{ request('filter') == 'tf_3' ? 'selected' : '' }}>
+                            Không liên quan ngành đào tạo
+                        </option>
                     </select>
+
 
                     <button type="submit" class="btn btn-primary btn-sm">
                         <i class="bi bi-funnel me-1"></i>Lọc
                     </button>
 
-                    @if (request('employment_status') || request('search'))
+                    @if (request('filter') || request('search'))
                         <a href="{{ url()->current() }}" class="btn btn-secondary btn-sm">
                             <i class="bi bi-x-circle me-1"></i>Xóa lọc
                         </a>
                     @endif
+
                 </form>
             </div>
 
@@ -307,32 +318,41 @@
                 </a>
             </div>
         </div>
-        @if (request('employment_status'))
+        @if (request('filter'))
             <div class="mb-3">
                 <span class="badge bg-info">
                     <i class="bi bi-funnel-fill me-1"></i>
                     Đang lọc:
-                    @switch(request('employment_status'))
-                        @case('1')
+
+                    @switch(request('filter'))
+                        {{-- ES --}}
+                        @case('es_1_2')
                             Đã có việc làm
                         @break
 
-                        @case('2')
-                            Đang tiếp tục học
-                        @break
-
-                        @case('3')
+                        @case('es_3_4')
                             Chưa có việc làm
                         @break
 
-                        @case('4')
-                            Chưa đi tìm việc
+                        {{-- TF --}}
+                        @case('tf_1')
+                            Đúng ngành đào tạo
+                        @break
+
+                        @case('tf_2')
+                            Liên quan đến ngành đào tạo
+                        @break
+
+                        @case('tf_3')
+                            Không liên quan ngành đào tạo
                         @break
                     @endswitch
+
                     ({{ $data->total() }} kết quả)
                 </span>
             </div>
         @endif
+
 
         @include('admin.layouts.noti')
 
