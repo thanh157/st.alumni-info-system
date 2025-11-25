@@ -360,7 +360,7 @@
                         <i class="bi bi-calculator text-warning me-2 mt-1"></i>
                         <div>
                             <strong>Việc làm phù hợp (Trên tổng SV):</strong><br>
-                            = Đúng ngành + Liên quan + Tiếp tục học + (Tổng SV khảo sát - Tổng phản hồi)/2
+                            = Đúng ngành + Liên quan + Tiếp tục học + (Tổng SV khảo sát - Tổng phản hồi) <strong>/2</strong>
                         </div>
                     </div>
                 </div>
