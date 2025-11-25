@@ -875,6 +875,7 @@
                 $('#verifyStudentForm').on('submit', function(e) {
                     e.preventDefault(); // Ngăn reload trang
 
+                    const survey_id = $('input[name="survey_id"]').val().trim();
                     const full_name = $('#full_name').val().trim();
                     const mssv = $('#input-mssv').val().trim();
                     // const email = $('#email').val().trim();
@@ -897,6 +898,7 @@
                         url: '/api/khao-sat/verify-student',
                         method: 'POST',
                         data: {
+                            survey_id,
                             full_name,
                             mssv,
                             // email,
@@ -929,6 +931,121 @@
                                         course); // Điền khóa học vào trường input
                                 }
 
+                                // const response = res.survey_response;
+
+                                // if (response) {
+                                //     // --- 1. ĐIỀN THÔNG TIN CÁ NHÂN (PHẦN I) ---
+                                    
+                                //     // Các input text/date đơn giản
+                                //     $('#code_student').val(response.code_student); // ID: code_student
+                                //     $('#full_names').val(response.full_name);      // ID: full_names
+                                //     $('input[name="gender"]').val(response.gender);
+                                //     $('input[name="dob"]').val(response.dob);
+                                //     $('input[name="identification_card_number"]').val(response.identification_card_number);
+                                //     $('input[name="identification_issuance_place"]').val(response.identification_issuance_place);
+                                //     $('input[name="identification_issuance_date"]').val(response.identification_issuance_date);
+                                //     $('input[name="course"]').val(response.course);
+                                //     $('input[name="phone_number"]').val(response.phone_number);
+                                //     $('input[name="email"]').val(response.email);
+
+                                //     // Xử lý Select: Mã ngành đào tạo
+                                //     // Logic: Map từ ID (trong DB) sang Value (trong Option) để select chọn đúng
+                                //     if (response.training_industry_id) {
+                                //         let codeToSelect = "";
+                                //         if (response.training_industry_id == 1) codeToSelect = "7480201"; // CNTT
+                                //         if (response.training_industry_id == 2) codeToSelect = "7480102"; // Mạng
+                                        
+                                //         if (codeToSelect) {
+                                //             $('#ma_nghanh_dao_tao').val(codeToSelect).trigger('change'); 
+                                //             // trigger change để script có sẵn cập nhật input #ten_nganh_hien_thi
+                                //         }
+                                //     }
+
+                                //     // --- 2. ĐIỀN THÔNG TIN VIỆC LÀM (PHẦN II) ---
+
+                                //     // Câu 11: Tình trạng việc làm (Quan trọng: Trigger change để hiện/ẩn phần chi tiết)
+                                //     $(`input[name="employment_status"][value="${response.employment_status}"]`)
+                                //         .prop('checked', true)
+                                //         .trigger('change');
+
+                                //     // Các thông tin chi tiết về công ty
+                                //     $('input[name="recruit_partner_name"]').val(response.recruit_partner_name);
+                                //     $('input[name="recruit_partner_address"]').val(response.recruit_partner_address);
+                                //     // Lưu ý: Input "Tỉnh/Thành phố" trong HTML của bạn chưa có name, nên không fill được
+                                //     $('input[name="recruit_partner_date"]').val(response.recruit_partner_date);
+                                //     $('input[name="recruit_partner_position"]').val(response.recruit_partner_position);
+                                //     $('input[name="starting_salary"]').val(response.starting_salary);
+
+                                //     // Điền Radio buttons (Chọn 1)
+                                //     const radioFields = [
+                                //         'work_area', 
+                                //         'employed_since', 
+                                //         'trained_field', 
+                                //         'professional_qualification_field', 
+                                //         'level_knowledge_acquired', 
+                                //         'average_income'
+                                //     ];
+                                //     radioFields.forEach(name => {
+                                //         $(`input[name="${name}"][value="${response.work_area}"]`).prop('checked', true);
+                                //         // Lưu ý: với radio đơn giản không có logic ẩn hiện thì không cần trigger('change')
+                                //         if(response[name]) {
+                                //             $(`input[name="${name}"][value="${response[name]}"]`).prop('checked', true);
+                                //         }
+                                //     });
+
+
+                                //     // --- 3. ĐIỀN CHECKBOX & RADIO NHIỀU LỰA CHỌN (KÈM Ô "KHÁC") ---
+                                    
+                                //     // Hàm hỗ trợ check mảng và kích hoạt sự kiện change để hiện ô "Khác" nếu cần
+                                //     function checkMulti(name, values) {
+                                //         // Reset trước
+                                //         $(`input[name="${name}[]"]`).prop('checked', false);
+                                        
+                                //         if (Array.isArray(values)) {
+                                //             values.forEach(val => {
+                                //                 // Check và Trigger change để logic toggleOther hoạt động
+                                //                 $(`input[name="${name}[]"][value="${val}"]`)
+                                //                     .prop('checked', true)
+                                //                     .trigger('change'); 
+                                //             });
+                                //         }
+                                //     }
+
+                                //     // 23. Hình thức tìm việc
+                                //     checkMulti('recruitment_type', response.recruitment_type);
+                                //     if (response.recruitment_type_other) {
+                                //         $('#recruitment_type_other').val(response.recruitment_type_other).removeClass('d-none');
+                                //         $('#recruitment_type_other_wrapper').show();
+                                //     }
+
+                                //     // 24. Hình thức tuyển (Radio group name[])
+                                //     checkMulti('job_search_method', response.job_search_method);
+                                //     if (response.job_search_method_other) {
+                                //         $('#job_search_method_other').val(response.job_search_method_other).removeClass('d-none');
+                                //         $('#job_search_method_other_wrapper').show();
+                                //     }
+
+                                //     // 25. Kỹ năng mềm
+                                //     checkMulti('soft_skills_required', response.soft_skills_required);
+                                //     if (response.soft_skills_required_other) {
+                                //         $('#soft_skills_required_other').val(response.soft_skills_required_other).removeClass('d-none');
+                                //         $('#soft_skills_required_other_wrapper').show();
+                                //     }
+
+                                //     // 26. Khóa học nâng cao
+                                //     checkMulti('must_attended_courses', response.must_attended_courses);
+                                //     if (response.must_attended_courses_other) {
+                                //         $('#must_attended_courses_other').val(response.must_attended_courses_other).removeClass('d-none');
+                                //         $('#must_attended_courses_other_wrapper').show();
+                                //     }
+
+                                //     // 27. Giải pháp
+                                //     checkMulti('solutions_get_job', response.solutions_get_job);
+                                //     if (response.solutions_get_job_other) {
+                                //         $('#solutions_get_job_other').val(response.solutions_get_job_other).removeClass('d-none');
+                                //         $('#solutions_get_job_other_wrapper').show();
+                                //     }
+                                // }
                                 // Thêm flag hidden để form biết đã xác thực
                                 if ($('input[name="mssv_verified"]').length === 0) {
                                     $('<input>').attr({
