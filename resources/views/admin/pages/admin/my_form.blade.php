@@ -391,7 +391,7 @@
 
                                 <div class="mb-3">
                                     <label class="form-label">15. Chức vụ, vị trí việc làm</label>
-                                    <input type="text" class="form-control" placeholder="VD: Dev, BA, Design..."
+                                    <input type="text" class="form-control" placeholder=""
                                         name="recruit_partner_position" required>
                                 </div>
 

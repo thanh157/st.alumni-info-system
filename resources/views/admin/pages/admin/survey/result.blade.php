@@ -92,19 +92,20 @@
                                     $now = \Carbon\Carbon::now();
                                     $endTime = \Carbon\Carbon::parse($survey->end_time);
                                     $startTime = \Carbon\Carbon::parse($survey->start_time);
-                                    
+
                                     // Tính tổng thời gian và thời gian đã trôi qua
                                     $totalDuration = $startTime->diffInSeconds($endTime);
                                     $elapsed = $startTime->diffInSeconds($now);
                                     $remaining = $now->diffInSeconds($endTime, false); // false để có giá trị âm nếu quá hạn
-                                    
+
                                     // Tính phần trăm thời gian đã trôi qua
-                                    $timeProgress = $totalDuration > 0 ? min(100, round(($elapsed / $totalDuration) * 100, 1)) : 0;
-                                    
+                                    $timeProgress =
+                                        $totalDuration > 0 ? min(100, round(($elapsed / $totalDuration) * 100, 1)) : 0;
+
                                     // Kiểm tra trạng thái
                                     $isExpired = $remaining < 0;
                                     $isNearDeadline = $remaining > 0 && $remaining < 86400 * 3; // 3 ngày
-                                    
+
                                     // Màu thanh progress
                                     $progressColor = $isExpired ? 'danger' : ($isNearDeadline ? 'warning' : 'info');
                                 @endphp
@@ -116,7 +117,7 @@
                                             <strong class="text-{{ $progressColor }}">Thời gian khảo sát:</strong>
                                         </div>
                                         <div class="text-end">
-                                            @if($isExpired)
+                                            @if ($isExpired)
                                                 <span class="badge bg-danger">
                                                     <i class="bi bi-x-circle-fill me-1"></i>Đã kết thúc
                                                 </span>
@@ -145,17 +146,14 @@
 
                                     {{-- Progress bar thời gian --}}
                                     <div class="progress" style="height: 6px;">
-                                        <div class="progress-bar bg-{{ $progressColor }}" 
-                                            role="progressbar" 
-                                            style="width: {{ $timeProgress }}%;" 
-                                            aria-valuenow="{{ $timeProgress }}" 
-                                            aria-valuemin="0" 
-                                            aria-valuemax="100">
+                                        <div class="progress-bar bg-{{ $progressColor }}" role="progressbar"
+                                            style="width: {{ $timeProgress }}%;" aria-valuenow="{{ $timeProgress }}"
+                                            aria-valuemin="0" aria-valuemax="100">
                                         </div>
                                     </div>
 
                                     <div class="text-center mt-2">
-                                        @if($isExpired)
+                                        @if ($isExpired)
                                             <small class="text-danger fw-bold">
                                                 <i class="bi bi-exclamation-circle-fill me-1"></i>
                                                 Đã quá hạn {{ $now->diffForHumans($endTime, true) }}
@@ -163,7 +161,8 @@
                                         @else
                                             <small class="text-muted">
                                                 <i class="bi bi-hourglass-bottom me-1"></i>
-                                                Còn lại: <strong class="text-{{ $progressColor }}">{{ $now->diffForHumans($endTime, true) }}</strong>
+                                                Còn lại: <strong
+                                                    class="text-{{ $progressColor }}">{{ $now->diffForHumans($endTime, true) }}</strong>
                                             </small>
                                         @endif
                                     </div>
@@ -182,11 +181,8 @@
                                     <i class="bi bi-bar-chart-fill text-primary me-2"></i>Thống kê tổng quan
                                 </h6>
                                 {{-- Nút Popover cho Summary Box --}}
-                                <i 
-                                    class="bi bi-question-circle-fill me-1 text-secondary cursor-pointer" 
-                                    id="summary-popover-trigger"
-                                    tabindex="0"
-                                    role="button">
+                                <i class="bi bi-question-circle-fill me-1 text-secondary cursor-pointer"
+                                    id="summary-popover-trigger" tabindex="0" role="button">
                                 </i>
                             </div>
                             <div class="row g-3">
@@ -242,7 +238,8 @@
                                             : 0;
                                 @endphp
                                 <div class="col-4">
-                                    <div class="stat-card p-3 rounded border border-primary bg-primary bg-opacity-10 h-100">
+                                    <div
+                                        class="stat-card p-3 rounded border border-primary bg-primary bg-opacity-10 h-100">
                                         <div class="d-flex align-items-start justify-content-between mb-2">
                                             <div class="stat-icon bg-primary text-white rounded-circle d-flex align-items-center justify-content-center"
                                                 style="width: 40px; height: 40px;">
@@ -254,7 +251,8 @@
                                             {{ $survey->total_graduations }}</h4>
                                         <p class="text-muted small mb-0">Có việc làm / Tốt nghiệp</p>
                                         <div class="progress mt-2" style="height: 4px;">
-                                            <div class="progress-bar bg-primary" style="width: {{ $percentEmployment }}%;">
+                                            <div class="progress-bar bg-primary"
+                                                style="width: {{ $percentEmployment }}%;">
                                             </div>
                                         </div>
                                     </div>
@@ -265,7 +263,8 @@
                                     $coViecPhuHop = $dungNganh + $lienQuan + $diHoc;
                                     $tyLeViecPhuHop =
                                         $totalPhanHoi > 0 ? round(($coViecPhuHop / $totalPhanHoi) * 100, 2) : 0;
-                                    $coViecPhuHopTrenTotNghiep = $coViecPhuHop + intval(($survey->total_graduations - $totalPhanHoi) / 2);
+                                    $coViecPhuHopTrenTotNghiep =
+                                        $coViecPhuHop + intval(($survey->total_graduations - $totalPhanHoi) / 2);
                                     $tyLeViecPhuHopTrenTotNghiep =
                                         $survey->total_graduations > 0
                                             ? round(($coViecPhuHopTrenTotNghiep / $survey->total_graduations) * 100, 2)
@@ -312,9 +311,10 @@
 
                                 {{-- Card 6: Tỷ lệ SV có việc làm ĐÚNG NGÀNH / tổng SV phản hồi --}}
                                 @php
-                                    $tyLeDungNganh = $totalPhanHoi > 0 ? round(($dungNganh / $totalPhanHoi) * 100, 2) : 0;
+                                    $tyLeDungNganh =
+                                        $totalPhanHoi > 0 ? round(($dungNganh / $totalPhanHoi) * 100, 2) : 0;
                                 @endphp
-                                <div class="col-4"> 
+                                <div class="col-4">
                                     <div
                                         class="stat-card p-3 rounded border border-secondary bg-secondary bg-opacity-10 h-100">
                                         <div class="d-flex align-items-start justify-content-between mb-2">
@@ -328,8 +328,8 @@
                                             {{ $totalPhanHoi }}</h4>
                                         <p class="text-muted small mb-0">Đúng ngành / Phản hồi</p>
                                         <div class="progress mt-2" style="height: 4px;">
-                                            <div class="progress-bar bg-secondary"
-                                                style="width: {{ $tyLeDungNganh }}%;"></div>
+                                            <div class="progress-bar bg-secondary" style="width: {{ $tyLeDungNganh }}%;">
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -389,10 +389,10 @@
                     @endif
 
                     <select name="filter" class="form-select form-select-sm" style="width: 250px">
-                        <option value="">-- Chọn loại lọc --</option>
+                        <option value="">-- Tất cả trạng thái --</option>
 
                         {{-- Employment status --}}
-                        <option value="es_1_2" {{ request('filter') == 'es_1_2' ? 'selected' : '' }}>
+                        <option value="es_1" {{ request('filter') == 'es_1' ? 'selected' : '' }}>
                             Đã có việc làm
                         </option>
                         <option value="es_3_4" {{ request('filter') == 'es_3_4' ? 'selected' : '' }}>
@@ -409,6 +409,10 @@
                         <option value="tf_3" {{ request('filter') == 'tf_3' ? 'selected' : '' }}>
                             Không liên quan ngành đào tạo
                         </option>
+                        <option value="es_2" {{ request('filter') == 'es_2' ? 'selected' : '' }}>
+                            Tiếp tục học
+                        </option>
+
                     </select>
 
 
@@ -449,7 +453,7 @@
 
                     @switch(request('filter'))
                         {{-- ES --}}
-                        @case('es_1_2')
+                        @case('es_1')
                             Đã có việc làm
                         @break
 
@@ -468,6 +472,10 @@
 
                         @case('tf_3')
                             Không liên quan ngành đào tạo
+                        @break
+
+                        @case('es_2')
+                            Đang tiếp tục học
                         @break
                     @endswitch
 
@@ -610,10 +618,10 @@
         document.addEventListener('DOMContentLoaded', function() {
             // Lấy nội dung từ div ẩn
             var popoverContent = document.getElementById('popover-content-stats').innerHTML;
-            
+
             var triggerElement = document.getElementById('summary-popover-trigger');
-            
-            if(triggerElement){
+
+            if (triggerElement) {
                 new bootstrap.Popover(triggerElement, {
                     html: true,
                     content: popoverContent,
