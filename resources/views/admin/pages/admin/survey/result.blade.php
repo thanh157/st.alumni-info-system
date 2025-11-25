@@ -34,7 +34,7 @@
                             <div class="mb-3">
                                 <p class="mb-2">
                                     <i class="bi bi-mortarboard text-primary me-2"></i>
-                                    <strong>Đợt khảo sát:</strong>
+                                    <strong>Đợt tốt nghiệp:</strong>
                                 </p>
                                 <ul class="list-unstyled ms-4 mb-0">
                                     @foreach ($allDotTotNghiep as $item)
@@ -346,21 +346,21 @@
                         <i class="bi bi-info-circle text-primary me-2 mt-1"></i>
                         <div>
                             <strong>SV có việc làm:</strong><br>
-                            = Đúng ngành + Tiếp tục học
+                            = Có việc + Tiếp tục học
                         </div>
                     </div>
                     <div class="mb-2 d-flex align-items-start">
                         <i class="bi bi-check2-circle text-success me-2 mt-1"></i>
                         <div>
                             <strong>Việc làm phù hợp (Trên phản hồi):</strong><br>
-                            = Đúng ngành + Liên quan
+                            = Đúng ngành + Liên quan + Tiếp tục học
                         </div>
                     </div>
                     <div class="d-flex align-items-start">
                         <i class="bi bi-calculator text-warning me-2 mt-1"></i>
                         <div>
                             <strong>Việc làm phù hợp (Trên tổng SV):</strong><br>
-                            = Đúng ngành + Liên quan + Tiếp tục học + (Tổng SV khảo sát - Tổng phản hồi)/2
+                            = Đúng ngành + Liên quan + Tiếp tục học + (Tổng SV khảo sát - Tổng phản hồi) <strong>/2</strong>
                         </div>
                     </div>
                 </div>
