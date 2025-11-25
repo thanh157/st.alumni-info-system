@@ -87,9 +87,19 @@ class SurveyResultController extends Controller
 
                 // Employment Status (es_)
                 if (str_starts_with($filter, 'es_')) {
-                    $statusList = str_replace('es_', '', $filter); // "1_2"
-                    $statusList = explode('_', $statusList);        // [1, 2]
-                    $query->whereIn('employment_status', $statusList);
+                    $statusList = str_replace('es_', '', $filter);
+                    // VD: 'es_1' => '1'
+                    // VD: 'es_2' => '2'  
+                    // VD: 'es_3_4' => '3_4'
+
+                    if (str_contains($statusList, '_')) {
+                        // Trường hợp '3_4'
+                        $statusArray = explode('_', $statusList); // ['3', '4']
+                        $query->whereIn('employment_status', $statusArray);
+                    } else {
+                        // Trường hợp '1' hoặc '2'
+                        $query->where('employment_status', $statusList);
+                    }
                 }
 
                 // Trained Field (tf_)
