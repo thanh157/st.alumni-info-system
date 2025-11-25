@@ -502,6 +502,7 @@
                             <th style="width: 120px;">Mã SV</th>
                             <th>Email</th>
                             <th>Họ tên</th>
+                            <th style="width: 180px;">Chức vụ, vị trí</th>
                             <th class="text-center" style="width: 150px;">Ngày phản hồi</th>
                             <th class="text-center" style="width: 200px;">Hành động</th>
                         </tr>
@@ -517,6 +518,21 @@
                                 <td><strong class="text-primary">{{ $item->code_student }}</strong></td>
                                 <td>{{ $item->email }}</td>
                                 <td>{{ $item->full_name }}</td>
+                                {{-- <td>
+                                    @if ($item->recruit_partner_position)
+                                        <span
+                                            class="text-muted small">{{ Str::limit($item->recruit_partner_position, 30) }}</span>
+                                    @else
+                                        <span class="text-muted fst-italic small"></span>
+                                    @endif
+                                </td> --}}
+                                 <td>
+                                    @if ($item->recruit_partner_position)
+                                        <span class="small">{{ Str::limit($item->recruit_partner_position, 30) }}</span>
+                                    @else
+                                        <span class="text-muted fst-italic small"></span>
+                                    @endif
+                                </td>
                                 <td class="text-center">
                                     <small class="text-muted">
                                         <i class="bi bi-clock me-1"></i>
