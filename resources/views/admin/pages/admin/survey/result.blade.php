@@ -182,33 +182,12 @@
                                     <i class="bi bi-bar-chart-fill text-primary me-2"></i>Thống kê tổng quan
                                 </h6>
                                 {{-- Nút Popover cho Summary Box --}}
-
-                                {{-- <i class="bi bi-question-circle-fill me-1 text-secondary" data-bs-toggle="popover"
-                                    data-bs-trigger="hover focus" data-bs-placement="bottom"
-                                    data-bs-content=
-                                    '
-                                        <div class="small text-muted">
-                                            <div class="mb-1">
-                                                <i class="bi bi-chevron-right me-1"></i>
-                                                <strong>Số lượng SV có việc làm</strong> = SV có việc làm đúng ngành + SV tiếp tục học
-                                            </div>
-                                            <div class="mb-1">
-                                                <i class="bi bi-chevron-right me-1"></i>
-                                                <strong>Số lượng có việc làm phù hợp (Phản hồi)</strong> = SV có việc làm đúng ngành + SV có việc làm liên quan
-                                            </div>
-                                            <div class="mb-1">
-                                                <i class="bi bi-chevron-right me-1"></i>
-                                                <strong>Số lượng có việc làm phù hợp (Tốt nghiệp)</strong> = SV có việc làm đúng ngành + SV có việc làm liên quan + (Tổng SV khảo sát - Tổng phản hồi)/2
-                                            </div>
-                                        </div>
-                                    '></i> --}}
-                                    <i 
-                                        class="bi bi-question-circle-fill me-1 text-secondary cursor-pointer" 
-                                        id="summary-popover-trigger"
-                                        tabindex="0"
-                                        role="button">
-                                    </i>
-
+                                <i 
+                                    class="bi bi-question-circle-fill me-1 text-secondary cursor-pointer" 
+                                    id="summary-popover-trigger"
+                                    tabindex="0"
+                                    role="button">
+                                </i>
                             </div>
                             <div class="row g-3">
                                 {{-- Card 1: Tỷ lệ SV có việc làm / tổng SV phản hồi --}}
@@ -283,7 +262,7 @@
 
                                 {{-- Card 4: Tỷ lệ SV có việc làm phù hợp / tổng SV phản hồi --}}
                                 @php
-                                    $coViecPhuHop = $dungNganh + $lienQuan;
+                                    $coViecPhuHop = $dungNganh + $lienQuan + $diHoc;
                                     $tyLeViecPhuHop =
                                         $totalPhanHoi > 0 ? round(($coViecPhuHop / $totalPhanHoi) * 100, 2) : 0;
                                     $coViecPhuHopTrenTotNghiep = $coViecPhuHop + intval(($survey->total_graduations - $totalPhanHoi) / 2);
@@ -381,7 +360,7 @@
                         <i class="bi bi-calculator text-warning me-2 mt-1"></i>
                         <div>
                             <strong>Việc làm phù hợp (Trên tổng SV):</strong><br>
-                            = Đúng ngành + Liên quan + (Tổng SV khảo sát - Tổng phản hồi)/2
+                            = Đúng ngành + Liên quan + Tiếp tục học + (Tổng SV khảo sát - Tổng phản hồi)/2
                         </div>
                     </div>
                 </div>

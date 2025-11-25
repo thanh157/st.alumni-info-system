@@ -121,13 +121,19 @@ class SurveyResultController extends Controller
                 ->whereIn('employment_status', [1, 2])
                 ->count();
 
+            $diHoc = EmploymentSurveyResponse::where('survey_period_id', $survey->id)
+                ->where('employment_status', 2)
+                ->count();
+
             $dungNganh = EmploymentSurveyResponse::where('survey_period_id', $survey->id)
                 ->whereIn('employment_status', [1, 2])
+                ->where('employment_status', 1)
                 ->where('trained_field', 1)
                 ->count();
 
             $lienQuan = EmploymentSurveyResponse::where('survey_period_id', $survey->id)
-                ->whereIn('employment_status', [1, 2])
+                // ->whereIn('employment_status', [1, 2])
+                ->where('employment_status', 1)
                 ->where('trained_field', 2)
                 ->count();
 
@@ -137,6 +143,7 @@ class SurveyResultController extends Controller
                 'allDotTotNghiep' => $graduations,
                 'survey' => $survey,
                 'coViec' => $coViec,
+                'diHoc' => $diHoc,
                 'dungNganh' => $dungNganh,
                 'lienQuan' => $lienQuan,
                 'request' => $request, // Gửi lại input để giữ giá trị trong form
