@@ -162,7 +162,7 @@
                                             <small class="text-muted">
                                                 <i class="bi bi-hourglass-bottom me-1"></i>
                                                 Còn lại: <strong
-                                                    class="text-{{ $progressColor }}">{{ $now->diffForHumans($endTime, true) }}</strong>
+                                                    class="text-{{ $progressColor }}">{{ $now->diff($endTime)->format('%d ngày %h giờ %i phút') }}                                                </strong>
                                             </small>
                                         @endif
                                     </div>
