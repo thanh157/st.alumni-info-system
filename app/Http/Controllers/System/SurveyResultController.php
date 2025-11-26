@@ -109,6 +109,10 @@ class SurveyResultController extends Controller
                 }
             }
 
+
+
+
+
             // // Lọc theo mã sinh viên
             // if ($request->filled('student_code')) {
             //     $query->whereHas('student', function ($q) use ($request) {
@@ -128,7 +132,11 @@ class SurveyResultController extends Controller
             //     $query->where('graduation_id', $request->graduation_id);
             // }
 
-            $data = $query->orderBy('id', 'desc')->paginate(15);
+            // $data = $query->orderBy('id', 'desc')->paginate(15);
+            $data = $query->orderBy('id', 'desc')
+                ->paginate(15)
+                ->appends($request->except('page')); // Giữ tất cả tham số trừ 'page'
+
 
             $survey = Survey::where('id', $surveyId)->first();
 
