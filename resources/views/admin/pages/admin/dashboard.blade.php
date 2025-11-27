@@ -10,11 +10,29 @@
                 <i id="greetIcon" class="fa-solid fa-sun me-2 fs-4 mb-2 mb-sm-0"></i>
                 <div>
                     <strong id="greeting" class="fs-4 text-gradient"></strong>
-                    <div class="text-muted small">Chúc bạn có một ngày làm việc hiệu quả, Super Admin CNTT</div>
+                    <div class="text-muted small">Chúc bạn có một ngày làm việc hiệu quả, {{ auth()->user()->full_name }}</div>
                 </div>
             </div>
         </div>
- 
+
+
+
+        {{-- <div class="text-muted small">
+    @if (auth()->check())
+        Chúc bạn có một ngày làm việc hiệu quả, {{ auth()->user()->full_name }}
+    @else
+        Chúc bạn có một ngày làm việc hiệu quả!
+    @endif
+</div> --}}
+
+          {{-- @if (auth()->check())
+                        <div class="d-none d-xl-block text-start">
+                            <div class="fw-bold text-white" style="font-size: 14px;">{{ $auth['full_name'] }}</div>
+                            <div class="text-white-50" style="font-size: 12px;">{{ $auth['email'] }}</div>
+                        </div>
+                    @endif --}}
+                    
+
         {{-- KPI SECTION --}}
         <div class="card-body pt-0">
             <div class="mb-2">

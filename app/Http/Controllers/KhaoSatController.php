@@ -43,6 +43,7 @@ class KhaoSatController extends Controller
     public function verify(Request $request)
     {
         try {
+            // $survey_id = $request->input('survey_id');
             $full_name = $request->input('full_name');
             $mssv = $request->input('mssv');
             $phone = $request->input('phone');
@@ -132,9 +133,37 @@ class KhaoSatController extends Controller
 
             // Kiểm tra xem có đủ 2 trường khớp không
             if ($maxMatchCount >= 2) {
+                // $surveyResponse = null;
+            
+                // if ($survey_id) {
+                //     $surveyResponse = EmploymentSurveyResponse::where('code_student', $bestMatch->code)
+                //         ->where('survey_period_id', $survey_id)
+                //         ->first();
+                // }
+
+                // if ($surveyResponse) {
+                //     // Đảm bảo các trường checkbox trả về dạng mảng để JS dễ tick
+                //     $arrayFields = [
+                //         'recruitment_type', 
+                //         'soft_skills_required', 
+                //         'must_attended_courses', 
+                //         'solutions_get_job', 
+                //         'job_search_method'
+                //     ];
+    
+                //     foreach ($arrayFields as $field) {
+                //         if (is_string($surveyResponse->$field)) {
+                //             $surveyResponse->$field = json_decode($surveyResponse->$field, true) ?? [];
+                //         }
+                //     }
+                // }
+
+                // Log::info("Survey response: " . print_r($surveyResponse, true));
+
                 return response()->json([
                     'success' => true,
                     'student' => $bestMatch,
+                    // 'survey_response' => $surveyResponse,
                     'matched_fields' => $maxMatchCount,
                 ]);
             }
