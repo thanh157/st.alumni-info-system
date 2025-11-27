@@ -539,87 +539,119 @@
                                         <th>Không liên quan đến ngành đào tạo</th>
                                     </tr>
                                 </thead>
-                                <tbody>
-                                    @forelse ($r2 as $item)
-                                        <tr>
-                                            <td>{{ $loop->iteration }}</td>
-                                            <td>{{ $item->code_student }}</td>
-                                            <td>{{ $item->full_name }}</td>
-                                            <td>{{ !empty($item->dob) ? date('d-m-Y', strtotime($item->dob)) : '' }}</td>
-                                            <td>{{ $item->gender == 'Nam' ? 'Nam' : 'Nữ' }}</td>
-                                            <td>{{ $item->identification_card_number }}</td>
-                                            <td>{{ optional($majors->get($item->training_industry_id))->code }}</td>
-                                            <td>{{ $item->phone_number }}</td>
-                                            <td>{{ $item->email }}</td>
-                                            <td>{{ $item->trained_field == 1 ? 'x' : '' }}</td>
-                                            <td>{{ $item->trained_field == 2 ? 'x' : '' }}</td>
-                                            <td>{{ $item->trained_field == 3 ? 'x' : '' }}</td>
-                                            <td>{{ $item->employment_status == 2 ? 'x' : '' }}</td>
-                                            <td>{{ $item->employment_status == 3 ? 'x' : '' }}</td>
-                                            <td>{{ $item->work_area == '1' ? 'x' : '' }}</td>
-                                            <td>{{ $item->work_area == '2' ? 'x' : '' }}</td>
-                                            <td>{{ $item->work_area == '3' ? 'x' : '' }}</td>
-                                            <td>{{ $item->work_area == '4' ? 'x' : '' }}</td>
-                                            <td>{{ $item->city_work_id }}</td>
-                                            @foreach (config('config.employed_since', []) as $k => $v)
-                                                <td>
-                                                    {{ $k == $item->employed_since ? 'x' : '' }}
-                                                </td>
-                                            @endforeach
-                                            @foreach (config('config.level_knowledge_acquired', []) as $k => $v)
-                                                <td>
-                                                    {{ $k == $item->level_knowledge_acquired ? 'x' : '' }}
-                                                </td>
-                                            @endforeach
-                                            @foreach (config('config.average_income', []) as $k => $v)
-                                                <td>
-                                                    {{ $k == $item->average_income ? 'x' : '' }}
-                                                </td>
-                                            @endforeach
+                                    <tbody>
+@forelse ($r2 as $item)
+    @php
+        // Tách tỉnh/thành phố từ địa chỉ nơi làm việc
+        $city = '';
+        if (!empty($item->recruit_partner_address)) {
+            $parts = explode(',', $item->recruit_partner_address);
+            $city = trim(end($parts));
+        }
 
-                                            @foreach (config('config.recruitment_type', []) as $k => $v)
-                                                @php $data = json_decode($item->recruitment_type, true); @endphp
-                                                <td>
-                                                    {{ in_array($k, data_get($data, 'value', [])) ? 'x' : '' }}
-                                                </td>
-                                            @endforeach
-                                            @foreach (config('config.recruitment_type', []) as $k => $v)
-                                                @php $data = json_decode($item->recruitment_type, true); @endphp
-                                                <td>
-                                                    {{ in_array($k, data_get($data, 'value', [])) ? 'x' : '' }}
-                                                </td>
-                                            @endforeach
-                                            @foreach (config('job_search_method', []) as $k => $v)
-                                                @php $data = json_decode($item->soft_skills_required, true); @endphp
-                                                <td>
-                                                    {{ in_array($k, data_get($data, 'value', [])) ? 'x' : '' }}
-                                                </td>
-                                            @endforeach
-                                            @foreach (config('config.soft_skills_required', []) as $k => $v)
-                                                @php $data = json_decode($item->must_attended_courses, true); @endphp
-                                                <td>
-                                                    {{ in_array($k, data_get($data, 'value', [])) ? 'x' : '' }}
-                                                </td>
-                                            @endforeach
-                                            @foreach (config('config.must_attended_courses', []) as $k => $v)
-                                                @php $data = json_decode($item->must_attended_courses, true); @endphp
-                                                <td>
-                                                    {{ in_array($k, data_get($data, 'value', [])) ? 'x' : '' }}
-                                                </td>
-                                            @endforeach
-                                            @foreach (config('config.solutions_get_job', []) as $k => $v)
-                                                @php $data = json_decode($item->solutions_get_job, true); @endphp
-                                                <td>
-                                                    {{ in_array($k, data_get($data, 'value', [])) ? 'x' : '' }}
-                                                </td>
-                                            @endforeach
-                                        </tr>
-                                    @empty
-                                        <tr>
-                                            <td colspan="45" class="text-center">Không có sinh viên nào phản hồi.</td>
-                                        </tr>
-                                    @endforelse
-                                </tbody>
+        // Decode JSON về array (giá trị lưu dạng: ["value" => [1,2,3,...]])
+        $search    = json_decode($item->job_search_method ?? '[]', true) ?? [];
+        $recruit   = json_decode($item->recruitment_type ?? '[]', true) ?? [];
+        $skills    = json_decode($item->soft_skills_required ?? '[]', true) ?? [];
+        $courses   = json_decode($item->must_attended_courses ?? '[]', true) ?? [];
+        $solutions = json_decode($item->solutions_get_job ?? '[]', true) ?? [];
+
+        $searchValues    = data_get($search, 'value', []);
+        $recruitValues   = data_get($recruit, 'value', []);
+        $skillValues     = data_get($skills, 'value', []);
+        $courseValues    = data_get($courses, 'value', []);
+        $solutionValues  = data_get($solutions, 'value', []);
+    @endphp
+
+    <tr>
+        {{-- 1–9: Thông tin cá nhân --}}
+        <td>{{ $loop->iteration }}</td>
+        <td>{{ $item->code_student }}</td>
+        <td>{{ $item->full_name }}</td>
+        <td>{{ !empty($item->dob) ? date('d-m-Y', strtotime($item->dob)) : '' }}</td>
+        <td>{{ $item->gender == 'Nam' ? 'Nam' : 'Nữ' }}</td>
+        <td>{{ $item->identification_card_number }}</td>
+        <td>{{ optional($majors->get($item->training_industry_id))->code }}</td>
+        <td>{{ $item->phone_number }}</td>
+        <td>{{ $item->email }}</td>
+
+        {{-- 10–14: TÌNH HÌNH VIỆC LÀM (5) --}}
+        {{-- 3 cột "Có việc làm": 1–3 --}}
+        <td>{{ $item->trained_field == 1 ? 'x' : '' }}</td> {{-- Đúng ngành --}}
+        <td>{{ $item->trained_field == 2 ? 'x' : '' }}</td> {{-- Liên quan --}}
+        <td>{{ $item->trained_field == 3 ? 'x' : '' }}</td> {{-- Không liên quan --}}
+        {{-- 1 cột "Tiếp tục học": status = 2 --}}
+        <td>{{ $item->employment_status == 2 ? 'x' : '' }}</td>
+        {{-- 1 cột "Chưa có việc làm": status = 3 --}}
+        <td>{{ $item->employment_status == 3 ? 'x' : '' }}</td>
+
+        {{-- 15–18: KHU VỰC LÀM VIỆC (4) --}}
+        {{-- Giả sử work_area = 1..4 đúng thứ tự Nhà nước / Tư nhân / Tự tạo / Có yếu tố NN --}}
+        @for ($i = 1; $i <= 4; $i++)
+            <td>{{ $item->work_area == $i ? 'x' : '' }}</td>
+        @endfor
+
+        {{-- 19: NƠI LÀM VIỆC (TỈNH/TP) --}}
+        <td>{{ $city }}</td>
+
+        {{-- 20–23: THỜI GIAN TÌM VIỆC (4) --}}
+        {{-- Giả sử employed_since = 1..4 lần lượt: <3m, 3–<6m, 6–<12m, ≥12m --}}
+        @for ($i = 1; $i <= 4; $i++)
+            <td>{{ $item->employed_since == $i ? 'x' : '' }}</td>
+        @endfor
+
+        {{-- 24–26: KIẾN THỨC KỸ NĂNG (3) --}}
+        {{-- level_knowledge_acquired = 1..3: Đã học được / Một phần / Không học được --}}
+        @for ($i = 1; $i <= 3; $i++)
+            <td>{{ $item->level_knowledge_acquired == $i ? 'x' : '' }}</td>
+        @endfor
+
+        {{-- 27: MỨC LƯƠNG KHỞI ĐIỂM (1) --}}
+        <td>{{ $item->starting_salary ?? 0 }}</td>
+
+        {{-- 28–31: THU NHẬP BÌNH QUÂN (4) --}}
+        {{-- average_income = 1..4: <5m, 5–10m, 10–15m, >15m --}}
+        @for ($i = 1; $i <= 4; $i++)
+            <td>{{ $item->average_income == $i ? 'x' : '' }}</td>
+        @endfor
+
+        {{-- 32–36: HÌNH THỨC TÌM VIỆC (5) --}}
+        {{-- job_search_method: mảng giá trị 1..5 --}}
+        @for ($i = 1; $i <= 5; $i++)
+            <td>{{ in_array($i, $searchValues) ? 'x' : '' }}</td>
+        @endfor
+
+        {{-- 37–42: HÌNH THỨC TUYỂN DỤNG (6) --}}
+        {{-- recruitment_type: mảng giá trị 1..6 --}}
+        @for ($i = 1; $i <= 6; $i++)
+            <td>{{ in_array($i, $recruitValues) ? 'x' : '' }}</td>
+        @endfor
+
+        {{-- 43–51: KỸ NĂNG MỀM (9) --}}
+        {{-- soft_skills_required: mảng giá trị 1..9 --}}
+        @for ($i = 1; $i <= 9; $i++)
+            <td>{{ in_array($i, $skillValues) ? 'x' : '' }}</td>
+        @endfor
+
+        {{-- 52–57: KHÓA HỌC ĐÃ THAM GIA (6) --}}
+        {{-- must_attended_courses: mảng giá trị 1..6 --}}
+        @for ($i = 1; $i <= 6; $i++)
+            <td>{{ in_array($i, $courseValues) ? 'x' : '' }}</td>
+        @endfor
+
+        {{-- 58–63: GIẢI PHÁP (6) --}}
+        {{-- solutions_get_job: mảng giá trị 1..6 --}}
+        @for ($i = 1; $i <= 6; $i++)
+            <td>{{ in_array($i, $solutionValues) ? 'x' : '' }}</td>
+        @endfor
+    </tr>
+@empty
+    <tr>
+        <td colspan="63" class="text-center">Không có sinh viên nào phản hồi.</td>
+    </tr>
+@endforelse
+</tbody>
+
                             </table>
                         </div>
                     </div>
