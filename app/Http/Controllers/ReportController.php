@@ -15,7 +15,6 @@ class ReportController extends Controller
 {
     /**
      * Lấy tất cả dữ liệu báo cáo cần thiết cho cả hiển thị và xuất khẩu.
-     * Sử dụng ModelNotFoundException để Laravel tự động xử lý 404 nếu không tìm thấy Survey.
      *
      * @param int $surveyId
      * @return array|null
@@ -25,25 +24,30 @@ class ReportController extends Controller
         // Sử dụng findOrFail để tự động throw 404 nếu không tìm thấy Survey
         $survey = Survey::findOrFail($surveyId);
 
-        // 1. Lấy danh sách đợt tốt nghiệp và studentIds
-        $allGraduations = $survey->graduations()->get();
-        $graduationIds = $allGraduations->pluck('id')->toArray();
+        // 1. Lấy dữ liệu Tab 3: Danh sách sinh viên phản hồi về việc làm từ EmploymentSurveyResponse
+        $r2 = EmploymentSurveyResponse::where('survey_period_id', $surveyId)->get();
 
-        $studentIds = GraduationStudent::whereIn('graduation_id', $graduationIds)
-            ->pluck('student_id')
-            ->toArray();
+        \Log::info('getReportData - r2 responses:', [
+            'survey_id' => $surveyId,
+            'r2_count' => $r2->count(),
+            'r2_codes' => $r2->pluck('code_student')->toArray(),
+        ]);
 
-        if (empty($studentIds)) {
-            return null; // Không có sinh viên, trả về null để báo hiệu không có dữ liệu
+        if ($r2->isEmpty()) {
+            \Log::warning('No employment responses found for survey', ['survey_id' => $surveyId]);
+            return null; // Không có phản hồi
         }
 
-        // 2. Dữ liệu Tab 2: Danh sách sinh viên tốt nghiệp (Student)
-        $studentTab2 = Student::whereIn('id', $studentIds)->get();
-        $studentCodes = $studentTab2->pluck('code')->toArray();
+        // 2. Lấy danh sách code sinh viên từ phản hồi
+        $studentCodes = $r2->pluck('code_student')->unique()->toArray();
 
-        // 3. Dữ liệu Tab 3: Danh sách sinh viên phản hồi về việc làm (EmploymentSurveyResponse)
-        // Mặc dù bạn dùng DB table 'v2' cho thống kê, ta vẫn dùng Model để lấy data chi tiết cho Tab 3
-        $r2 = EmploymentSurveyResponse::where('survey_period_id', $surveyId)->get();
+        // 3. Lấy danh sách sinh viên từ Student model theo code
+        $studentTab2 = Student::whereIn('code', $studentCodes)->get();
+
+        \Log::info('getReportData - studentTab2:', [
+            'student_codes' => $studentCodes,
+            'studentTab2_count' => $studentTab2->count(),
+        ]);
 
         // 4. Dữ liệu Tab 4: Thông tin cựu sinh viên từ bảng alumni_contact_surveys
         $alumniData = DB::table('alumni_contact_surveys')
@@ -51,9 +55,11 @@ class ReportController extends Controller
             ->orderBy('created_at', 'desc')
             ->get();
 
-        // 5. Dữ liệu Tab 1: Tổng hợp
+        // 5. Lấy danh sách đợt tốt nghiệp (nếu cần)
+        $allGraduations = $survey->graduations()->get();
         $schoolYear = $allGraduations->first()->school_year ?? 'N/A';
 
+        // 6. Tính toán Tab 1: Tổng hợp
         $r1 = [
             'total_student' => $studentTab2->count(),
             'total_nu' => $studentTab2->where('gender', 'female')->count(),
@@ -61,8 +67,8 @@ class ReportController extends Controller
             'total_res_nu' => $r2->where('gender', 'female')->count(),
         ];
 
-        // 6. Thống kê theo ngành đào tạo (trained_field)
-        // Đã FIX: Đảm bảo chỉ tính những người CÓ VIỆC LÀM (employment_status = 1)
+        // 7. Thống kê theo ngành đào tạo (trained_field)
+        // Chỉ tính những người CÓ VIỆC LÀM (employment_status = 1)
         $r1_trained_field = DB::table('employment_survey_responses_v2')
             ->selectRaw("
                 SUM(CASE WHEN trained_field = 1 AND employment_status = 1 THEN 1 ELSE 0 END) AS dung_nganh,
@@ -72,8 +78,8 @@ class ReportController extends Controller
             ->where('survey_period_id', $surveyId)
             ->first();
 
-        // 7. Thống kê theo khu vực làm việc (work_area)
-        // Đã FIX: Đảm bảo chỉ tính những người CÓ VIỆC LÀM (employment_status = 1)
+        // 8. Thống kê theo khu vực làm việc (work_area)
+        // Chỉ tính những người CÓ VIỆC LÀM (employment_status = 1)
         $r1_work_area = DB::table('employment_survey_responses_v2')
             ->selectRaw("
                 SUM(CASE WHEN work_area = '1' AND employment_status = 1 THEN 1 ELSE 0 END) AS nha_nuoc,
@@ -84,7 +90,14 @@ class ReportController extends Controller
             ->where('survey_period_id', $surveyId)
             ->first();
 
-        // Sử dụng compact() để đóng gói dữ liệu và dễ dàng extract() ở hàm gọi
+        // 9. Lấy tên khoa từ sinh viên đầu tiên (qua relation faculty)
+        $facultyName = 'KHOA';
+        if ($studentTab2->isNotEmpty() && $studentTab2->first()->faculty) {
+            $facultyName = $studentTab2->first()->faculty->name ?? 'KHOA';
+        } elseif ($allGraduations->isNotEmpty() && $allGraduations->first()->faculty) {
+            $facultyName = $allGraduations->first()->faculty->name ?? 'KHOA';
+        }
+
         return compact(
             'survey',
             'schoolYear',
@@ -93,7 +106,8 @@ class ReportController extends Controller
             'r1_work_area',
             'studentTab2',
             'r2',
-            'alumniData'
+            'alumniData',
+            'facultyName'
         );
     }
 
@@ -102,42 +116,68 @@ class ReportController extends Controller
      */
     public function index(Request $request)
     {
-        // Khởi tạo các biến với giá trị mặc định (sử dụng collect() thay vì array() rỗng)
+        // Khởi tạo các biến với giá trị mặc định
         $survey = null;
         $schoolYear = null;
         $r1 = [];
-        $r1_trained_field = (object) ['dung_nganh' => 0, 'lien_quan' => 0, 'khong_lien_quan' => 0];
-        $r1_work_area = (object) ['nha_nuoc' => 0, 'tu_nhan' => 0, 'tu_tao' => 0, 'nuoc_ngoai' => 0];
+        $r1_trained_field = (object) [
+            'dung_nganh' => 0,
+            'lien_quan' => 0,
+            'khong_lien_quan' => 0
+        ];
+        $r1_work_area = (object) [
+            'nha_nuoc' => 0,
+            'tu_nhan' => 0,
+            'tu_tao' => 0,
+            'nuoc_ngoai' => 0
+        ];
         $studentTab2 = collect();
         $r2 = collect();
         $alumniData = collect();
+        $facultyName = 'KHOA';
 
         if ($request->filled('survey_id')) {
             try {
                 $data = $this->getReportData($request->survey_id);
             } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-                // Xử lý lỗi 404 nếu không tìm thấy khảo sát
                 abort(404, 'Không tìm thấy khảo sát');
             }
 
             if ($data !== null) {
-                // Sử dụng extract để gán các biến từ mảng $data
-                extract($data);
+                // ✅ Gán trực tiếp từng biến từ mảng $data
+                $survey = $data['survey'];
+                $schoolYear = $data['schoolYear'];
+                $r1 = $data['r1'];
+                $r1_trained_field = $data['r1_trained_field'];
+                $r1_work_area = $data['r1_work_area'];
+                $studentTab2 = $data['studentTab2'];
+                $r2 = $data['r2'];
+                $alumniData = $data['alumniData'];
+                $facultyName = $data['facultyName'];
+
+                \Log::info('ReportController Data Assigned:', [
+                    'r1' => $r1,
+                    'studentTab2_count' => $studentTab2->count(),
+                    'r2_count' => $r2->count(),
+                    'facultyName' => $facultyName,
+                ]);
             } else {
-                // Trường hợp survey có tồn tại nhưng không có sinh viên
+                // Trường hợp survey có tồn tại nhưng không có phản hồi
                 $survey = Survey::find($request->survey_id);
+                \Log::warning('Survey found but no responses', ['survey_id' => $request->survey_id]);
             }
         }
 
         return view('admin.pages.admin.report', compact(
             'survey',
             'schoolYear',
+            'r1',
             'r1_trained_field',
             'r1_work_area',
             'studentTab2',
             'r2',
-            'r1',
-            'alumniData'
+            'alumniData',
+            'facultyName'
         ));
     }
 
@@ -159,11 +199,18 @@ class ReportController extends Controller
         }
 
         if ($data === null) {
-            return back()->with('error', 'Không có sinh viên nào trong đợt khảo sát này.');
+            return back()->with('error', 'Không có phản hồi nào trong đợt khảo sát này.');
         }
 
         // 3. Gán các biến từ kết quả
-        extract($data);
+        $survey = $data['survey'];
+        $schoolYear = $data['schoolYear'];
+        $r1 = $data['r1'];
+        $r1_trained_field = $data['r1_trained_field'];
+        $r1_work_area = $data['r1_work_area'];
+        $r2 = $data['r2'];
+        $studentTab2 = $data['studentTab2'];
+        $alumniData = $data['alumniData'];
 
         // 4. Lấy type từ request (mặc định là 'all')
         $type = $request->get('type', 'all');

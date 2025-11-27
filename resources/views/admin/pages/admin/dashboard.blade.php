@@ -14,11 +14,14 @@
                 </div>
             </div>
         </div>
-
+ 
         {{-- KPI SECTION --}}
         <div class="card-body pt-0">
             <div class="mb-2">
                 <p class="fw-semibold">Tổng Quan</p>
+                 <span class="text-primary small">
+                    (Dữ liệu đợt mới nhất: {{ $currentRoundName ?? '...' }})
+                </span>
                 <div class="row">
                     <div class="col-12 col-sm-6 col-xl-3 mb-3">
                         <div
@@ -53,7 +56,7 @@
                             class="p-3 rounded shadow-sm d-flex flex-column justify-content-between h-100 bg-white kpi-card">
                             <div class="d-flex justify-content-between align-items-start">
                                 <div>
-                                    <p class="fw-semibold text-muted mb-1 small text-uppercase">3) CÓ VIỆC / TOÀN KHÓA</p>
+                                    <p class="fw-semibold text-muted mb-1 small text-uppercase">3) CÓ VIỆC / SỐ SV TỐT NGHIỆP </p>
                                     <h4 class="mb-0">{{ $kpi3_EmployedPerGrad }}%</h4>
                                 </div>
                                 <span class="kpi-icon kpi-amber"><i class="fa-solid fa-graduation-cap"></i></span>
