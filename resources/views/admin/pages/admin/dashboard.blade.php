@@ -1,7 +1,9 @@
 @extends('admin.layouts.master')
 
 @section('content')
+
     <div class="card">
+
         {{-- Greeting --}}
         <div class="card-body pt-4 pb-0">
             <div id="greetBox"
@@ -15,35 +17,16 @@
             </div>
         </div>
 
-
-
-        {{-- <div class="text-muted small">
-    @if (auth()->check())
-        Chúc bạn có một ngày làm việc hiệu quả, {{ auth()->user()->full_name }}
-    @else
-        Chúc bạn có một ngày làm việc hiệu quả!
-    @endif
-</div> --}}
-
-          {{-- @if (auth()->check())
-                        <div class="d-none d-xl-block text-start">
-                            <div class="fw-bold text-white" style="font-size: 14px;">{{ $auth['full_name'] }}</div>
-                            <div class="text-white-50" style="font-size: 12px;">{{ $auth['email'] }}</div>
-                        </div>
-                    @endif --}}
-                    
-
         {{-- KPI SECTION --}}
         <div class="card-body pt-0">
             <div class="mb-2">
                 <p class="fw-semibold">Tổng Quan</p>
-                 <span class="text-primary small">
+                <span class="text-primary small">
                     (Dữ liệu đợt mới nhất: {{ $currentRoundName ?? '...' }})
                 </span>
                 <div class="row">
                     <div class="col-12 col-sm-6 col-xl-3 mb-3">
-                        <div
-                            class="p-3 rounded shadow-sm d-flex flex-column justify-content-between h-100 bg-white kpi-card">
+                        <div class="p-3 rounded shadow-sm d-flex flex-column justify-content-between h-100 bg-white kpi-card">
                             <div class="d-flex justify-content-between align-items-start">
                                 <div>
                                     <p class="fw-semibold text-muted mb-1 small text-uppercase">1) TỶ LỆ PHẢN HỒI</p>
@@ -56,8 +39,7 @@
                     </div>
 
                     <div class="col-12 col-sm-6 col-xl-3 mb-3">
-                        <div
-                            class="p-3 rounded shadow-sm d-flex flex-column justify-content-between h-100 bg-white kpi-card">
+                        <div class="p-3 rounded shadow-sm d-flex flex-column justify-content-between h-100 bg-white kpi-card">
                             <div class="d-flex justify-content-between align-items-start">
                                 <div>
                                     <p class="fw-semibold text-muted mb-1 small text-uppercase">2) CÓ VIỆC / PHẢN HỒI</p>
@@ -70,11 +52,10 @@
                     </div>
 
                     <div class="col-12 col-sm-6 col-xl-3 mb-3">
-                        <div
-                            class="p-3 rounded shadow-sm d-flex flex-column justify-content-between h-100 bg-white kpi-card">
+                        <div class="p-3 rounded shadow-sm d-flex flex-column justify-content-between h-100 bg-white kpi-card">
                             <div class="d-flex justify-content-between align-items-start">
                                 <div>
-                                    <p class="fw-semibold text-muted mb-1 small text-uppercase">3) CÓ VIỆC / SỐ SV TỐT NGHIỆP </p>
+                                    <p class="fw-semibold text-muted mb-1 small text-uppercase">3) CÓ VIỆC / SỐ SV TỐT NGHIỆP</p>
                                     <h4 class="mb-0">{{ $kpi3_EmployedPerGrad }}%</h4>
                                 </div>
                                 <span class="kpi-icon kpi-amber"><i class="fa-solid fa-graduation-cap"></i></span>
@@ -84,8 +65,7 @@
                     </div>
 
                     <div class="col-12 col-sm-6 col-xl-3 mb-3">
-                        <div
-                            class="p-3 rounded shadow-sm d-flex flex-column justify-content-between h-100 bg-white kpi-card">
+                        <div class="p-3 rounded shadow-sm d-flex flex-column justify-content-between h-100 bg-white kpi-card">
                             <div class="d-flex justify-content-between align-items-start">
                                 <div>
                                     <p class="fw-semibold text-muted mb-1 small text-uppercase">4) VIỆC LÀM PHÙ HỢP</p>
@@ -112,16 +92,13 @@
                 <div class="text-center mb-3">
                     <select id="chartTypeSelect" class="select">
                         <option value="employed">Tỉ lệ có việc làm / chưa có việc</option>
-                        {{-- <option value="location">Làm trong nước / nước ngoài</option>
-                        <option value="field">Đúng ngành / trái ngành (Gộp)</option> --}}
-                        <option value="status_detail">Chi tiết tình hình việc làm </option>
-                        <option value="area_detail">Chi tiết khu vực làm việc </option>
+                        <option value="status_detail">Chi tiết tình hình việc làm</option>
+                        <option value="area_detail">Chi tiết khu vực làm việc</option>
                     </select>
                 </div>
 
                 <div id="chartLoading" class="text-center p-5">
-                    <div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span>
-                    </div>
+                    <div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div>
                     <p class="mt-2 text-muted">Đang tải dữ liệu biểu đồ...</p>
                 </div>
 
@@ -129,6 +106,10 @@
                     <div class="d-flex justify-content-center gap-4 flex-wrap">
                         <div class="panel flex-fill" style="max-width: 380px;">
                             <h4 class="panel-title">Biểu đồ tròn tổng hợp</h4>
+                            <p class="text-muted small text-center mb-2" id="pieChartNote">
+                                <i class="fa-solid fa-info-circle me-1"></i>
+                                Dữ liệu đợt mới nhất  <span id="latestPeriodName" class="fw-semibold"></span>
+                            </p>
                             <div id="pieChart" class="chart-box"></div>
                         </div>
                         <div class="panel flex-fill" style="min-width: 560px;">
@@ -231,7 +212,7 @@
         }
 
         .panel-title {
-            margin: 6px 6px 12px;
+            margin: 6px 6px 8px;
             color: #334155;
             font-weight: 800;
             font-size: 1rem
@@ -287,7 +268,6 @@
 
                 // --- 0. BẢNG MÀU DÙNG CHUNG CHO BAR & PIE ---
                 const MODE_COLORS = {
-                    // Ví dụ: Có việc = xanh, Chưa có việc = vàng
                     employed: [
                         am5.color(0x10b981), // Có việc làm
                         am5.color(0xfacc15), // Chưa có việc làm (vàng)
@@ -321,7 +301,6 @@
                 const pieChart = rootPie.container.children.push(am5percent.PieChart.new(rootPie, {
                     layout: rootPie.verticalLayout,
                     innerRadius: am5.percent(58)
-
                 }));
                 const pieSeries = pieChart.series.push(am5percent.PieSeries.new(rootPie, {
                     valueField: "value",
@@ -340,7 +319,8 @@
                 const pieLegend = pieChart.children.push(am5.Legend.new(rootPie, {
                     centerX: am5.p50, x: am5.p50,
                     width: am5.percent(100),
-                    marginTop: 25,
+                   marginTop: 30, 
+                     marginBottom: 15,
                     layout: rootPie.gridLayout
                 }));
                 pieLegend.valueLabels.template.set("forceHidden", true);
@@ -369,13 +349,12 @@
                     marginTop: 15, marginBottom: 8
                 }));
 
-                // NHẬN am5.Color thay vì hex
                 function createSeries(name, field, color) {
                     const s = barChart.series.push(am5xy.ColumnSeries.new(rootBar, {
                         name, xAxis, yAxis,
                         valueYField: field, categoryXField: "term",
                         sequencedInterpolation: true,
-                        fill: color, // dùng color đã định nghĩa
+                        fill: color,
                         tooltip: am5.Tooltip.new(rootBar, {
                             labelText: "[bold]{name}[/]\n{categoryX}: {valueY}"
                         })
@@ -461,6 +440,12 @@
                         if (!DATASETS.bar || DATASETS.bar.length === 0) {
                             chartLoading.innerHTML = '<p class="text-muted fw-semibold">Chưa có dữ liệu để hiển thị.</p>';
                             return;
+                        }
+
+                        // Update latest period name for pie chart note
+                        const latestNameEl = document.getElementById('latestPeriodName');
+                        if (latestNameEl && DATASETS.latest_name) {
+                            latestNameEl.textContent = DATASETS.latest_name;
                         }
 
                         xAxis.data.setAll(DATASETS.bar);

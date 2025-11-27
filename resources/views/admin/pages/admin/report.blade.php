@@ -198,7 +198,7 @@
                                 <div style="display:inline-block; text-align:center;">
                                     <h6 class="text-uppercase mb-1">HỌC VIỆN NÔNG NGHIỆP VIỆT NAM</h6>
                                     <h6 class="text-uppercase text-decoration-underline mb-1">
-                                        KHOA:{{ $facultyName ?? '............' }}</h6>
+                                        KHOA: CÔNG NGHỆ THÔNG TIN </h6>
                                 </div>
                             </div>
                             <h5 class="fw-bold text-decoration mb-0 mt-2">
@@ -303,7 +303,7 @@
                                 <div style="display:inline-block; text-align:center;">
                                     <h6 class="text-uppercase mb-1">HỌC VIỆN NÔNG NGHIỆP VIỆT NAM</h6>
                                     <h6 class="text-uppercase text-decoration-underline mb-1">
-                                        KHOA:{{ $facultyName ?? '............' }}</h6>
+                                        KHOA: CÔNG NGHỆ THÔNG TIN</h6>
                                 </div>
                             </div>
                             <h5 class="fw-bold text-decoration mb-0 mt-2">
@@ -387,7 +387,7 @@
                                 <div style="display:inline-block; text-align:center;">
                                     <h6 class="text-uppercase mb-1">HỌC VIỆN NÔNG NGHIỆP VIỆT NAM</h6>
                                     <h6 class="text-uppercase text-decoration-underline mb-1">
-                                        KHOA:{{ $facultyName ?? '............' }}</h6>
+                                        KHOA: CÔNG NGHỆ THÔNG TIN</h6>
                                 </div>
                             </div>
                             <h5 class="fw-bold text-decoration mb-0 mt-2">
