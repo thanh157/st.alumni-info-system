@@ -546,7 +546,7 @@
                                             <td>{{ $item->code_student }}</td>
                                             <td>{{ $item->full_name }}</td>
                                             <td>{{ !empty($item->dob) ? date('d-m-Y', strtotime($item->dob)) : '' }}</td>
-                                            <td>{{ $item->gender == 'male' ? 'Nam' : 'Nữ' }}</td>
+                                            <td>{{ $item->gender == 'Nam' ? 'Nam' : 'Nữ' }}</td>
                                             <td>{{ $item->identification_card_number }}</td>
                                             <td>{{ optional($majors->get($item->training_industry_id))->code }}</td>
                                             <td>{{ $item->phone_number }}</td>
@@ -625,114 +625,7 @@
                     </div>
                 </div>
 
-                {{-- TAB 4 (nếu bật) --}}
-                <div class="tab-pane fade" id="tab4">
-                    <div class="border rounded p-3" style="max-height: 800px; overflow-y: auto;">
-                        <div class="text-center mb-4">
-                            <h5 class="fw-bold text-uppercase mb-0">
-                                THÔNG TIN CỰU SINH VIÊN KHOA CÔNG NGHỆ THÔNG TIN
-                            </h5>
-                        </div>
-                        <div class="table-responsive mb-4">
-                            <table class="table table-bordered text-center align-middle mb-0"
-                                   style="font-size: 13px; min-width: 4500px;">
-                                <thead class="align-middle">
-                                    <tr>
-                                        <th rowspan="2">STT</th>
-                                        <th rowspan="2">Mã SV</th>
-                                        <th rowspan="2">Họ và Tên</th>
-                                        <th rowspan="2">Ngày sinh</th>
-                                        <th rowspan="2">Giới tính</th>
-                                        <th rowspan="2">Dân tộc</th>
-                                        <th rowspan="2">Nơi ở hiện tại</th>
-                                        <th rowspan="2">Quốc tịch</th>
-                                        <th rowspan="2">Tên lớp</th>
-                                        <th rowspan="2">Khóa học, niên khoá</th>
-                                        <th rowspan="2">Tên khoa</th>
-                                        <th rowspan="2">Ngành học</th>
-                                        <th rowspan="2">Hệ đào tạo</th>
-                                        <th colspan="5">Các bậc đã học tại Học viện</th>
-                                        <th rowspan="2">SĐT đang dùng</th>
-                                        <th rowspan="2">Email (Nếu có)</th>
-                                        <th colspan="2">Tình trạng công việc hiện tại</th>
-                                        <th rowspan="2">Đơn vị công tác hiện tại</th>
-                                        <th rowspan="2">Chức vụ, chức danh hiện tại</th>
-                                        <th rowspan="2">Phần thưởng, giải thưởng, bằng khen</th>
-                                        <th colspan="2">Tình trạng kết nối với cá nhân, tập thể, đơn vị thuộc Học viện
-                                            Nông
-                                            nghiệp Việt Nam</th>
-                                    </tr>
-                                    <tr>
-                                        <th>Trung cấp</th>
-                                        <th>Cao đẳng</th>
-                                        <th>Đại học</th>
-                                        <th>Thạc sĩ</th>
-                                        <th>Tiến sĩ</th>
-
-                                        <th>Đang công tác</th>
-                                        <th>Nghỉ hưu</th>
-
-                                        <th>Chưa kết nối</th>
-                                        <th>Đã kết nối theo nhóm lớp, khoá, khoa, Học viện</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @forelse ($alumniData as $index => $item)
-                                        <tr>
-                                            {{-- Cols 1-13: Static Info --}}
-                                            <td>{{ $index + 1 }}</td>
-                                            <td>{{ $item->student_code ?? '' }}</td>
-                                            <td>{{ $item->full_name ?? '' }}</td>
-                                            <td>{{ $item->date_of_birth ? date('d/m/Y', strtotime($item->date_of_birth)) : '' }}
-                                            </td>
-                                            <td>{{ $item->gender == 'male' ? 'Nam' : ($item->gender == 'female' ? 'Nữ' : '') }}
-                                            </td>
-                                            <td>{{ $item->ethnicity ?? '' }}</td>
-                                            <td>{{ $item->address ?? '' }}</td>
-                                            <td>{{ $item->nationality ?? 'Việt Nam' }}</td>
-                                            <td>{{ $item->class_name ?? '' }}</td>
-                                            <td>{{ $item->course ?? '' }}</td>
-                                            <td>{{ $item->faculty_name ?? '' }}</td>
-                                            <td>{{ $item->major_name ?? '' }}</td>
-                                            <td>{{ $item->training_system ?? '' }}</td>
-
-                                            {{-- Cols 14-18: Các bậc đã học tại Học viện (5 cột) --}}
-                                            <td></td> {{-- Trung cấp --}}
-                                            <td></td> {{-- Cao đẳng --}}
-                                            <td></td> {{-- Đại học --}}
-                                            <td></td> {{-- Thạc sĩ --}}
-                                            <td></td> {{-- Tiến sĩ --}}
-
-                                            {{-- Cols 19-20: Thông tin liên hệ --}}
-                                            <td>{{ $item->phone ?? '' }}</td>
-                                            <td>{{ $item->email ?? '' }}</td>
-
-                                            {{-- Cols 21-22: Tình trạng công việc hiện tại --}}
-                                            <td></td> {{-- Đang công tác --}}
-                                            <td></td> {{-- Nghỉ hưu --}}
-
-                                            {{-- Cols 23-25: Công việc chi tiết --}}
-                                            <td>{{ $item->company_name ?? '' }}</td>
-                                            <td>{{ $item->position ?? '' }}</td>
-                                            <td>{{ $item->awards ?? '' }}</td>
-
-                                            {{-- Cols 26-27: Tình trạng kết nối --}}
-                                            <td></td> {{-- Chưa kết nối --}}
-                                            <td></td> {{-- Đã kết nối theo nhóm lớp, khoá, khoa, Học viện --}}
-                                        </tr>
-                                    @empty
-                                        <tr>
-                                            <td colspan="27" class="text-center py-4">
-                                                <i class="bi bi-inbox text-muted" style="font-size: 3rem;"></i>
-                                                <p class="text-muted mt-2 mb-0">Chưa có dữ liệu cựu sinh viên.</p>
-                                            </td>
-                                        </tr>
-                                    @endforelse
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
+             
 
             </div>
         @else
