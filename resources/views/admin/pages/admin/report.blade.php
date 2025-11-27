@@ -252,10 +252,10 @@
                                         $majorsRows = collect($r1Majors);
 
                                         // Tổng theo 2 ngành
-                                        $tong_total_student   = $majorsRows->sum('total_student');
-                                        $tong_total_nu        = $majorsRows->sum('total_nu');
-                                        $tong_total_res       = $majorsRows->sum('total_res');
-                                        $tong_total_res_nu    = $majorsRows->sum('total_res_nu');
+                                      $tong_total_student = $r1['total_student'] ?? 0;   // từ survey
+                                        $tong_total_nu      = $r1['total_nu'] ?? 0;         // từ student
+                                        $tong_total_res     = $r1['total_res'] ?? 0;        // từ employment
+                                        $tong_total_res_nu  = $r1['total_res_nu'] ?? 0;
 
                                         $tong_dung_nganh      = $majorsRows->sum('dung_nganh');
                                         $tong_lien_quan       = $majorsRows->sum('lien_quan');

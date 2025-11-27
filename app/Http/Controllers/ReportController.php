@@ -61,12 +61,20 @@ class ReportController extends Controller
         $schoolYear = $allGraduations->first()->school_year ?? 'N/A';
 
         // 6. Tính toán Tab 1: Tổng hợp chung
-        $r1 = [
-            'total_student' => $studentTab2->count(),
-            'total_nu' => $studentTab2->where('gender', 'Nữ')->count(),
-            'total_res' => $r2->count(),
-            'total_res_nu' => $r2->where('gender', 'Nữ')->count(),
-        ];
+        $totalGraduates = (int) ($survey->total_graduations ?? 0);
+
+            $totalNu = $studentTab2->filter(function ($s) {
+                return in_array(mb_strtolower($s->gender), ['nữ', 'female']);
+            })->count();
+
+            $r1 = [
+                'total_student'   => $totalGraduates,   
+                'total_nu'        => $totalNu,           
+                'total_res'       => $r2->count(),
+                'total_res_nu'    => $r2->filter(function ($s) {
+                    return in_array(mb_strtolower($s->gender), ['nữ', 'female']);
+                })->count(),
+            ];
 
         // 7. Thống kê theo ngành đào tạo (trained_field)
         // Chỉ tính những người CÓ VIỆC LÀM (employment_status = 1)
@@ -179,7 +187,6 @@ class ReportController extends Controller
             'r1_work_area',
             'studentTab2',
             'r2',
-            'alumniData',
             'facultyName',
             'r1Majors'
         );
@@ -226,8 +233,7 @@ class ReportController extends Controller
                 $r1_work_area = $data['r1_work_area'];
                 $studentTab2 = $data['studentTab2'];
                 $r2 = $data['r2'];
-                $alumniData = $data['alumniData'];
-                $facultyName = $data['facultyName'];
+                 $facultyName = $data['facultyName'];
                 $r1Majors = collect($data['r1Majors'] ?? []);
 
                 \Log::info('ReportController Data Assigned:', [
