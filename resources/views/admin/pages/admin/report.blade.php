@@ -402,8 +402,8 @@
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $item->code }}</td>
                                             <td>{{ $item->full_name }}</td>
-                                            <td>{{ $item->gender == 'Nữ' ? 'x' : '' }}</td>
-                                            <td>{{ $item->identification_card_number }}</td>
+                                            <td>{{ $item->gender == 'male' ? 'x' : '' }}</td>
+                                            <td>{{ $item->citizen_identification }}</td>
                                             <td>{{ optional($majors->get($item->training_industry_id))->code }}</td>
                                             <td>{{ optional($graduation)->certification }}</td>
                                             <td>{{ optional($graduation)->certification_date ? date('d-m-Y', strtotime($graduation->certification_date)) : '' }}

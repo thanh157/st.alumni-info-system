@@ -33,29 +33,28 @@ class ReportController extends Controller
             return null; // Không có phản hồi
         }
 
-        // 2. Lấy danh sách code sinh viên từ phản hồi
-        $studentCodes = $r2->pluck('code_student')->unique()->toArray();
+        // 2. Lấy các đợt tốt nghiệp gắn với survey
+            $allGraduations = $survey->graduations()->get();
+            $schoolYear = $allGraduations->first()->school_year ?? 'N/A';
 
-        // 3. Lấy danh sách sinh viên từ Student model theo code
-        $studentTab2 = Student::whereIn('code', $studentCodes)->get();
+            $graduationIds = $allGraduations->pluck('id');
 
+            // 3. Từ bảng graduation_student -> lấy TOÀN BỘ sinh viên tốt nghiệp
+            $graduationStudent = GraduationStudent::whereIn('graduation_id', $graduationIds)->get();
+            $studentIds = $graduationStudent->pluck('student_id')->unique();
 
-        // 2. Lấy danh sách code sinh viên từ phản hồi
-        $studentCodes = $r2->pluck('code_student')->unique()->toArray();
+            // 4. Lấy danh sách sinh viên từ Student theo ID (TAB 2 ĐÚNG)
+            $studentTab2 = Student::whereIn('id', $studentIds)->get();
 
-        // 3. Lấy danh sách sinh viên từ Student model theo code
-        $studentTab2 = Student::whereIn('code', $studentCodes)->get();
+            // 5. Danh sách mã SV đã phản hồi (chỉ để check phản hồi, KHÔNG dùng để lọc student)
+            $studentCodesResponded = $r2->pluck('code_student')->unique()->toArray();
 
-        \Log::info('getReportData - studentTab2:', [
-            'student_codes' => $studentCodes,
-            'studentTab2_count' => $studentTab2->count(),
-        ]);
-
-        // 4. Dữ liệu Tab 4: Thông tin cựu sinh viên từ bảng alumni_contact_surveys
-        $alumniData = DB::table('alumni_contact_surveys')
-            ->whereIn('student_code', $studentCodes)
-            ->orderBy('created_at', 'desc')
-            ->get();
+            \Log::info('TAB 2 - ALL GRADUATED STUDENTS', [
+                'graduation_ids' => $graduationIds->toArray(),
+                'student_ids_count' => $studentIds->count(),
+                'studentTab2_count' => $studentTab2->count(),
+                'studentCodesResponded_count' => count($studentCodesResponded),
+            ]);
 
         // 5. Lấy danh sách đợt tốt nghiệp (nếu cần)
         $allGraduations = $survey->graduations()->get();
