@@ -260,3 +260,6 @@ Route::get('/report/export', [ReportController::class, 'export'])->name('surveys
 // tải hết file pdf 
 Route::get('/admin/surveys/{survey}/download-all-pdfs', [SurveyResultController::class, 'downloadAllPdfs'])
     ->name('admin.surveys.downloadAllPdfs');
+
+Route::post('/api/update-question-18', [SurveyResultController::class, 'updateQuestion18'])->name('api.update_question_18');
+

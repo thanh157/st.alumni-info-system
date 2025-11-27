@@ -361,7 +361,7 @@
                             </div>
 
                             <!-- Câu 18: Phù hợp ngành -->
-                            <div class="mb-4">
+                            {{-- <div class="mb-4">
                                 <label class="form-label fw-bold">18. Công việc Anh/Chị đang đảm nhận có phù hợp với ngành
                                     đào tạo không?</label>
                                 @foreach (config('config.trained_field') as $key => $item)
@@ -369,6 +369,25 @@
                                         <input class="form-check-input" type="radio" disabled
                                             {{ $response->trained_field == $key ? 'checked' : '' }}>
                                         <label class="form-check-label fw-normal">{{ $item }}</label>
+                                    </div>
+                                @endforeach
+                            </div> --}}
+                            <div class="mb-4" id="group-question-18">
+                                <label class="form-label fw-bold">18. Công việc Anh/Chị đang đảm nhận có phù hợp với ngành đào tạo không?</label>
+                                
+                                <div id="q18-data" data-current-value="{{ $response->trained_field }}"></div>
+                            
+                                @foreach (config('config.trained_field') as $key => $item)
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input q18-radio" 
+                                               type="radio" 
+                                               name="trained_field" 
+                                               id="tf_{{ $key }}" 
+                                               value="{{ $key }}"
+                                               {{ $response->trained_field == $key ? 'checked' : '' }}>
+                                        <label class="form-check-label fw-normal" for="tf_{{ $key }}">
+                                            {{ $item }}
+                                        </label>
                                     </div>
                                 @endforeach
                             </div>
@@ -547,8 +566,29 @@
                 </div>
             </div>
         </div>
+
+        <div class="modal fade" id="confirmChangeModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title fw-bold text-danger">Xác nhận thay đổi</h5>
+                        <button type="button" class="btn-close" id="btn-close-x" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Bạn đang thay đổi câu trả lời cho câu số 18.</p>
+                        <p>Hệ thống sẽ cập nhật trực tiếp vào cơ sở dữ liệu.</p>
+                        <p class="fw-bold">Bạn có chắc chắn muốn thay đổi không?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" id="btn-cancel-change">Hủy bỏ</button>
+                        <button type="button" class="btn btn-primary" id="btn-confirm-change">Đồng ý cập nhật</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         function downloadPdf() {
             const link = document.createElement('a');
@@ -574,5 +614,104 @@
                 document.querySelector('.question-27').style.display = 'block';
             }
         });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // --- LOGIC CẬP NHẬT CÂU 18 (RADIO) ---
+            const radios = document.querySelectorAll('.q18-radio');
+            const dataDiv = document.getElementById('q18-data');
+            
+            // Lấy Modal và các nút
+            const confirmModalEl = document.getElementById('confirmChangeModal');
+            const confirmModal = new bootstrap.Modal(confirmModalEl);
+            const btnConfirm = document.getElementById('btn-confirm-change');
+            const btnCancel = document.getElementById('btn-cancel-change');
+            const btnCloseX = document.getElementById('btn-close-x');
+
+            // Biến lưu trạng thái
+            let savedValue = dataDiv.getAttribute('data-current-value'); // Giá trị đang có trong DB
+            let pendingValue = null; // Giá trị mới người dùng vừa bấm (chờ xác nhận)
+
+            // 1. Bắt sự kiện khi click vào bất kỳ radio nào của câu 18
+            radios.forEach(radio => {
+                radio.addEventListener('change', function() {
+                    // Nếu click vào cái đang chọn rồi thì thôi (dù radio mặc định ko trigger change nếu click lại cái cũ)
+                    if (this.value == savedValue) return;
+
+                    pendingValue = this.value;
+                    confirmModal.show();
+                });
+            });
+
+            // 2. Hàm khôi phục lại lựa chọn cũ (Dùng khi bấm Hủy)
+            function revertSelection() {
+                // Tìm radio có value = savedValue và check nó
+                const originalRadio = document.querySelector(`.q18-radio[value="${savedValue}"]`);
+                if (originalRadio) {
+                    originalRadio.checked = true;
+                }
+            }
+
+            // 3. Xử lý nút Hủy hoặc nút đóng X
+            const handleCancel = () => {
+                revertSelection();
+                confirmModal.hide();
+            };
+
+            btnCancel.addEventListener('click', handleCancel);
+            btnCloseX.addEventListener('click', handleCancel);
+
+            // 4. Xử lý nút Xác nhận (Gọi AJAX)
+            btnConfirm.addEventListener('click', function() {
+                // Disable nút để tránh click nhiều lần
+                btnConfirm.disabled = true;
+                btnConfirm.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Đang lưu...';
+
+                // Gọi AJAX
+                fetch('{{ route("api.update_question_18") }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify({
+                        id: '{{ $response->id }}', 
+                        trained_field: pendingValue
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // --- THÀNH CÔNG ---
+                        // 1. Cập nhật giá trị gốc (savedValue) thành giá trị mới
+                        savedValue = pendingValue; 
+                        
+                        // 2. Cập nhật lại thuộc tính data để đồng bộ
+                        dataDiv.setAttribute('data-current-value', savedValue);
+                        
+                        alert('Cập nhật thành công!'); 
+                        confirmModal.hide(); 
+                    } else {
+                        // --- THẤT BẠI (Server trả về lỗi) ---
+                        alert('Có lỗi xảy ra: ' + (data.message || 'Vui lòng thử lại'));
+                        revertSelection(); // Quay lại radio cũ
+                        confirmModal.hide();
+                    }
+                })
+                .catch(error => {
+                    // --- LỖI MẠNG HOẶC CODE ---
+                    console.error('Error:', error);
+                    alert('Lỗi hệ thống, không thể cập nhật.');
+                    revertSelection(); // Quay lại radio cũ
+                    confirmModal.hide();
+                })
+                .finally(() => {
+                    // Reset lại nút bấm
+                    btnConfirm.disabled = false;
+                    btnConfirm.textContent = 'Đồng ý cập nhật';
+                });
+            });
+            
+        });
+
     </script>
 @endsection
