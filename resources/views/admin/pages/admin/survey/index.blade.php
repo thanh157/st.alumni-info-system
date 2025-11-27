@@ -336,7 +336,10 @@
                                 )->count();
 
                                 // Tính % phản hồi
-                                $percentage = $item->total_graduations > 0 ? round(($totalPhanHoi / $item->total_graduations) * 100, 1) : 0;
+                                $percentage =
+                                    $item->total_graduations > 0
+                                        ? round(($totalPhanHoi / $item->total_graduations) * 100, 1)
+                                        : 0;
 
                                 // Xác định class màu theo tỷ lệ
                                 if ($percentage == 0) {
@@ -375,7 +378,8 @@
                                     <div class="response-wrapper">
                                         <span class="response-percentage {{ $colorClass }}">{{ $percentage }}%</span>
                                         <span class="response-tooltip">
-                                            <span class="tooltip-count">{{ $totalPhanHoi }}</span> / {{ $item->total_graduations }} sinh
+                                            <span class="tooltip-count">{{ $totalPhanHoi }}</span> /
+                                            {{ $item->total_graduations }} sinh
                                             viên
                                         </span>
                                     </div>
@@ -401,14 +405,14 @@
                                         <!-- 3. Xem kết quả với số lượng -->
                                         @if ($totalPhanHoi > 0)
                                             <a href="{{ route('admin.survey.result', ['id' => $item->id]) }}"
-                                                class="btn btn-sm btn-outline-success btn-action btn-result-count" 
+                                                class="btn btn-sm btn-outline-success btn-action btn-result-count"
                                                 title="Xem kết quả ({{ $totalPhanHoi }} phản hồi)">
                                                 <i class="bi bi-bar-chart-fill"></i>
                                                 <span class="result-badge">{{ $totalPhanHoi }}</span>
                                             </a>
                                         @else
-                                            <button class="btn btn-sm btn-outline-secondary btn-action" title="Chưa có phản hồi"
-                                                disabled>
+                                            <button class="btn btn-sm btn-outline-secondary btn-action"
+                                                title="Chưa có phản hồi" disabled>
                                                 <i class="bi bi-bar-chart"></i>
                                             </button>
                                         @endif
@@ -416,8 +420,8 @@
                                         <!-- Dropdown menu (3 chấm) -->
                                         <div class="dropdown">
                                             <button class="btn btn-sm btn-outline-secondary btn-action dropdown-toggle"
-                                                type="button" id="dropdownMenu{{ $item->id }}" data-bs-toggle="dropdown"
-                                                aria-expanded="false" title="Thêm tùy chọn">
+                                                type="button" id="dropdownMenu{{ $item->id }}"
+                                                data-bs-toggle="dropdown" aria-expanded="false" title="Thêm tùy chọn">
                                                 <i class="bi bi-three-dots-vertical"></i>
                                             </button>
                                             <ul class="dropdown-menu dropdown-menu-end"
@@ -443,7 +447,8 @@
                                                 <!-- Tải PDF -->
                                                 <li>
                                                     <a class="dropdown-item download-link"
-                                                        href="{{ route('admin.surveys.downloadAllPdfs', $item->id) }}" download>
+                                                        href="{{ route('admin.surveys.downloadAllPdfs', $item->id) }}"
+                                                        download>
                                                         <i class="bi bi-file-earmark-zip-fill text-info"></i>
                                                         <span>Tải toàn bộ file PDF (ZIP)</span>
                                                     </a>
@@ -452,6 +457,38 @@
                                                 <li>
                                                     <hr class="dropdown-divider">
                                                 </li>
+
+
+                                                <!-- Tải mẫu báo cáo (Submenu) -->
+
+                                                <li>
+                                                    <a class="dropdown-item"
+                                                        href="{{ route('surveys.export', ['survey_id' => $item->id, 'type' => 'tab1']) }}"
+                                                        download>
+                                                        <i class="bi bi-file-earmark-text"></i>
+                                                        <span>Tải mẫu báo cáo 1</span>
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a class="dropdown-item"
+                                                        href="{{ route('surveys.export', ['survey_id' => $item->id, 'type' => 'tab2']) }}"
+                                                        download>
+                                                        <i class="bi bi-file-earmark-text"></i>
+                                                        <span>Tải mẫu báo cáo 2</span>
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a class="dropdown-item"
+                                                        href="{{ route('surveys.export', ['survey_id' => $item->id, 'type' => 'tab3']) }}"
+                                                        download>
+                                                        <i class="bi bi-file-earmark-text"></i>
+                                                        <span>Tải mẫu báo cáo 3</span>
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <hr class="dropdown-divider">
+                                                </li>
+
 
                                                 <!-- Chỉnh sửa -->
                                                 <li>
@@ -600,15 +637,15 @@
             }
         }
 
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function() {
             const confirmInput = document.getElementById('confirmSurveyName');
             if (confirmInput) {
-                confirmInput.addEventListener('input', function () {
+                confirmInput.addEventListener('input', function() {
                     document.getElementById('errorMessage').classList.add('d-none');
                     this.classList.remove('is-invalid');
                 });
 
-                confirmInput.addEventListener('keypress', function (e) {
+                confirmInput.addEventListener('keypress', function(e) {
                     if (e.key === 'Enter') {
                         e.preventDefault();
                         confirmDelete();
