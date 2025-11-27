@@ -275,6 +275,35 @@ class SurveyResultController extends Controller
         ;
     }
 
+    public function updateQuestion18(Request $request)
+    {
+        try {
+            // Kiểm tra đầu vào
+            if (!$request->has('id') || !$request->has('trained_field')) {
+                return response()->json(['success' => false, 'message' => 'Thiếu dữ liệu đầu vào']);
+            }
+
+            $result = EmploymentSurveyResponse::find($request->id);
+            
+            if ($result) {
+                $result->trained_field = $request->trained_field;
+                $result->save();
+                return response()->json(['success' => true, 'message' => 'Cập nhật thành công']);
+            }
+            
+            return response()->json(['success' => false, 'message' => 'Không tìm thấy bản ghi với ID: ' . $request->id]);
+
+        } catch (\Exception $e) {
+            // Ghi log lỗi vào file storage/logs/laravel.log để debug
+            Log::error('Lỗi update Q18: ' . $e->getMessage());
+            
+            return response()->json([
+                'success' => false, 
+                'message' => 'Lỗi Server: ' . $e->getMessage() // Chỉ hiện message khi dev, production nên ẩn đi
+            ], 500); // Trả về mã lỗi 500 đúng chuẩn
+        }
+    }
+
     // public function downloadAllPdfs($survey_id)
     // {
     //     $survey = Survey::findOrFail($survey_id);
