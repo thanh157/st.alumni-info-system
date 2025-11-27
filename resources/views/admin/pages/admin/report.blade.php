@@ -402,16 +402,16 @@
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $item->code }}</td>
                                             <td>{{ $item->full_name }}</td>
-                                            <td>{{ $item->gender == 'female' ? 'x' : '' }}</td>
-                                            <td>{{ $item->citizen_identification }}</td>
-                                            <td>{{ optional($major)->code }}</td>
+                                            <td>{{ $item->gender == 'Nữ' ? 'x' : '' }}</td>
+                                            <td>{{ $item->identification_card_number }}</td>
+                                            <td>{{ optional($majors->get($item->training_industry_id))->code }}</td>
                                             <td>{{ optional($graduation)->certification }}</td>
                                             <td>{{ optional($graduation)->certification_date ? date('d-m-Y', strtotime($graduation->certification_date)) : '' }}
                                             </td>
                                             <td>{{ $item->phone }}</td>
                                             <td>{{ $item->email }}</td>
                                             <td></td>
-                                            <td>{{ $res ? 'Có' : 'Không' }}</td>
+                                            <td>{{ $res ? 'X' : '' }}</td>
                                             <td>{{ optional($major)->name }}</td>
                                             <td></td> {{-- Cột "Khóa học" bị thiếu dữ liệu --}}
                                         </tr>
