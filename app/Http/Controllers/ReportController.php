@@ -62,9 +62,9 @@ class ReportController extends Controller
         // 6. Tính toán Tab 1: Tổng hợp chung
         $r1 = [
             'total_student'  => $studentTab2->count(),
-            'total_nu'       => $studentTab2->where('gender', 'nữ')->count(),
+            'total_nu'       => $studentTab2->where('gender', 'Nữ')->count(),
             'total_res'      => $r2->count(),
-            'total_res_nu'   => $r2->where('gender', 'nữ')->count(),
+            'total_res_nu'   => $r2->where('gender', 'Nữ')->count(),
         ];
 
         // 7. Thống kê theo ngành đào tạo (trained_field)
@@ -115,9 +115,9 @@ class ReportController extends Controller
             $responsesMajor = $r2->where('training_industry_id', $trainingIndustryId);
 
             $totalStudentMajor   = $studentsMajor->count();
-            $totalNuMajor        = $studentsMajor->where('gender', 'nữ')->count();
+            $totalNuMajor        = $studentsMajor->where('gender', 'Nữ')->count();
             $totalResMajor       = $responsesMajor->count();
-            $totalResNuMajor     = $responsesMajor->where('gender', 'nữ')->count();
+            $totalResNuMajor     = $responsesMajor->where('gender', 'Nữ')->count();
 
             // Chỉ những người có việc làm
             $responsesEmployed = $responsesMajor->where('employment_status', 1);
