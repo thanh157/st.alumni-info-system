@@ -29,8 +29,8 @@ class ReportController extends Controller
 
         \Log::info('getReportData - r2 responses:', [
             'survey_id' => $surveyId,
-            'r2_count' => $r2->count(),
-            'r2_codes' => $r2->pluck('code_student')->toArray(),
+            'r2_count'  => $r2->count(),
+            'r2_codes'  => $r2->pluck('code_student')->toArray(),
         ]);
 
         if ($r2->isEmpty()) {
@@ -45,8 +45,8 @@ class ReportController extends Controller
         $studentTab2 = Student::whereIn('code', $studentCodes)->get();
 
         \Log::info('getReportData - studentTab2:', [
-            'student_codes' => $studentCodes,
-            'studentTab2_count' => $studentTab2->count(),
+            'student_codes'       => $studentCodes,
+            'studentTab2_count'   => $studentTab2->count(),
         ]);
 
         // 4. Dữ liệu Tab 4: Thông tin cựu sinh viên từ bảng alumni_contact_surveys
@@ -59,12 +59,12 @@ class ReportController extends Controller
         $allGraduations = $survey->graduations()->get();
         $schoolYear = $allGraduations->first()->school_year ?? 'N/A';
 
-        // 6. Tính toán Tab 1: Tổng hợp
+        // 6. Tính toán Tab 1: Tổng hợp chung
         $r1 = [
-            'total_student' => $studentTab2->count(),
-            'total_nu' => $studentTab2->where('gender', 'female')->count(),
-            'total_res' => $r2->count(),
-            'total_res_nu' => $r2->where('gender', 'female')->count(),
+            'total_student'  => $studentTab2->count(),
+            'total_nu'       => $studentTab2->where('gender', 'female')->count(),
+            'total_res'      => $r2->count(),
+            'total_res_nu'   => $r2->where('gender', 'female')->count(),
         ];
 
         // 7. Thống kê theo ngành đào tạo (trained_field)
@@ -98,6 +98,78 @@ class ReportController extends Controller
             $facultyName = $allGraduations->first()->faculty->name ?? 'KHOA';
         }
 
+        // 10. Thống kê chi tiết theo 2 ngành cố định
+        // Map 1 → 7480201 – CNTT
+        // Map 2 → 7480102 – MMT&TTDL
+        $majorConfigs = [
+            1 => ['code' => '7480201', 'name' => 'Công nghệ thông tin'],
+            2 => ['code' => '7480102', 'name' => 'Mạng máy tính & Truyền dữ liệu'],
+        ];
+
+        $r1Majors = [];
+
+        foreach ($majorConfigs as $trainingIndustryId => $info) {
+            // Sinh viên thuộc ngành này (trong danh sách Tab2)
+            $studentsMajor = $studentTab2->where('training_industry_id', $trainingIndustryId);
+            // Phản hồi thuộc ngành này
+            $responsesMajor = $r2->where('training_industry_id', $trainingIndustryId);
+
+            $totalStudentMajor   = $studentsMajor->count();
+            $totalNuMajor        = $studentsMajor->where('gender', 'female')->count();
+            $totalResMajor       = $responsesMajor->count();
+            $totalResNuMajor     = $responsesMajor->where('gender', 'female')->count();
+
+            // Chỉ những người có việc làm
+            $responsesEmployed = $responsesMajor->where('employment_status', 1);
+
+            $dungNganh     = $responsesEmployed->where('trained_field', 1)->count();
+            $lienQuan      = $responsesEmployed->where('trained_field', 2)->count();
+            $khongLienQuan = $responsesEmployed->where('trained_field', 3)->count();
+
+            $tiepTucHoc   = $responsesMajor->where('employment_status', 2)->count();
+            $chuaCoViec   = $responsesMajor->where('employment_status', 3)->count();
+
+            $nhaNuoc      = $responsesEmployed->where('work_area', '1')->count();
+            $tuNhan       = $responsesEmployed->where('work_area', '2')->count();
+            $tuTao        = $responsesEmployed->where('work_area', '3')->count();
+            $nuocNgoai    = $responsesEmployed->where('work_area', '4')->count();
+
+            $coViecLam = $dungNganh + $lienQuan + $khongLienQuan;
+
+            $tyLeCoViecPhanHoi = $totalResMajor > 0
+                ? round(($coViecLam / $totalResMajor) * 100, 2)
+                : 0;
+
+            $tyLeCoViecTotNghiep = $totalStudentMajor > 0
+                ? round(($coViecLam / $totalStudentMajor) * 100, 2)
+                : 0;
+
+            $r1Majors[] = [
+                'training_industry_id'        => $trainingIndustryId,
+                'major_code'                  => $info['code'],
+                'major_name'                  => $info['name'],
+
+                'total_student'               => $totalStudentMajor,
+                'total_nu'                    => $totalNuMajor,
+                'total_res'                   => $totalResMajor,
+                'total_res_nu'                => $totalResNuMajor,
+
+                'dung_nganh'                  => $dungNganh,
+                'lien_quan'                   => $lienQuan,
+                'khong_lien_quan'             => $khongLienQuan,
+                'tiep_tuc_hoc'                => $tiepTucHoc,
+                'chua_co_viec'                => $chuaCoViec,
+
+                'nha_nuoc'                    => $nhaNuoc,
+                'tu_nhan'                     => $tuNhan,
+                'tu_tao'                      => $tuTao,
+                'nuoc_ngoai'                  => $nuocNgoai,
+
+                'ty_le_co_viec_phan_hoi'      => $tyLeCoViecPhanHoi,
+                'ty_le_co_viec_tot_nghiep'    => $tyLeCoViecTotNghiep,
+            ];
+        }
+
         return compact(
             'survey',
             'schoolYear',
@@ -107,7 +179,8 @@ class ReportController extends Controller
             'studentTab2',
             'r2',
             'alumniData',
-            'facultyName'
+            'facultyName',
+            'r1Majors'
         );
     }
 
@@ -121,20 +194,21 @@ class ReportController extends Controller
         $schoolYear = null;
         $r1 = [];
         $r1_trained_field = (object) [
-            'dung_nganh' => 0,
-            'lien_quan' => 0,
+            'dung_nganh'    => 0,
+            'lien_quan'     => 0,
             'khong_lien_quan' => 0
         ];
         $r1_work_area = (object) [
-            'nha_nuoc' => 0,
-            'tu_nhan' => 0,
-            'tu_tao' => 0,
-            'nuoc_ngoai' => 0
+            'nha_nuoc'  => 0,
+            'tu_nhan'   => 0,
+            'tu_tao'    => 0,
+            'nuoc_ngoai'=> 0
         ];
         $studentTab2 = collect();
         $r2 = collect();
         $alumniData = collect();
         $facultyName = 'KHOA';
+        $r1Majors = collect(); // thêm
 
         if ($request->filled('survey_id')) {
             try {
@@ -144,22 +218,22 @@ class ReportController extends Controller
             }
 
             if ($data !== null) {
-                // ✅ Gán trực tiếp từng biến từ mảng $data
-                $survey = $data['survey'];
-                $schoolYear = $data['schoolYear'];
-                $r1 = $data['r1'];
+                 $survey         = $data['survey'];
+                $schoolYear     = $data['schoolYear'];
+                $r1             = $data['r1'];
                 $r1_trained_field = $data['r1_trained_field'];
-                $r1_work_area = $data['r1_work_area'];
-                $studentTab2 = $data['studentTab2'];
-                $r2 = $data['r2'];
-                $alumniData = $data['alumniData'];
-                $facultyName = $data['facultyName'];
+                $r1_work_area   = $data['r1_work_area'];
+                $studentTab2    = $data['studentTab2'];
+                $r2             = $data['r2'];
+                $alumniData     = $data['alumniData'];
+                $facultyName    = $data['facultyName'];
+                $r1Majors       = collect($data['r1Majors'] ?? []);
 
                 \Log::info('ReportController Data Assigned:', [
-                    'r1' => $r1,
-                    'studentTab2_count' => $studentTab2->count(),
-                    'r2_count' => $r2->count(),
-                    'facultyName' => $facultyName,
+                    'r1'                 => $r1,
+                    'studentTab2_count'  => $studentTab2->count(),
+                    'r2_count'           => $r2->count(),
+                    'facultyName'        => $facultyName,
                 ]);
             } else {
                 // Trường hợp survey có tồn tại nhưng không có phản hồi
@@ -177,7 +251,8 @@ class ReportController extends Controller
             'studentTab2',
             'r2',
             'alumniData',
-            'facultyName'
+            'facultyName',
+            'r1Majors'
         ));
     }
 
@@ -203,14 +278,14 @@ class ReportController extends Controller
         }
 
         // 3. Gán các biến từ kết quả
-        $survey = $data['survey'];
-        $schoolYear = $data['schoolYear'];
-        $r1 = $data['r1'];
+        $survey           = $data['survey'];
+        $schoolYear       = $data['schoolYear'];
+        $r1               = $data['r1'];
         $r1_trained_field = $data['r1_trained_field'];
-        $r1_work_area = $data['r1_work_area'];
-        $r2 = $data['r2'];
-        $studentTab2 = $data['studentTab2'];
-        $alumniData = $data['alumniData'];
+        $r1_work_area     = $data['r1_work_area'];
+        $r2               = $data['r2'];
+        $studentTab2      = $data['studentTab2'];
+        $alumniData       = $data['alumniData'];
 
         // 4. Lấy type từ request (mặc định là 'all')
         $type = $request->get('type', 'all');
@@ -221,7 +296,7 @@ class ReportController extends Controller
             'tab2' => 'mau-bao-cao-2',
             'tab3' => 'mau-bao-cao-3',
             'tab4' => 'mau-bao-cao-4',
-            'all' => 'bao-cao-tong-hop',
+            'all'  => 'bao-cao-tong-hop',
         ];
 
         $fileName = ($fileNames[$type] ?? 'bao-cao') . '-' . date('Y-m-d-His') . '.xlsx';

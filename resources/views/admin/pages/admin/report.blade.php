@@ -73,7 +73,7 @@
         </div>
 
         <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-3">
-            {{-- Tabs (ĐÃ THÊM TAB 4) --}}
+            {{-- Tabs --}}
             <ul class="nav nav-tabs">
                 <li class="nav-item">
                     <a class="nav-link active" data-bs-toggle="tab" href="#tab1">Mẫu báo cáo 1</a>
@@ -110,7 +110,6 @@
             </form>
         </div>
 
-
         @if ($currentSurveyId && isset($r1) && !empty($r1))
             @php
                 // Chuẩn bị dữ liệu một lần
@@ -129,7 +128,7 @@
                 $majors = \App\Models\Major::all()->keyBy('id');
             @endphp
 
-            {{-- CÁC NÚT BẤM CHUNG - ĐÃ CẬP NHẬT --}}
+            {{-- CÁC NÚT BẤM CHUNG --}}
             <div class="d-flex justify-content-end mb-3 gap-2 flex-wrap">
                 {{-- Nút xem biểu đồ --}}
                 <a href="{{ route('admin.charts.index') }}" class="btn btn-primary">
@@ -148,31 +147,32 @@
                         </li>
 
                         <li>
-                            <a class="dropdown-item  "
-                                href="{{ route('surveys.export', array_merge(request()->all(), ['type' => 'tab1'])) }}" download
-                                onclick="handleFileDownload(event, this)">
+                            <a class="dropdown-item"
+                               href="{{ route('surveys.export', array_merge(request()->all(), ['type' => 'tab1'])) }}"
+                               download
+                               onclick="handleFileDownload(event, this)">
                                 <i class="bi bi-file-earmark-text"></i>
                                 <span>Mẫu báo cáo 1</span>
                             </a>
                         </li>
                         <li>
-                            <a class="dropdown-item  "
-                                href="{{ route('surveys.export', array_merge(request()->all(), ['type' => 'tab2'])) }}" download
-                                onclick="handleFileDownload(event, this)">
+                            <a class="dropdown-item"
+                               href="{{ route('surveys.export', array_merge(request()->all(), ['type' => 'tab2'])) }}"
+                               download
+                               onclick="handleFileDownload(event, this)">
                                 <i class="bi bi-file-earmark-spreadsheet"></i>
                                 <span>Mẫu báo cáo 2</span>
                             </a>
                         </li>
                         <li>
-                            <a class="dropdown-item  "
-                                href="{{ route('surveys.export', array_merge(request()->all(), ['type' => 'tab3'])) }}" download
-                                onclick="handleFileDownload(event, this)">
+                            <a class="dropdown-item"
+                               href="{{ route('surveys.export', array_merge(request()->all(), ['type' => 'tab3'])) }}"
+                               download
+                               onclick="handleFileDownload(event, this)">
                                 <i class="bi bi-file-earmark-bar-graph"></i>
                                 <span>Mẫu báo cáo 3</span>
                             </a>
                         </li>
-
-
 
                         <li>
                             <hr class="dropdown-divider">
@@ -180,8 +180,9 @@
 
                         <li>
                             <a class="dropdown-item fw-bold text-primary download-link"
-                                href="{{ route('surveys.export', array_merge(request()->all(), ['type' => 'all'])) }}" download
-                                onclick="handleFileDownload(event, this)">
+                               href="{{ route('surveys.export', array_merge(request()->all(), ['type' => 'all'])) }}"
+                               download
+                               onclick="handleFileDownload(event, this)">
                                 <i class="bi bi-file-earmark-zip"></i>
                                 <span>Tải tất cả (3 báo cáo)</span>
                             </a>
@@ -191,6 +192,7 @@
             </div>
 
             <div class="tab-content">
+                {{-- TAB 1 --}}
                 <div class="tab-pane fade show active" id="tab1">
                     <div class="border rounded p-3" style="max-height: 800px; overflow-y: auto;">
                         <div class="text-center mb-4">
@@ -198,7 +200,8 @@
                                 <div style="display:inline-block; text-align:center;">
                                     <h6 class="text-uppercase mb-1">HỌC VIỆN NÔNG NGHIỆP VIỆT NAM</h6>
                                     <h6 class="text-uppercase text-decoration-underline mb-1">
-                                        KHOA: CÔNG NGHỆ THÔNG TIN </h6>
+                                        KHOA: CÔNG NGHỆ THÔNG TIN
+                                    </h6>
                                 </div>
                             </div>
                             <h5 class="fw-bold text-decoration mb-0 mt-2">
@@ -208,7 +211,7 @@
 
                         <div class="table-responsive">
                             <table class="table table-bordered text-center align-middle"
-                                style="font-size: 12px; min-width: 2000px;">
+                                   style="font-size: 12px; min-width: 2000px;">
                                 <thead class="align-middle">
                                     <tr>
                                         <th rowspan="3">TT</th>
@@ -218,7 +221,6 @@
                                         <th rowspan="3">Tên ngành đào tạo</th>
                                         <th colspan="2" rowspan="2"><br>Số sinh viên tốt nghiệp</th>
                                         <th colspan="2" rowspan="2"><br>Số sinh viên phản hồi</th>
-                                        {{-- ĐÃ SỬA: Tăng colspan từ 5 lên 6 để chứa cột Tổng số Có việc làm --}}
                                         <th colspan="5">Tình hình việc làm</th>
                                         <th rowspan="3">Tỷ lệ có việc làm / phản hồi</th>
                                         <th rowspan="3">Tỷ lệ có việc làm / tốt nghiệp</th>
@@ -227,7 +229,6 @@
                                             phản hồi ở mẫu số 3)</th>
                                     </tr>
                                     <tr>
-                                        {{-- ĐÃ SỬA: Tăng colspan từ 3 lên 4 để chứa cột Tổng số Có việc làm --}}
                                         <th colspan="3">Có việc làm</th>
                                         <th rowspan="2">Tiếp tục học</th>
                                         <th rowspan="2">Chưa có việc làm</th>
@@ -237,11 +238,9 @@
                                         <th>Nữ</th>
                                         <th>Tổng số</th>
                                         <th>Nữ</th>
-                                        {{-- <th>Tổng số</th> --}}
                                         <th>Đúng ngành đào tạo</th>
                                         <th>Liên quan đến ngành đào tạo</th>
                                         <th>Không liên quan đến ngành đào tạo</th>
-
                                         <th>Nhà nước</th>
                                         <th>Tư nhân</th>
                                         <th>Tự tạo việc làm</th>
@@ -250,44 +249,92 @@
                                 </thead>
                                 <tbody>
                                     @php
-                                        // Tổng số có việc làm = đúng ngành + liên quan + không liên quan
-                                        $totalCoViecLam =
-                                            ($r1_trained_field->dung_nganh ?? 0) +
-                                            ($r1_trained_field->lien_quan ?? 0) +
-                                            ($r1_trained_field->khong_lien_quan ?? 0);
+                                        $majorsRows = collect($r1Majors);
 
-                                        // Tỷ lệ có việc làm / phản hồi
-                                        $tyLeCoViecPhanHoi =
-                                            $r1['total_res'] > 0
-                                            ? round(($totalCoViecLam / $r1['total_res']) * 100, 2)
+                                        // Tổng theo 2 ngành
+                                        $tong_total_student   = $majorsRows->sum('total_student');
+                                        $tong_total_nu        = $majorsRows->sum('total_nu');
+                                        $tong_total_res       = $majorsRows->sum('total_res');
+                                        $tong_total_res_nu    = $majorsRows->sum('total_res_nu');
+
+                                        $tong_dung_nganh      = $majorsRows->sum('dung_nganh');
+                                        $tong_lien_quan       = $majorsRows->sum('lien_quan');
+                                        $tong_khong_lien_quan = $majorsRows->sum('khong_lien_quan');
+
+                                        $tong_tiep_tuc_hoc    = $majorsRows->sum('tiep_tuc_hoc');
+                                        $tong_chua_co_viec    = $majorsRows->sum('chua_co_viec');
+
+                                        $tong_nha_nuoc        = $majorsRows->sum('nha_nuoc');
+                                        $tong_tu_nhan         = $majorsRows->sum('tu_nhan');
+                                        $tong_tu_tao          = $majorsRows->sum('tu_tao');
+                                        $tong_nuoc_ngoai      = $majorsRows->sum('nuoc_ngoai');
+
+                                        $tong_co_viec_lam = $tong_dung_nganh + $tong_lien_quan + $tong_khong_lien_quan;
+
+                                        $tong_ty_le_co_viec_phan_hoi =
+                                            $tong_total_res > 0
+                                            ? round(($tong_co_viec_lam / $tong_total_res) * 100, 2)
                                             : 0;
 
-                                        // Tỷ lệ có việc làm / tốt nghiệp
-                                        $tyLeCoViecTotNghiep =
-                                            $r1['total_student'] > 0
-                                            ? round(($totalCoViecLam / $r1['total_student']) * 100, 2)
+                                        $tong_ty_le_co_viec_tot_nghiep =
+                                            $tong_total_student > 0
+                                            ? round(($tong_co_viec_lam / $tong_total_student) * 100, 2)
                                             : 0;
                                     @endphp
-                                    <tr>
-                                        <td>1</td>
-                                        <td></td>
-                                        <td>Tổng hợp</td>
-                                        <td>{{ $r1['total_student'] }}</td>
-                                        <td>{{ $r1['total_nu'] }}</td>
-                                        <td>{{ $r1['total_res'] }}</td>
-                                        <td>{{ $r1['total_res_nu'] }}</td>
 
-                                        <td>{{ $r1_trained_field->dung_nganh ?? 0 }}</td>
-                                        <td>{{ $r1_trained_field->lien_quan ?? 0 }}</td>
-                                        <td>{{ $r1_trained_field->khong_lien_quan ?? 0 }}</td>
-                                        <td>{{ $r2->where('employment_status', 2)->count() }}</td>
-                                        <td>{{ $r2->where('employment_status', 3)->count() }}</td>
-                                        <td>{{ $tyLeCoViecPhanHoi }}%</td>
-                                        <td>{{ $tyLeCoViecTotNghiep }}%</td>
-                                        <td>{{ $r1_work_area->nha_nuoc ?? 0 }}</td>
-                                        <td>{{ $r1_work_area->tu_nhan ?? 0 }}</td>
-                                        <td>{{ $r1_work_area->tu_tao ?? 0 }}</td>
-                                        <td>{{ $r1_work_area->nuoc_ngoai ?? 0 }}</td>
+                                    {{-- 2 dòng cho 2 ngành --}}
+                                    @foreach ($majorsRows as $index => $row)
+                                        <tr>
+                                            <td>{{ $index + 1 }}</td>
+                                            <td>{{ $row['major_code'] }}</td>
+                                            <td>{{ $row['major_name'] }}</td>
+
+                                            <td>{{ $row['total_student'] }}</td>
+                                            <td>{{ $row['total_nu'] }}</td>
+                                            <td>{{ $row['total_res'] }}</td>
+                                            <td>{{ $row['total_res_nu'] }}</td>
+
+                                            <td>{{ $row['dung_nganh'] }}</td>
+                                            <td>{{ $row['lien_quan'] }}</td>
+                                            <td>{{ $row['khong_lien_quan'] }}</td>
+                                            <td>{{ $row['tiep_tuc_hoc'] }}</td>
+                                            <td>{{ $row['chua_co_viec'] }}</td>
+
+                                            <td>{{ $row['ty_le_co_viec_phan_hoi'] }}%</td>
+                                            <td>{{ $row['ty_le_co_viec_tot_nghiep'] }}%</td>
+
+                                            <td>{{ $row['nha_nuoc'] }}</td>
+                                            <td>{{ $row['tu_nhan'] }}</td>
+                                            <td>{{ $row['tu_tao'] }}</td>
+                                            <td>{{ $row['nuoc_ngoai'] }}</td>
+                                            <td></td>
+                                        </tr>
+                                    @endforeach
+
+                                    {{-- Dòng cuối: TỔNG 2 NGÀNH --}}
+                                    <tr class="fw-bold">
+                                        <td>{{ $majorsRows->count() + 1 }}</td>
+                                        <td></td>
+                                        <td>TỔNG HỢP</td>
+
+                                        <td>{{ $tong_total_student }}</td>
+                                        <td>{{ $tong_total_nu }}</td>
+                                        <td>{{ $tong_total_res }}</td>
+                                        <td>{{ $tong_total_res_nu }}</td>
+
+                                        <td>{{ $tong_dung_nganh }}</td>
+                                        <td>{{ $tong_lien_quan }}</td>
+                                        <td>{{ $tong_khong_lien_quan }}</td>
+                                        <td>{{ $tong_tiep_tuc_hoc }}</td>
+                                        <td>{{ $tong_chua_co_viec }}</td>
+
+                                        <td>{{ $tong_ty_le_co_viec_phan_hoi }}%</td>
+                                        <td>{{ $tong_ty_le_co_viec_tot_nghiep }}%</td>
+
+                                        <td>{{ $tong_nha_nuoc }}</td>
+                                        <td>{{ $tong_tu_nhan }}</td>
+                                        <td>{{ $tong_tu_tao }}</td>
+                                        <td>{{ $tong_nuoc_ngoai }}</td>
                                         <td></td>
                                     </tr>
                                 </tbody>
@@ -296,6 +343,7 @@
                     </div>
                 </div>
 
+                {{-- TAB 2 --}}
                 <div class="tab-pane fade" id="tab2">
                     <div class="border rounded p-3" style="max-height: 800px; overflow-y: auto;">
                         <div class="text-center mb-4">
@@ -312,7 +360,7 @@
                         </div>
                         <div class="table-responsive mb-4">
                             <table class="table table-bordered text-center align-middle mb-0"
-                                style="font-size: 13px; min-width: 1500px;">
+                                   style="font-size: 13px; min-width: 1500px;">
                                 <thead class="align-middle">
                                     <tr>
                                         <th rowspan="2">TT</th>
@@ -380,6 +428,7 @@
                     </div>
                 </div>
 
+                {{-- TAB 3 --}}
                 <div class="tab-pane fade" id="tab3">
                     <div class="border rounded p-3" style="max-height: 800px; overflow-y: auto;">
                         <div class="text-center mb-4">
@@ -397,7 +446,7 @@
                         </div>
                         <div class="table-responsive mb-4">
                             <table class="table table-bordered text-center align-middle mb-0"
-                                style="font-size: 13px; min-width: 3400px;">
+                                   style="font-size: 13px; min-width: 3400px;">
                                 <thead>
                                     <tr>
                                         <th rowspan="3">TT</th>
@@ -477,7 +526,6 @@
                                             cựu sinh viên với sinh viên</th>
                                         <th rowspan="2">Học viện tổ chức các buổi trao đổi giữa đơn vị sử dụng lao động
                                             với sinh viên</th>
-                                        </th>
                                         <th rowspan="2">Đơn vị sử dụng lao động tham gia vào quá trình đào tạo</th>
                                         <th rowspan="2">Chương trình đào tạo được điều chỉnh và cập nhật theo nhu cầu
                                             của thị trường lao
@@ -530,32 +578,38 @@
                                             @endforeach
 
                                             @foreach (config('config.recruitment_type', []) as $k => $v)
-                                                @php $data = json_decode($item->recruitment_type, true); @endphp <td>
+                                                @php $data = json_decode($item->recruitment_type, true); @endphp
+                                                <td>
                                                     {{ in_array($k, data_get($data, 'value', [])) ? 'x' : '' }}
                                                 </td>
                                             @endforeach
                                             @foreach (config('config.recruitment_type', []) as $k => $v)
-                                                @php $data = json_decode($item->recruitment_type, true); @endphp <td>
+                                                @php $data = json_decode($item->recruitment_type, true); @endphp
+                                                <td>
                                                     {{ in_array($k, data_get($data, 'value', [])) ? 'x' : '' }}
                                                 </td>
                                             @endforeach
                                             @foreach (config('job_search_method', []) as $k => $v)
-                                                @php $data = json_decode($item->soft_skills_required, true); @endphp <td>
+                                                @php $data = json_decode($item->soft_skills_required, true); @endphp
+                                                <td>
                                                     {{ in_array($k, data_get($data, 'value', [])) ? 'x' : '' }}
                                                 </td>
                                             @endforeach
                                             @foreach (config('config.soft_skills_required', []) as $k => $v)
-                                                @php $data = json_decode($item->must_attended_courses, true); @endphp <td>
+                                                @php $data = json_decode($item->must_attended_courses, true); @endphp
+                                                <td>
                                                     {{ in_array($k, data_get($data, 'value', [])) ? 'x' : '' }}
                                                 </td>
                                             @endforeach
                                             @foreach (config('config.must_attended_courses', []) as $k => $v)
-                                                @php $data = json_decode($item->must_attended_courses, true); @endphp <td>
+                                                @php $data = json_decode($item->must_attended_courses, true); @endphp
+                                                <td>
                                                     {{ in_array($k, data_get($data, 'value', [])) ? 'x' : '' }}
                                                 </td>
                                             @endforeach
                                             @foreach (config('config.solutions_get_job', []) as $k => $v)
-                                                @php $data = json_decode($item->solutions_get_job, true); @endphp <td>
+                                                @php $data = json_decode($item->solutions_get_job, true); @endphp
+                                                <td>
                                                     {{ in_array($k, data_get($data, 'value', [])) ? 'x' : '' }}
                                                 </td>
                                             @endforeach
@@ -571,6 +625,7 @@
                     </div>
                 </div>
 
+                {{-- TAB 4 (nếu bật) --}}
                 <div class="tab-pane fade" id="tab4">
                     <div class="border rounded p-3" style="max-height: 800px; overflow-y: auto;">
                         <div class="text-center mb-4">
@@ -580,7 +635,7 @@
                         </div>
                         <div class="table-responsive mb-4">
                             <table class="table table-bordered text-center align-middle mb-0"
-                                style="font-size: 13px; min-width: 4500px;">
+                                   style="font-size: 13px; min-width: 4500px;">
                                 <thead class="align-middle">
                                     <tr>
                                         <th rowspan="2">STT</th>
@@ -622,7 +677,6 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-
                                     @forelse ($alumniData as $index => $item)
                                         <tr>
                                             {{-- Cols 1-13: Static Info --}}
@@ -643,28 +697,28 @@
                                             <td>{{ $item->training_system ?? '' }}</td>
 
                                             {{-- Cols 14-18: Các bậc đã học tại Học viện (5 cột) --}}
-                                            <td></td> {{-- Trung cấp (14) --}}
-                                            <td></td> {{-- Cao đẳng (15) --}}
-                                            <td></td> {{-- Đại học (16) --}}
-                                            <td></td> {{-- Thạc sĩ (17) --}}
-                                            <td></td> {{-- Tiến sĩ (18) --}}
+                                            <td></td> {{-- Trung cấp --}}
+                                            <td></td> {{-- Cao đẳng --}}
+                                            <td></td> {{-- Đại học --}}
+                                            <td></td> {{-- Thạc sĩ --}}
+                                            <td></td> {{-- Tiến sĩ --}}
 
                                             {{-- Cols 19-20: Thông tin liên hệ --}}
-                                            <td>{{ $item->phone ?? '' }}</td> {{-- SĐT đang dùng (19) --}}
-                                            <td>{{ $item->email ?? '' }}</td> {{-- Email (20) --}}
+                                            <td>{{ $item->phone ?? '' }}</td>
+                                            <td>{{ $item->email ?? '' }}</td>
 
-                                            {{-- Cols 21-22: Tình trạng công việc hiện tại (2 cột) --}}
-                                            <td></td> {{-- Đang công tác (21) --}}
-                                            <td></td> {{-- Nghỉ hưu (22) --}}
+                                            {{-- Cols 21-22: Tình trạng công việc hiện tại --}}
+                                            <td></td> {{-- Đang công tác --}}
+                                            <td></td> {{-- Nghỉ hưu --}}
 
                                             {{-- Cols 23-25: Công việc chi tiết --}}
-                                            <td>{{ $item->company_name ?? '' }}</td> {{-- Đơn vị công tác hiện tại (23) --}}
-                                            <td>{{ $item->position ?? '' }}</td> {{-- Chức vụ, chức danh hiện tại (24) --}}
-                                            <td>{{ $item->awards ?? '' }}</td> {{-- Phần thưởng, giải thưởng, bằng khen (25) --}}
+                                            <td>{{ $item->company_name ?? '' }}</td>
+                                            <td>{{ $item->position ?? '' }}</td>
+                                            <td>{{ $item->awards ?? '' }}</td>
 
-                                            {{-- Cols 26-27: Tình trạng kết nối (2 cột) --}}
-                                            <td></td> {{-- Chưa kết nối (26) --}}
-                                            <td></td> {{-- Đã kết nối theo nhóm lớp, khoá, khoa, Học viện (27) --}}
+                                            {{-- Cols 26-27: Tình trạng kết nối --}}
+                                            <td></td> {{-- Chưa kết nối --}}
+                                            <td></td> {{-- Đã kết nối theo nhóm lớp, khoá, khoa, Học viện --}}
                                         </tr>
                                     @empty
                                         <tr>
