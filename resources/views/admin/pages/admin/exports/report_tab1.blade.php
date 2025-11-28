@@ -2,13 +2,13 @@
 
     <!-- ====== HEADER CĂN TRÁI ====== -->
     <tr>
-        <th colspan="2" style="text-align: left;font-size:14px; text-align:center;">
+        <th colspan="4" style="text-align: left;font-size:14px; text-align:center;">
             HỌC VIỆN NÔNG NGHIỆP VIỆT NAM</th>
     </tr>
     <tr>
-        <th colspan="2"
+        <th colspan="4"
             style="text-align: left; font-weight:bold;text-align:center;font-size:14px;text-decoration: underline;">
-            KHOA: {{ $facultyName ?? '............' }}
+            KHOA CÔNG NGHỆ THÔNG TIN 
         </th>
     </tr>
 
@@ -23,9 +23,9 @@
         </td>
     </tr>
 
-    <tr>
+    {{-- <tr>
         <td colspan="20" style="height:10px;"></td>
-    </tr>
+    </tr> --}}
 
     <!-- ====== HEADER TABLE ====== -->
     <thead>
