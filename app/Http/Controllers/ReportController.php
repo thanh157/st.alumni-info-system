@@ -67,15 +67,31 @@ class ReportController extends Controller
         $url = config('auth.student.ip') . '/api/v1/external/graduation-ceremonies/all-students';
 
         try {
-            $token = $this->getStudentToken();
-            if (empty($token)) {
-                throw new \Exception('Không có token sinh viên.');
-            }
+            $user = auth()->user();
 
-            $response = Http::withToken($token)
-                ->timeout(15)
-                ->post($url, ['ids' => array_values($graduationIds)])
+            // Lấy access token nếu chưa có
+            if (empty($user->st_students_token)) {
+                $tokenData = $this->studentService->getAccessTokenVerify();
+                if (!$tokenData || empty($tokenData['token'])) {
+                    throw new \Exception('Không lấy được access token của sinh viên.');
+                }
+            }
+            
+            $response = Http::withToken($user->st_students_token)
+                ->timeout(10)
+                ->get($url, [
+                    'ids' => $graduationIds
+                ])
                 ->json();
+            // $token = $this->getStudentToken();
+            // if (empty($token)) {
+            //     throw new \Exception('Không có token sinh viên.');
+            // }
+
+            // $response = Http::withToken($token)
+            //     ->timeout(15)
+            //     ->post($url, ['ids' => array_values($graduationIds)])
+            //     ->json();
 
             // API trả về data trong field 'survey_students'
             if (!isset($response['data']['survey_students']) || !is_array($response['data']['survey_students'])) {
