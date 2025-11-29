@@ -26,7 +26,6 @@
             border-color: #0d6efd;
         }
 
-        /* Đảm bảo tab nav-link khi active đậm hơn */
         .nav-tabs .nav-link {
             font-weight: 500;
             color: #6c757d;
@@ -37,7 +36,6 @@
             color: #0d6efd;
         }
 
-        /* CSS cho dropdown export */
         .dropdown-item {
             padding: 0.5rem 1rem;
             transition: all 0.2s;
@@ -97,7 +95,6 @@
                         onchange="this.form.submit()">
                         <option value="">-- Chọn khảo sát --</option>
                         @php
-                            // Lấy danh sách survey một lần duy nhất
                             $surveys_list = \App\Models\Survey::orderBy('created_at', 'desc')->get();
                         @endphp
                         @foreach ($surveys_list as $item)
@@ -112,9 +109,12 @@
 
         @if ($currentSurveyId && isset($r1) && !empty($r1))
             @php
-                // Chuẩn bị dữ liệu một lần
+                // Chuẩn bị dữ liệu chung
                 $responsesByCode = $r2->keyBy('code_student');
+
+                // Nếu studentTab2 là model Student local thì pluck('id') vẫn ok
                 $studentIdsForGraduation = $studentTab2->pluck('id');
+
                 $graduationData = Illuminate\Support\Facades\DB::table('graduation_student')
                     ->join('graduation', 'graduation_student.graduation_id', '=', 'graduation.id')
                     ->whereIn('graduation_student.student_id', $studentIdsForGraduation)
@@ -125,17 +125,16 @@
                     )
                     ->get()
                     ->keyBy('student_id');
+
                 $majors = \App\Models\Major::all()->keyBy('id');
             @endphp
 
             {{-- CÁC NÚT BẤM CHUNG --}}
             <div class="d-flex justify-content-end mb-3 gap-2 flex-wrap">
-                {{-- Nút xem biểu đồ --}}
                 <a href="{{ route('admin.charts.index') }}" class="btn btn-primary">
                     <i class="bi bi-eye"></i> Xem biểu đồ thống kê
                 </a>
 
-                {{-- Dropdown xuất báo cáo --}}
                 <div class="btn-group">
                     <button type="button" class="btn btn-success dropdown-toggle" data-bs-toggle="dropdown"
                         aria-expanded="false">
@@ -174,9 +173,7 @@
                             </a>
                         </li>
 
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
+                        <li><hr class="dropdown-divider"></li>
 
                         <li>
                             <a class="dropdown-item fw-bold text-primary download-link"
@@ -251,23 +248,22 @@
                                     @php
                                         $majorsRows = collect($r1Majors);
 
-                                        // Tổng theo 2 ngành
-                                      $tong_total_student = $r1['total_student'] ?? 0;   // từ survey
-                                        $tong_total_nu      = $r1['total_nu'] ?? 0;         // từ student
-                                        $tong_total_res     = $r1['total_res'] ?? 0;        // từ employment
-                                        $tong_total_res_nu  = $r1['total_res_nu'] ?? 0;
+                                        $tong_total_student  = $r1['total_student'] ?? 0;
+                                        $tong_total_nu       = $r1['total_nu'] ?? 0;
+                                        $tong_total_res      = $r1['total_res'] ?? 0;
+                                        $tong_total_res_nu   = $r1['total_res_nu'] ?? 0;
 
                                         $tong_dung_nganh      = $majorsRows->sum('dung_nganh');
                                         $tong_lien_quan       = $majorsRows->sum('lien_quan');
                                         $tong_khong_lien_quan = $majorsRows->sum('khong_lien_quan');
 
-                                        $tong_tiep_tuc_hoc    = $majorsRows->sum('tiep_tuc_hoc');
-                                        $tong_chua_co_viec    = $majorsRows->sum('chua_co_viec');
+                                        $tong_tiep_tuc_hoc = $majorsRows->sum('tiep_tuc_hoc');
+                                        $tong_chua_co_viec = $majorsRows->sum('chua_co_viec');
 
-                                        $tong_nha_nuoc        = $majorsRows->sum('nha_nuoc');
-                                        $tong_tu_nhan         = $majorsRows->sum('tu_nhan');
-                                        $tong_tu_tao          = $majorsRows->sum('tu_tao');
-                                        $tong_nuoc_ngoai      = $majorsRows->sum('nuoc_ngoai');
+                                        $tong_nha_nuoc   = $majorsRows->sum('nha_nuoc');
+                                        $tong_tu_nhan    = $majorsRows->sum('tu_nhan');
+                                        $tong_tu_tao     = $majorsRows->sum('tu_tao');
+                                        $tong_nuoc_ngoai = $majorsRows->sum('nuoc_ngoai');
 
                                         $tong_co_viec_lam = $tong_dung_nganh + $tong_lien_quan + $tong_khong_lien_quan;
 
@@ -282,7 +278,6 @@
                                             : 0;
                                     @endphp
 
-                                    {{-- 2 dòng cho 2 ngành --}}
                                     @foreach ($majorsRows as $index => $row)
                                         <tr>
                                             <td>{{ $index + 1 }}</td>
@@ -311,7 +306,6 @@
                                         </tr>
                                     @endforeach
 
-                                    {{-- Dòng cuối: TỔNG 2 NGÀNH --}}
                                     <tr class="fw-bold">
                                         <td>{{ $majorsRows->count() + 1 }}</td>
                                         <td></td>
@@ -392,37 +386,65 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @forelse ($studentTab2 as $item)
-                                        @php
-                                            $graduation = $graduationData->get($item->id);
-                                            $res = $responsesByCode->get($item->code);
-                                            $major = $majors->get($item->training_industry_id);
-                                        @endphp
-                                        <tr>
-                                            <td>{{ $loop->iteration }}</td>
-                                            <td>{{ $item->code }}</td>
-                                            <td>{{ $item->full_name }}</td>
-                                            <td>{{ $item->gender == 'male' ? 'x' : '' }}</td>
-                                            <td>{{ $item->citizen_identification }}</td>
-                                            <td>{{ optional($majors->get($item->training_industry_id))->code }}</td>
-                                            <td>{{ optional($graduation)->certification }}</td>
-                                            <td>{{ optional($graduation)->certification_date ? date('d-m-Y', strtotime($graduation->certification_date)) : '' }}
-                                            </td>
-                                            <td>{{ $item->phone }}</td>
-                                            <td>{{ $item->email }}</td>
-                                            <td></td>
-                                            <td>{{ $res ? 'X' : '' }}</td>
-                                            <td>{{ optional($major)->name }}</td>
-                                            <td></td> {{-- Cột "Khóa học" bị thiếu dữ liệu --}}
-                                        </tr>
-                                    @empty
-                                        <tr>
-                                            <td colspan="13" class="text-center">Không có dữ liệu sinh viên cho đợt khảo
-                                                sát này.
-                                            </td>
-                                        </tr>
-                                    @endforelse
+                                @php
+                                    // Danh sách SV đã phản hồi từ employ
+                                    $responsesByCode = $r2->keyBy('code_student');
+                                @endphp
+
+                                @forelse ($studentTab2 as $item)
+                                    @php
+                                        $hasResponse = $responsesByCode->has($item->code);
+                                    @endphp
+                                    <tr>
+                                        <td>{{ $loop->iteration }}</td>
+
+                                        {{-- Mã sinh viên --}}
+                                        <td>{{ $item->code ?? '' }}</td>
+
+                                        {{-- Họ và tên --}}
+                                        <td>{{ $item->full_name ?? '' }}</td>
+
+                                        {{-- Nữ --}}
+                                        <td>{{ ($item->gender ?? '') === 'female' ? 'X' : '' }}</td>
+
+                                        {{-- CCCD --}}
+                                        <td>{{ $item->citizen_identification ?? '' }}</td>
+
+                                        {{-- Mã ngành đào tạo (API CHƯA CÓ) --}}
+                                        <td> {{ $item->industry_name }}</td>
+
+                                        {{-- Quyết định --}}
+                                        <td></td>
+                                        <td></td>
+
+                                        {{-- Số điện thoại --}}
+                                        <td>{{ $item->phone ?? '' }}</td>
+
+                                        {{-- Email --}}
+                                        <td>{{ $item->email ?? '' }}</td>
+
+                                        {{-- Hình thức khảo sát --}}
+                                        <td></td>
+
+                                        {{-- Có phản hồi --}}
+                                        <td>{{ $hasResponse ? 'X' : '' }}</td>
+
+                                        {{-- Ghi chú --}}
+                                        <td>{{ $item->note ?? '' }}</td>
+
+                                        {{-- Ngành --}}
+                                        <td> {{ $item->industry_name }}</td>
+
+                                        {{-- Khoa --}}
+                                        <td> Công Nghệ Thông Tin</td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="15" class="text-center">Không có dữ liệu sinh viên cho đợt khảo sát này.</td>
+                                    </tr>
+                                @endforelse
                                 </tbody>
+
                             </table>
                         </div>
                     </div>
@@ -539,126 +561,108 @@
                                         <th>Không liên quan đến ngành đào tạo</th>
                                     </tr>
                                 </thead>
-                                    <tbody>
-@forelse ($r2 as $item)
-    @php
-        // Tách tỉnh/thành phố từ địa chỉ nơi làm việc
-        $city = '';
-        if (!empty($item->recruit_partner_address)) {
-            $parts = explode(',', $item->recruit_partner_address);
-            $city = trim(end($parts));
-        }
+                                <tbody>
+                                    @forelse ($r2 as $item)
+                                        @php
+                                            $city = '';
+                                            if (!empty($item->recruit_partner_address)) {
+                                                $parts = explode(',', $item->recruit_partner_address);
+                                                $city = trim(end($parts));
+                                            }
 
-        // Decode JSON về array (giá trị lưu dạng: ["value" => [1,2,3,...]])
-        $search    = json_decode($item->job_search_method ?? '[]', true) ?? [];
-        $recruit   = json_decode($item->recruitment_type ?? '[]', true) ?? [];
-        $skills    = json_decode($item->soft_skills_required ?? '[]', true) ?? [];
-        $courses   = json_decode($item->must_attended_courses ?? '[]', true) ?? [];
-        $solutions = json_decode($item->solutions_get_job ?? '[]', true) ?? [];
+                                            $search    = json_decode($item->job_search_method ?? '[]', true) ?? [];
+                                            $recruit   = json_decode($item->recruitment_type ?? '[]', true) ?? [];
+                                            $skills    = json_decode($item->soft_skills_required ?? '[]', true) ?? [];
+                                            $courses   = json_decode($item->must_attended_courses ?? '[]', true) ?? [];
+                                            $solutions = json_decode($item->solutions_get_job ?? '[]', true) ?? [];
 
-        $searchValues    = data_get($search, 'value', []);
-        $recruitValues   = data_get($recruit, 'value', []);
-        $skillValues     = data_get($skills, 'value', []);
-        $courseValues    = data_get($courses, 'value', []);
-        $solutionValues  = data_get($solutions, 'value', []);
-    @endphp
+                                            $searchValues    = data_get($search, 'value', []);
+                                            $recruitValues   = data_get($recruit, 'value', []);
+                                            $skillValues     = data_get($skills, 'value', []);
+                                            $courseValues    = data_get($courses, 'value', []);
+                                            $solutionValues  = data_get($solutions, 'value', []);
+                                        @endphp
 
-    <tr>
-        {{-- 1–9: Thông tin cá nhân --}}
-        <td>{{ $loop->iteration }}</td>
-        <td>{{ $item->code_student }}</td>
-        <td>{{ $item->full_name }}</td>
-        <td>{{ !empty($item->dob) ? date('d-m-Y', strtotime($item->dob)) : '' }}</td>
-        <td>{{ $item->gender == 'Nam' ? 'Nam' : 'Nữ' }}</td>
-        <td>{{ $item->identification_card_number }}</td>
-        <td>{{ optional($majors->get($item->training_industry_id))->code }}</td>
-        <td>{{ $item->phone_number }}</td>
-        <td>{{ $item->email }}</td>
+                                        <tr>
+                                            {{-- 1–9: Thông tin cá nhân --}}
+                                            <td>{{ $loop->iteration }}</td>
+                                            <td>{{ $item->code_student }}</td>
+                                            <td>{{ $item->full_name }}</td>
+                                            <td>{{ !empty($item->dob) ? date('d-m-Y', strtotime($item->dob)) : '' }}</td>
+                                            <td>{{ $item->gender == 'Nam' ? 'Nam' : 'Nữ' }}</td>
+                                            <td>{{ $item->identification_card_number }}</td>
+                                            <td>{{ optional($majors->get($item->training_industry_id))->code }}</td>
+                                            <td>{{ $item->phone_number }}</td>
+                                            <td>{{ $item->email }}</td>
 
-        {{-- 10–14: TÌNH HÌNH VIỆC LÀM (5) --}}
-        {{-- 3 cột "Có việc làm": 1–3 --}}
-        <td>{{ $item->trained_field == 1 ? 'x' : '' }}</td> {{-- Đúng ngành --}}
-        <td>{{ $item->trained_field == 2 ? 'x' : '' }}</td> {{-- Liên quan --}}
-        <td>{{ $item->trained_field == 3 ? 'x' : '' }}</td> {{-- Không liên quan --}}
-        {{-- 1 cột "Tiếp tục học": status = 2 --}}
-        <td>{{ $item->employment_status == 2 ? 'x' : '' }}</td>
-        {{-- 1 cột "Chưa có việc làm": status = 3 --}}
-        <td>{{ $item->employment_status == 3 ? 'x' : '' }}</td>
+                                            {{-- 10–14: Tình hình việc làm --}}
+                                            <td>{{ $item->trained_field == 1 ? 'x' : '' }}</td>
+                                            <td>{{ $item->trained_field == 2 ? 'x' : '' }}</td>
+                                            <td>{{ $item->trained_field == 3 ? 'x' : '' }}</td>
+                                            <td>{{ $item->employment_status == 2 ? 'x' : '' }}</td>
+                                            <td>{{ $item->employment_status == 3 ? 'x' : '' }}</td>
 
-        {{-- 15–18: KHU VỰC LÀM VIỆC (4) --}}
-        {{-- Giả sử work_area = 1..4 đúng thứ tự Nhà nước / Tư nhân / Tự tạo / Có yếu tố NN --}}
-        @for ($i = 1; $i <= 4; $i++)
-            <td>{{ $item->work_area == $i ? 'x' : '' }}</td>
-        @endfor
+                                            {{-- 15–18: Khu vực làm việc --}}
+                                            @for ($i = 1; $i <= 4; $i++)
+                                                <td>{{ $item->work_area == $i ? 'x' : '' }}</td>
+                                            @endfor
 
-        {{-- 19: NƠI LÀM VIỆC (TỈNH/TP) --}}
-        <td>{{ $city }}</td>
+                                            {{-- 19: Nơi làm việc (tỉnh/thành) --}}
+                                            <td>{{ $city }}</td>
 
-        {{-- 20–23: THỜI GIAN TÌM VIỆC (4) --}}
-        {{-- Giả sử employed_since = 1..4 lần lượt: <3m, 3–<6m, 6–<12m, ≥12m --}}
-        @for ($i = 1; $i <= 4; $i++)
-            <td>{{ $item->employed_since == $i ? 'x' : '' }}</td>
-        @endfor
+                                            {{-- 20–23: Thời gian tìm được việc --}}
+                                            @for ($i = 1; $i <= 4; $i++)
+                                                <td>{{ $item->employed_since == $i ? 'x' : '' }}</td>
+                                            @endfor
 
-        {{-- 24–26: KIẾN THỨC KỸ NĂNG (3) --}}
-        {{-- level_knowledge_acquired = 1..3: Đã học được / Một phần / Không học được --}}
-        @for ($i = 1; $i <= 3; $i++)
-            <td>{{ $item->level_knowledge_acquired == $i ? 'x' : '' }}</td>
-        @endfor
+                                            {{-- 24–26: Kiến thức/kỹ năng đã học --}}
+                                            @for ($i = 1; $i <= 3; $i++)
+                                                <td>{{ $item->level_knowledge_acquired == $i ? 'x' : '' }}</td>
+                                            @endfor
 
-        {{-- 27: MỨC LƯƠNG KHỞI ĐIỂM (1) --}}
-        <td>{{ $item->starting_salary ?? 0 }}</td>
+                                            {{-- 27: Mức lương khởi điểm --}}
+                                            <td>{{ $item->starting_salary ?? 0 }}</td>
 
-        {{-- 28–31: THU NHẬP BÌNH QUÂN (4) --}}
-        {{-- average_income = 1..4: <5m, 5–10m, 10–15m, >15m --}}
-        @for ($i = 1; $i <= 4; $i++)
-            <td>{{ $item->average_income == $i ? 'x' : '' }}</td>
-        @endfor
+                                            {{-- 28–31: Thu nhập bình quân --}}
+                                            @for ($i = 1; $i <= 4; $i++)
+                                                <td>{{ $item->average_income == $i ? 'x' : '' }}</td>
+                                            @endfor
 
-        {{-- 32–36: HÌNH THỨC TÌM VIỆC (5) --}}
-        {{-- job_search_method: mảng giá trị 1..5 --}}
-        @for ($i = 1; $i <= 5; $i++)
-            <td>{{ in_array($i, $searchValues) ? 'x' : '' }}</td>
-        @endfor
+                                            {{-- 32–36: Hình thức tìm việc làm --}}
+                                            @for ($i = 1; $i <= 5; $i++)
+                                                <td>{{ in_array($i, $searchValues) ? 'x' : '' }}</td>
+                                            @endfor
 
-        {{-- 37–42: HÌNH THỨC TUYỂN DỤNG (6) --}}
-        {{-- recruitment_type: mảng giá trị 1..6 --}}
-        @for ($i = 1; $i <= 6; $i++)
-            <td>{{ in_array($i, $recruitValues) ? 'x' : '' }}</td>
-        @endfor
+                                            {{-- 37–42: Hình thức tuyển dụng --}}
+                                            @for ($i = 1; $i <= 6; $i++)
+                                                <td>{{ in_array($i, $recruitValues) ? 'x' : '' }}</td>
+                                            @endfor
 
-        {{-- 43–51: KỸ NĂNG MỀM (9) --}}
-        {{-- soft_skills_required: mảng giá trị 1..9 --}}
-        @for ($i = 1; $i <= 9; $i++)
-            <td>{{ in_array($i, $skillValues) ? 'x' : '' }}</td>
-        @endfor
+                                            {{-- 43–51: Kỹ năng mềm --}}
+                                            @for ($i = 1; $i <= 9; $i++)
+                                                <td>{{ in_array($i, $skillValues) ? 'x' : '' }}</td>
+                                            @endfor
 
-        {{-- 52–57: KHÓA HỌC ĐÃ THAM GIA (6) --}}
-        {{-- must_attended_courses: mảng giá trị 1..6 --}}
-        @for ($i = 1; $i <= 6; $i++)
-            <td>{{ in_array($i, $courseValues) ? 'x' : '' }}</td>
-        @endfor
+                                            {{-- 52–57: Khóa học đã tham gia --}}
+                                            @for ($i = 1; $i <= 6; $i++)
+                                                <td>{{ in_array($i, $courseValues) ? 'x' : '' }}</td>
+                                            @endfor
 
-        {{-- 58–63: GIẢI PHÁP (6) --}}
-        {{-- solutions_get_job: mảng giá trị 1..6 --}}
-        @for ($i = 1; $i <= 6; $i++)
-            <td>{{ in_array($i, $solutionValues) ? 'x' : '' }}</td>
-        @endfor
-    </tr>
-@empty
-    <tr>
-        <td colspan="63" class="text-center">Không có sinh viên nào phản hồi.</td>
-    </tr>
-@endforelse
-</tbody>
-
+                                            {{-- 58–63: Giải pháp --}}
+                                            @for ($i = 1; $i <= 6; $i++)
+                                                <td>{{ in_array($i, $solutionValues) ? 'x' : '' }}</td>
+                                            @endfor
+                                        </tr>
+                                    @empty
+                                        <tr>
+                                            <td colspan="63" class="text-center">Không có sinh viên nào phản hồi.</td>
+                                        </tr>
+                                    @endforelse
+                                </tbody>
                             </table>
                         </div>
                     </div>
                 </div>
-
-             
-
             </div>
         @else
             <div class="alert alert-info mt-5">Vui lòng chọn một cuộc khảo sát để xem báo cáo.</div>
@@ -680,5 +684,4 @@
             }
         });
     </script>
-
 @endsection
