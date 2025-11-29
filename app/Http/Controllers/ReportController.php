@@ -52,43 +52,7 @@ class ReportController extends Controller
         }
     }
 
-    /**
-     * Lấy thông tin đợt tốt nghiệp từ API theo list ID
-     */
-    private function fetchGraduationsByIds(array $graduationIds): array
-    {
-        if (empty($graduationIds)) {
-            return [];
-        }
 
-        $url = config('auth.student.ip') . '/api/v1/external/graduation-ceremonies/by-ids';
-
-        try {
-            $token = $this->getStudentToken();
-            if (empty($token)) {
-                throw new \Exception('Không có token sinh viên.');
-            }
-
-            $response = Http::withToken($token)
-                ->timeout(15)
-                ->post($url, ['ids' => array_values($graduationIds)])
-                ->json();
-
-            if (!isset($response['data']) || !is_array($response['data'])) {
-                Log::warning('API graduations trả về không hợp lệ', [
-                    'response' => $response,
-                ]);
-                throw new \Exception('API trả về dữ liệu không hợp lệ (graduations).');
-            }
-
-            return $response['data'];
-        } catch (Throwable $th) {
-            Log::error("fetchGraduationsByIds error: " . $th->getMessage(), [
-                'graduation_ids' => $graduationIds,
-            ]);
-            return [];
-        }
-    }
 
     /**
      * Lấy danh sách sinh viên theo graduation IDs
@@ -149,22 +113,25 @@ class ReportController extends Controller
         $facultyName = 'KHOA';
         $studentTab2 = collect();
 
-        // Nếu có graduation IDs thì gọi API
+        // Nếu có graduation IDs thì gọi API lấy sinh viên
         if (!empty($graduationIds)) {
-            // Lấy thông tin đợt tốt nghiệp
-            $graduationsFromApi = $this->fetchGraduationsByIds($graduationIds);
-            
-            if (!empty($graduationsFromApi)) {
-                $schoolYear = $graduationsFromApi[0]['school_year'] ?? 'N/A';
-                $facultyName = $graduationsFromApi[0]['faculty']['name'] ?? 'KHOA';
-            }
-
-            // Lấy danh sách sinh viên
             $studentsFromApi = $this->fetchStudentsByGraduationIds($graduationIds);
             
             $studentTab2 = collect($studentsFromApi)->map(function ($s) {
                 return (object) $s;
             });
+
+            // Lấy school_year và faculty từ sinh viên đầu tiên (nếu có)
+            if ($studentTab2->isNotEmpty()) {
+                $firstStudent = $studentTab2->first();
+                
+                // school_year từ school_year_end (ví dụ: "2020")
+                $schoolYear = $firstStudent->school_year_end ?? 'N/A';
+                
+                // faculty_id có thể map sang tên khoa (hoặc lấy từ DB local)
+                // Tạm thời để mặc định, có thể cải thiện sau
+                $facultyName = 'KHOA';
+            }
         }
 
         // Lấy dữ liệu phản hồi
