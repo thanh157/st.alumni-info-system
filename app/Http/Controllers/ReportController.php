@@ -7,52 +7,109 @@ use App\Models\EmploymentSurveyResponse;
 use App\Models\Survey;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Http; // THÊM
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Services\StudentService;
+use Throwable;
 
 class ReportController extends Controller
 {
-    /**
-     * Lấy tất cả dữ liệu báo cáo cần thiết cho cả hiển thị và xuất khẩu.
-     *
-     * @param int $surveyId
-     * @return array|null
-     */
-        public function __construct (private StudentService $studentService) {}
+    public function __construct(private StudentService $studentService) {}
 
+    /**
+     * Lấy / cache token sinh viên
+     */
+    private function getStudentToken(): ?string
+    {
+        try {
+            $user = auth()->user();
+            if (!$user) {
+                throw new \Exception('User chưa đăng nhập');
+            }
+
+            // Nếu đã có token thì dùng luôn
+            if (!empty($user->st_students_token)) {
+                return $user->st_students_token;
+            }
+
+            // Lấy token mới
+            $tokenData = $this->studentService->getAccessTokenVerify();
+            if (!$tokenData || empty($tokenData['token'])) {
+                throw new \Exception('Không lấy được access token của sinh viên.');
+            }
+
+            $token = $tokenData['token'];
+
+            // Lưu lại cho lần sau
+            $user->update(['st_students_token' => $token]);
+
+            return $token;
+        } catch (Throwable $th) {
+            Log::error('getStudentToken error: ' . $th->getMessage());
+            return null;
+        }
+    }
+
+    /**
+     * Lấy thông tin đợt tốt nghiệp từ API theo list ID
+     */
+    private function fetchGraduationsByIds(array $graduationIds): array
+    {
+        if (empty($graduationIds)) {
+            return [];
+        }
+
+        $url = config('auth.student.ip') . '/api/v1/external/graduation-ceremonies/by-ids';
+
+        try {
+            $token = $this->getStudentToken();
+            if (empty($token)) {
+                throw new \Exception('Không có token sinh viên.');
+            }
+
+            $response = Http::withToken($token)
+                ->timeout(15)
+                ->post($url, ['ids' => array_values($graduationIds)])
+                ->json();
+
+            if (!isset($response['data']) || !is_array($response['data'])) {
+                throw new \Exception('API trả về dữ liệu không hợp lệ (graduations).');
+            }
+
+            return $response['data'];
+        } catch (Throwable $th) {
+            Log::error("fetchGraduationsByIds error: " . $th->getMessage(), [
+                'graduation_ids' => $graduationIds,
+            ]);
+            return [];
+        }
+    }
+
+    /**
+     * Lấy danh sách sinh viên theo graduation IDs
+     */
     private function fetchStudentsByGraduationIds(array $graduationIds): array
     {
         if (empty($graduationIds)) {
             return [];
         }
 
-         $url = config('auth.student.ip')  . '/api/v1/external/graduation-ceremonies/all-students';
+        $url = config('auth.student.ip') . '/api/v1/external/graduation-ceremonies/all-students';
 
         try {
-            $user = auth()->user();
-
-            // Lấy token giống mẫu hàm fetchApi
-            $token = $user->st_students_token ?? null;
+            $token = $this->getStudentToken();
             if (empty($token)) {
-                $tokenData = $this->studentService->getAccessTokenVerify();
-                if (!$tokenData || empty($tokenData['token'])) {
-                    throw new \Exception('Không lấy được access token của sinh viên.');
-                }
-                $token = $tokenData['token'];
-                 
+                throw new \Exception('Không có token sinh viên.');
             }
 
-            // Gọi API kiểu POST, body JSON: { "ids": [...] }
             $response = Http::withToken($token)
                 ->timeout(15)
-                ->post($url, [
-                    'ids' => array_values($graduationIds),
-                ])
+                ->post($url, ['ids' => array_values($graduationIds)])
                 ->json();
-                  
+
             if (!isset($response['data']) || !is_array($response['data'])) {
-                throw new \Exception('API trả về dữ liệu không hợp lệ.');
+                throw new \Exception('API trả về dữ liệu không hợp lệ (students).');
             }
 
             return $response['data'];
@@ -63,74 +120,73 @@ class ReportController extends Controller
             return [];
         }
     }
-    private function getReportData(int $surveyId): ?array
+
+    /**
+     * Lấy tất cả dữ liệu báo cáo cho view + export
+     */
+    private function getReportData(int $surveyId): array
     {
-        // Sử dụng findOrFail để tự động throw 404 nếu không tìm thấy Survey
         $survey = Survey::findOrFail($surveyId);
 
-        // 1. Lấy dữ liệu Tab 3: Danh sách sinh viên phản hồi về việc làm từ EmploymentSurveyResponse
-        $r2 = EmploymentSurveyResponse::where('survey_period_id', $surveyId)->get();
+        // Lấy graduation IDs từ quan hệ (không dùng model pivot riêng nữa)
+        $graduationIds = $survey->graduations()->pluck('id')->toArray();
 
-        if ($r2->isEmpty()) {
-            \Log::warning('No employment responses found for survey', ['survey_id' => $surveyId]);
-            return null; // Không có phản hồi => không sinh báo cáo
-        }
+        // 2. Lấy thông tin đợt tốt nghiệp từ API (nếu fail thì vẫn tiếp tục, chỉ thiếu school_year/facultyName)
+        $graduationsFromApi = $this->fetchGraduationsByIds($graduationIds);
 
+        $schoolYear = $graduationsFromApi[0]['school_year'] ?? ($survey->school_year ?? 'N/A');
+        $facultyName = $graduationsFromApi[0]['faculty']['name'] ?? 'KHOA';
 
-        $allGraduations = $survey->graduations()->get();
-        $schoolYear = $allGraduations->first()->school_year ?? 'N/A';
-
-        $graduationIds = $allGraduations->pluck('id')->toArray();
-
-        // GỌI API ALL-STUDENTS
+        // 3. Lấy danh sách sinh viên tốt nghiệp từ API
         $studentsFromApi = $this->fetchStudentsByGraduationIds($graduationIds);
 
-        // Cho Blade xài kiểu object -> vẫn truy cập $item->code, $item->full_name...
         $studentTab2 = collect($studentsFromApi)->map(function ($s) {
             return (object) $s;
         });
 
+        // 4. Lấy dữ liệu phản hồi
+        $r2 = EmploymentSurveyResponse::where('survey_period_id', $surveyId)->get();
 
-
-        // 4. Danh sách mã SV đã phản hồi (dùng để check "Có phản hồi" ở Tab 2 / alumni, v.v.)
+        // 5. Danh sách mã SV đã phản hồi
         $studentCodesResponded = $r2->pluck('code_student')->unique()->toArray();
 
-        // 5. Dữ liệu Tab 4: Thông tin cựu sinh viên từ bảng alumni_contact_surveys (nếu có)
+        // 6. Dữ liệu cựu sinh viên (Tab 4 – nếu có dùng sau này)
         $alumniData = DB::table('alumni_contact_surveys')
             ->whereIn('student_code', $studentCodesResponded)
             ->orderBy('created_at', 'desc')
             ->get();
 
-        \Log::info('TAB 2 - ALL GRADUATED STUDENTS (via API)', [
+        Log::info('Report data fetched', [
+            'survey_id' => $surveyId,
             'graduation_ids' => $graduationIds,
-            'studentTab2_count' => $studentTab2->count(),
-            'studentCodesResponded_count' => count($studentCodesResponded),
+            'students_count' => $studentTab2->count(),
+            'responses_count' => $r2->count(),
         ]);
 
-        // 6. Tính toán Tab 1: Tổng hợp chung
-        // Số SV tốt nghiệp dùng field tổng trên survey (theo yêu cầu mẫu)
+        // Helper check giới tính nữ
+        $isFemaleFn = function ($genderValue) {
+            $gender = mb_strtolower($genderValue ?? '');
+            return in_array($gender, ['nữ', 'nu', 'female', 'f', '0']);
+        };
+
+        // 7. Tổng hợp chung (Tab 1)
         $totalGraduates = (int) ($survey->total_graduations ?? 0);
 
-        // Nữ trong toàn bộ danh sách sinh viên tốt nghiệp (studentTab2 từ API)
-        $totalNu = $studentTab2->filter(function ($s) {
-            $gender = mb_strtolower($s->gender ?? '');
-            return in_array($gender, ['nữ', 'nu', 'female']);
+        $totalNu = $studentTab2->filter(function ($s) use ($isFemaleFn) {
+            return $isFemaleFn($s->gender ?? '');
         })->count();
 
         $r1 = [
             'total_student' => $totalGraduates,
             'total_nu' => $totalNu,
             'total_res' => $r2->count(),
-            'total_res_nu' => $r2->filter(function ($s) {
-                $gender = mb_strtolower($s->gender ?? '');
-                return in_array($gender, ['nữ', 'nu', 'female']);
+            'total_res_nu' => $r2->filter(function ($s) use ($isFemaleFn) {
+                return $isFemaleFn($s->gender ?? '');
             })->count(),
         ];
 
-        // 7. Thống kê theo ngành đào tạo (trained_field)
-        // Chỉ tính những người CÓ VIỆC LÀM (employment_status = 1)
-        $r1_trained_field = DB::table('employment_survey_responses_v2')
-            ->selectRaw("
+        // 8. Theo ngành đào tạo (trained_field) – chỉ người có việc làm
+        $r1_trained_field = EmploymentSurveyResponse::selectRaw("
                 SUM(CASE WHEN trained_field = 1 AND employment_status = 1 THEN 1 ELSE 0 END) AS dung_nganh,
                 SUM(CASE WHEN trained_field = 2 AND employment_status = 1 THEN 1 ELSE 0 END) AS lien_quan,
                 SUM(CASE WHEN trained_field = 3 AND employment_status = 1 THEN 1 ELSE 0 END) AS khong_lien_quan
@@ -138,9 +194,8 @@ class ReportController extends Controller
             ->where('survey_period_id', $surveyId)
             ->first();
 
-        // 8. Thống kê theo khu vực làm việc (work_area)
-        $r1_work_area = DB::table('employment_survey_responses_v2')
-            ->selectRaw("
+        // 9. Theo khu vực làm việc
+        $r1_work_area = EmploymentSurveyResponse::selectRaw("
                 SUM(CASE WHEN work_area = '1' AND employment_status = 1 THEN 1 ELSE 0 END) AS nha_nuoc,
                 SUM(CASE WHEN work_area = '2' AND employment_status = 1 THEN 1 ELSE 0 END) AS tu_nhan,
                 SUM(CASE WHEN work_area = '3' AND employment_status = 1 THEN 1 ELSE 0 END) AS tu_tao,
@@ -149,40 +204,28 @@ class ReportController extends Controller
             ->where('survey_period_id', $surveyId)
             ->first();
 
-        // 9. Lấy tên khoa: ưu tiên từ đợt tốt nghiệp (vì studentTab2 giờ là từ API, không có relation faculty)
-        $facultyName = 'KHOA';
-        if ($allGraduations->isNotEmpty() && $allGraduations->first()->faculty) {
-            $facultyName = $allGraduations->first()->faculty->name ?? 'KHOA';
-        }
-
-        // 10. Thống kê chi tiết theo 2 ngành cố định cho mẫu 1
-        $majorConfigs = [
+        // 10. Thống kê chi tiết theo ngành (cho mẫu 1)
+        $majorConfigs = config('survey.major_configs', [
             1 => ['code' => '7480201', 'name' => 'Công nghệ thông tin'],
             2 => ['code' => '7480102', 'name' => 'Mạng máy tính & Truyền dữ liệu'],
-        ];
+        ]);
 
         $r1Majors = [];
 
         foreach ($majorConfigs as $trainingIndustryId => $info) {
-            // Sinh viên thuộc ngành này (trong danh sách Tab2 từ API)
             $studentsMajor = $studentTab2->where('training_industry_id', $trainingIndustryId);
-
-            // Phản hồi thuộc ngành này (từ employ)
             $responsesMajor = $r2->where('training_industry_id', $trainingIndustryId);
 
             $totalStudentMajor = $studentsMajor->count();
-            $totalNuMajor = $studentsMajor->filter(function ($s) {
-                $gender = mb_strtolower($s->gender ?? '');
-                return in_array($gender, ['nữ', 'nu', 'female']);
+            $totalNuMajor = $studentsMajor->filter(function ($s) use ($isFemaleFn) {
+                return $isFemaleFn($s->gender ?? '');
             })->count();
 
             $totalResMajor = $responsesMajor->count();
-            $totalResNuMajor = $responsesMajor->filter(function ($s) {
-                $gender = mb_strtolower($s->gender ?? '');
-                return in_array($gender, ['nữ', 'nu', 'female']);
+            $totalResNuMajor = $responsesMajor->filter(function ($s) use ($isFemaleFn) {
+                return $isFemaleFn($s->gender ?? '');
             })->count();
 
-            // Chỉ những người có việc làm
             $responsesEmployed = $responsesMajor->where('employment_status', 1);
 
             $dungNganh = $responsesEmployed->where('trained_field', 1)->count();
@@ -233,6 +276,7 @@ class ReportController extends Controller
             ];
         }
 
+        // KHÔNG return null nữa, luôn trả về array (dù số liệu = 0)
         return compact(
             'survey',
             'schoolYear',
@@ -248,24 +292,24 @@ class ReportController extends Controller
     }
 
     /**
-     * Hiển thị trang báo cáo với 4 tabs
+     * Hiển thị trang báo cáo
      */
     public function index(Request $request)
     {
-        // Khởi tạo các biến với giá trị mặc định
+        // Default
         $survey = null;
         $schoolYear = null;
         $r1 = [];
         $r1_trained_field = (object) [
             'dung_nganh' => 0,
             'lien_quan' => 0,
-            'khong_lien_quan' => 0
+            'khong_lien_quan' => 0,
         ];
         $r1_work_area = (object) [
             'nha_nuoc' => 0,
             'tu_nhan' => 0,
             'tu_tao' => 0,
-            'nuoc_ngoai' => 0
+            'nuoc_ngoai' => 0,
         ];
         $studentTab2 = collect();
         $r2 = collect();
@@ -276,11 +320,7 @@ class ReportController extends Controller
         if ($request->filled('survey_id')) {
             try {
                 $data = $this->getReportData((int) $request->survey_id);
-            } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-                abort(404, 'Không tìm thấy khảo sát');
-            }
 
-            if ($data !== null) {
                 $survey = $data['survey'];
                 $schoolYear = $data['schoolYear'];
                 $r1 = $data['r1'];
@@ -292,16 +332,14 @@ class ReportController extends Controller
                 $facultyName = $data['facultyName'];
                 $r1Majors = collect($data['r1Majors'] ?? []);
 
-                \Log::info('ReportController Data Assigned:', [
-                    'r1' => $r1,
-                    'studentTab2_count' => $studentTab2->count(),
-                    'r2_count' => $r2->count(),
-                    'facultyName' => $facultyName,
+            } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+                abort(404, 'Không tìm thấy khảo sát');
+            } catch (\Exception $e) {
+                Log::error('Error loading report data', [
+                    'survey_id' => $request->survey_id,
+                    'error' => $e->getMessage(),
                 ]);
-            } else {
-                // Trường hợp survey có tồn tại nhưng không có phản hồi
-                $survey = Survey::find($request->survey_id);
-                \Log::warning('Survey found but no responses', ['survey_id' => $request->survey_id]);
+                return back()->with('error', 'Có lỗi xảy ra khi tải dữ liệu báo cáo.');
             }
         }
 
@@ -320,27 +358,26 @@ class ReportController extends Controller
     }
 
     /**
-     * Export báo cáo ra file Excel theo type (tab1, tab2, tab3, tab4, all)
+     * Export báo cáo ra Excel
      */
     public function export(Request $request)
     {
-        // 1. Validate survey_id
         if (!$request->filled('survey_id')) {
             return back()->with('error', 'Vui lòng chọn một cuộc khảo sát để xuất báo cáo.');
         }
 
-        // 2. Lấy dữ liệu báo cáo
         try {
             $data = $this->getReportData((int) $request->survey_id);
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return back()->with('error', 'Không tìm thấy khảo sát.');
+        } catch (\Exception $e) {
+            Log::error('Error exporting report', [
+                'survey_id' => $request->survey_id,
+                'error' => $e->getMessage(),
+            ]);
+            return back()->with('error', 'Có lỗi xảy ra khi xuất báo cáo.');
         }
 
-        if ($data === null) {
-            return back()->with('error', 'Không có phản hồi nào trong đợt khảo sát này.');
-        }
-
-        // 3. Gán các biến từ kết quả
         $survey = $data['survey'];
         $schoolYear = $data['schoolYear'];
         $r1 = $data['r1'];
@@ -350,10 +387,8 @@ class ReportController extends Controller
         $studentTab2 = $data['studentTab2'];
         $alumniData = $data['alumniData'];
 
-        // 4. Lấy type từ request (mặc định là 'all')
         $type = $request->get('type', 'all');
 
-        // 5. Tên file theo type
         $fileNames = [
             'tab1' => 'mau-bao-cao-1',
             'tab2' => 'mau-bao-cao-2',
@@ -364,7 +399,6 @@ class ReportController extends Controller
 
         $fileName = ($fileNames[$type] ?? 'bao-cao') . '-' . date('Y-m-d-His') . '.xlsx';
 
-        // 6. Export
         return Excel::download(
             new ReportExport(
                 $schoolYear,

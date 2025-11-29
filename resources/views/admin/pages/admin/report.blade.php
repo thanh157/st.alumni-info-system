@@ -6,6 +6,7 @@
     @php
         $currentSurveyId = request('survey_id');
     @endphp
+
     <style>
         .custom-select {
             padding: 0.5rem 1rem;
@@ -57,6 +58,7 @@
             font-weight: 600;
         }
     </style>
+
     <div class="container py-4">
         <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
             <div>
@@ -92,7 +94,7 @@
                 <div class="d-flex align-items-center gap-2">
                     <label for="survey_id" class="col-form-label fw-semibold mb-0">Khảo sát:</label>
                     <select style="width: 450px;" name="survey_id" id="survey_id" class="form-select custom-select"
-                        onchange="this.form.submit()">
+                            onchange="this.form.submit()">
                         <option value="">-- Chọn khảo sát --</option>
                         @php
                             $surveys_list = \App\Models\Survey::orderBy('created_at', 'desc')->get();
@@ -109,24 +111,9 @@
 
         @if ($currentSurveyId && isset($r1) && !empty($r1))
             @php
-                // Chuẩn bị dữ liệu chung
-                $responsesByCode = $r2->keyBy('code_student');
-
-                // Nếu studentTab2 là model Student local thì pluck('id') vẫn ok
-                $studentIdsForGraduation = $studentTab2->pluck('id');
-
-                $graduationData = Illuminate\Support\Facades\DB::table('graduation_student')
-                    ->join('graduation', 'graduation_student.graduation_id', '=', 'graduation.id')
-                    ->whereIn('graduation_student.student_id', $studentIdsForGraduation)
-                    ->select(
-                        'graduation_student.student_id',
-                        'graduation.certification',
-                        'graduation.certification_date',
-                    )
-                    ->get()
-                    ->keyBy('student_id');
-
-                $majors = \App\Models\Major::all()->keyBy('id');
+                // Dữ liệu chung dùng cho nhiều tab
+                $responsesByCode = $r2->keyBy('code_student'); // dùng cho TAB 2
+                $majors = \App\Models\Major::all()->keyBy('id'); // dùng cho TAB 3 (mã ngành)
             @endphp
 
             {{-- CÁC NÚT BẤM CHUNG --}}
@@ -137,7 +124,7 @@
 
                 <div class="btn-group">
                     <button type="button" class="btn btn-success dropdown-toggle" data-bs-toggle="dropdown"
-                        aria-expanded="false">
+                            aria-expanded="false">
                         <i class="bi bi-download"></i> Tải xuống báo cáo
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end">
@@ -212,7 +199,8 @@
                                 <thead class="align-middle">
                                     <tr>
                                         <th rowspan="3">TT</th>
-                                        <th rowspan="3">Mã ngành<br><small>(Ghi theo mã ngành tuyển sinh theo thông tư số
+                                        <th rowspan="3">Mã ngành<br>
+                                            <small>(Ghi theo mã ngành tuyển sinh theo thông tư số
                                                 24/2017/TT-BGDDT. Khoa lấy thông tin mã ngành tại mẫu số 02)</small>
                                         </th>
                                         <th rowspan="3">Tên ngành đào tạo</th>
@@ -222,8 +210,9 @@
                                         <th rowspan="3">Tỷ lệ có việc làm / phản hồi</th>
                                         <th rowspan="3">Tỷ lệ có việc làm / tốt nghiệp</th>
                                         <th colspan="4" rowspan="2">Khu vực làm việc</th>
-                                        <th rowspan="3">Nơi làm việc<br>(Tỉnh/TP)<br>(Tập hợp theo danh sách sinh viên
-                                            phản hồi ở mẫu số 3)</th>
+                                        <th rowspan="3">Nơi làm việc<br>(Tỉnh/TP)<br>
+                                            (Tập hợp theo danh sách sinh viên phản hồi ở mẫu số 3)
+                                        </th>
                                     </tr>
                                     <tr>
                                         <th colspan="3">Có việc làm</th>
@@ -362,16 +351,21 @@
                                         <th rowspan="2">Họ và tên</th>
                                         <th rowspan="2">Nữ</th>
                                         <th rowspan="2">
-                                            Số thẻ CCCD <br>(Do Ban QLĐT, CTCT&CTSV cung cấp. Khoa bổ sung thông tin CCCD
-                                            đối với sinh viên chưa có CCCD. Trường hợp CCCD của sinh viên bị sai, Khoa đính
-                                            chính thông tin CCCD vào cột ghi chú)
+                                            Số thẻ CCCD <br>
+                                            (Do Ban QLĐT, CTCT&CTSV cung cấp. Khoa bổ sung thông tin CCCD
+                                            đối với sinh viên chưa có CCCD. Trường hợp CCCD của sinh viên bị sai,
+                                            Khoa đính chính thông tin CCCD vào cột ghi chú)
                                         </th>
                                         <th rowspan="2">Mã ngành đào tạo</th>
                                         <th colspan="2">Quyết định tốt nghiệp</th>
                                         <th colspan="2">Thông tin liên hệ</th>
-                                        <th rowspan="2">Hình thức khảo sát<br>(Online, điện thoại, email, phỏng vấn, gửi
-                                            tài liệu qua bưu điện…)</th>
-                                        <th rowspan="2">Có phản hồi<br>(Có phản hồi đánh dấu X)</th>
+                                        <th rowspan="2">
+                                            Hình thức khảo sát<br>
+                                            (Online, điện thoại, email, phỏng vấn, gửi tài liệu qua bưu điện…)
+                                        </th>
+                                        <th rowspan="2">
+                                            Có phản hồi<br>(Có phản hồi đánh dấu X)
+                                        </th>
                                         <th rowspan="2">Ghi chú</th>
                                         <th rowspan="2">Ngành</th>
                                         <th rowspan="2">Khoa</th>
@@ -379,21 +373,20 @@
                                     <tr>
                                         <th>Số Quyết định</th>
                                         <th>Ngày ký Quyết định</th>
-                                        <th>Số điện thoại <br>(Do Ban QLĐT, CTCT&CTSV cung cấp. Khoa bổ sung thông tin SĐT
-                                            đối với sinh viên chưa có SĐT. Trường hợp SĐT của sinh viên bị sai, Khoa đính
-                                            chính thông tin SĐT vào cột ghi chú)</th>
+                                        <th>
+                                            Số điện thoại <br>
+                                            (Do Ban QLĐT, CTCT&CTSV cung cấp. Khoa bổ sung thông tin SĐT
+                                            đối với sinh viên chưa có SĐT. Trường hợp SĐT của sinh viên bị sai,
+                                            Khoa đính chính thông tin SĐT vào cột ghi chú)
+                                        </th>
                                         <th>Email <br>(KHÔNG điền thông tin email của sinh viên do HVN cấp)</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                @php
-                                    // Danh sách SV đã phản hồi từ employ
-                                    $responsesByCode = $r2->keyBy('code_student');
-                                @endphp
-
                                 @forelse ($studentTab2 as $item)
                                     @php
-                                        $hasResponse = $responsesByCode->has($item->code);
+                                        // Kiểm tra sinh viên này có phản hồi trong bảng employ không
+                                        $hasResponse = $responsesByCode->has($item->code ?? '');
                                     @endphp
                                     <tr>
                                         <td>{{ $loop->iteration }}</td>
@@ -410,10 +403,10 @@
                                         {{-- CCCD --}}
                                         <td>{{ $item->citizen_identification ?? '' }}</td>
 
-                                        {{-- Mã ngành đào tạo (API CHƯA CÓ) --}}
-                                        <td> {{ $item->industry_name }}</td>
+                                        {{-- Mã ngành đào tạo (API trả về industry_name) --}}
+                                        <td>{{ $item->industry_name ?? '' }}</td>
 
-                                        {{-- Quyết định --}}
+                                        {{-- Quyết định tốt nghiệp (API chưa có, để trống) --}}
                                         <td></td>
                                         <td></td>
 
@@ -423,7 +416,7 @@
                                         {{-- Email --}}
                                         <td>{{ $item->email ?? '' }}</td>
 
-                                        {{-- Hình thức khảo sát --}}
+                                        {{-- Hình thức khảo sát (hiện tại chưa có nguồn) --}}
                                         <td></td>
 
                                         {{-- Có phản hồi --}}
@@ -433,18 +426,19 @@
                                         <td>{{ $item->note ?? '' }}</td>
 
                                         {{-- Ngành --}}
-                                        <td> {{ $item->industry_name }}</td>
+                                        <td>{{ $item->industry_name ?? '' }}</td>
 
                                         {{-- Khoa --}}
-                                        <td> Công Nghệ Thông Tin</td>
+                                        <td>Công Nghệ Thông Tin</td>
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="15" class="text-center">Không có dữ liệu sinh viên cho đợt khảo sát này.</td>
+                                        <td colspan="15" class="text-center">
+                                            Không có dữ liệu sinh viên cho đợt khảo sát này.
+                                        </td>
                                     </tr>
                                 @endforelse
                                 </tbody>
-
                             </table>
                         </div>
                     </div>
@@ -477,26 +471,23 @@
                                         <th rowspan="3">Ngày sinh</th>
                                         <th rowspan="3">Giới tính</th>
                                         <th rowspan="3">Số thẻ CCCD/CMTND</th>
-                                        <th rowspan="3">Mã ngành đào tạo<br><small>(Ghi bằng số theo mã ngành tuyển
-                                                sinh)</small></th>
+                                        <th rowspan="3">Mã ngành đào tạo<br>
+                                            <small>(Ghi bằng số theo mã ngành tuyển sinh)</small>
+                                        </th>
                                         <th rowspan="3">Điện thoại</th>
                                         <th rowspan="3">Email</th>
                                         <th colspan="5">Tình hình việc làm</th>
                                         <th colspan="4">Khu vực làm việc</th>
                                         <th rowspan="3">Nơi làm việc<br>(Tỉnh/ Tp)<br>Ghi tên tỉnh</th>
                                         <th colspan="4">Thời gian tìm được việc làm sau tốt nghiệp</th>
-                                        <th colspan="3">Sinh viên có học được kiến thức, kỹ năng cần thiết từ nhà trường
-                                        </th>
+                                        <th colspan="3">Sinh viên có học được kiến thức, kỹ năng cần thiết từ nhà trường</th>
                                         <th rowspan="3">Mức lương khởi điểm/1 tháng (triệu đồng)</th>
                                         <th colspan="4">Thu nhập bình quân/1 tháng</th>
                                         <th colspan="5">Hình thức tìm việc làm</th>
                                         <th colspan="6">Hình thức tuyển dụng</th>
                                         <th colspan="9">Kỹ năng mềm cần thiết cho công việc</th>
-                                        <th colspan="6">Khóa học đã tham gia sau khi tốt nghiệp để đáp ứng yêu cầu công
-                                            việc
-                                        </th>
-                                        <th colspan="6">Giải pháp tăng tỷ lệ sinh viên có việc làm đúng ngành đào tạo
-                                        </th>
+                                        <th colspan="6">Khóa học đã tham gia sau khi tốt nghiệp để đáp ứng yêu cầu công việc</th>
+                                        <th colspan="6">Giải pháp tăng tỷ lệ sinh viên có việc làm đúng ngành đào tạo</th>
                                     </tr>
                                     <tr>
                                         <th colspan="3">Có việc làm</th>
@@ -544,14 +535,12 @@
                                         <th rowspan="2">Phát triển kỹ năng quản lý</th>
                                         <th rowspan="2">Tiếp tục học thạc sĩ, tiến sĩ</th>
                                         <th rowspan="2">Học viện tổ chức các buổi trao đổi, chia sẻ kinh nghiệm tìm kiếm
-                                            việc làm giữa
-                                            cựu sinh viên với sinh viên</th>
+                                            việc làm giữa cựu sinh viên với sinh viên</th>
                                         <th rowspan="2">Học viện tổ chức các buổi trao đổi giữa đơn vị sử dụng lao động
                                             với sinh viên</th>
                                         <th rowspan="2">Đơn vị sử dụng lao động tham gia vào quá trình đào tạo</th>
                                         <th rowspan="2">Chương trình đào tạo được điều chỉnh và cập nhật theo nhu cầu
-                                            của thị trường lao
-                                            động</th>
+                                            của thị trường lao động</th>
                                         <th rowspan="2">Tăng cường các hoạt động thực hành và chuyên môn tại cơ sở</th>
                                         <th rowspan="2">Giải pháp khác</th>
                                     </tr>
@@ -564,6 +553,7 @@
                                 <tbody>
                                     @forelse ($r2 as $item)
                                         @php
+                                            // Cắt tỉnh/thành phố từ địa chỉ nơi làm việc
                                             $city = '';
                                             if (!empty($item->recruit_partner_address)) {
                                                 $parts = explode(',', $item->recruit_partner_address);
@@ -610,12 +600,12 @@
                                             {{-- 19: Nơi làm việc (tỉnh/thành) --}}
                                             <td>{{ $city }}</td>
 
-                                            {{-- 20–23: Thời gian tìm được việc --}}
+                                            {{-- 20–23: Thời gian tìm được việc làm --}}
                                             @for ($i = 1; $i <= 4; $i++)
                                                 <td>{{ $item->employed_since == $i ? 'x' : '' }}</td>
                                             @endfor
 
-                                            {{-- 24–26: Kiến thức/kỹ năng đã học --}}
+                                            {{-- 24–26: Kiến thức, kỹ năng đã học --}}
                                             @for ($i = 1; $i <= 3; $i++)
                                                 <td>{{ $item->level_knowledge_acquired == $i ? 'x' : '' }}</td>
                                             @endfor
