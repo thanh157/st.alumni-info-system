@@ -30,221 +30,72 @@ class ReportSheet3 implements FromCollection, WithTitle, WithStyles, WithColumnW
     public function collection()
     {
         $data = collect([
-            // Row 1: Header 1
             ['HỌC VIỆN NÔNG NGHIỆP VIỆT NAM'],
-
-            // Row 2: Header 2
-            ['KHOA CÔNG NGHỆ THÔNG TIN '],
-
-            // Row 3: Dòng trống
+            ['KHOA CÔNG NGHỆ THÔNG TIN'],
             [''],
-
-            // Row 4: Tiêu đề chính
             ['DANH SÁCH SINH VIÊN TỐT NGHIỆP NĂM ' . $this->schoolYear . ' PHẢN HỒI VỀ TÌNH HÌNH VIỆC LÀM'],
-
-            // Row 5: Dòng trống
             [''],
 
-            // Row 6: Header Level 1 (9 groups)
+            // Row 6: Header Level 1
             [
-                'TT',
-                'Mã sinh viên',
-                'Họ và tên',
-                'Ngày sinh',
-                'Giới tính',
+                'TT', 'Mã sinh viên', 'Họ và tên', 'Ngày sinh', 'Giới tính',
                 'Số thẻ' . "\n" . 'CCCD/CMTND',
                 'Mã ngành đào tạo' . "\n" . '(Ghi bằng số theo mã ngành tuyển sinh)',
-                'Điện thoại',
-                'Email',
-                'Tình hình việc làm',
-                '',
-                '',
-                '',
-                '',
-                'Khu vực làm việc',
-                '',
-                '',
-                '',
+                'Điện thoại', 'Email',
+                'Tình hình việc làm', '', '', '', '',
+                'Khu vực làm việc', '', '', '',
                 'Nơi làm việc' . "\n" . '(Tỉnh/TP)' . "\n" . 'Ghi tên tỉnh',
-                'Thời gian tìm được việc làm sau tốt nghiệp',
-                '',
-                '',
-                '',
-                'Sinh viên có học được kiến thức, kỹ năng cần thiết từ nhà trường',
-                '',
-                '',
+                'Thời gian tìm được việc làm sau tốt nghiệp', '', '', '',
+                'Sinh viên có học được kiến thức, kỹ năng cần thiết từ nhà trường', '', '',
                 'Mức lương khởi điểm/1 tháng (triệu đồng)',
-                'Thu nhập bình quân/1 tháng',
-                '',
-                '',
-                '',
-                'Hình thức tìm việc làm',
-                '',
-                '',
-                '',
-                '',
-                'Hình thức tuyển dụng',
-                '',
-                '',
-                '',
-                '',
-                '',
-                'Kỹ năng mềm cần thiết cho công việc',
-                '',
-                '',
-                '',
-                '',
-                '',
-                '',
-                '',
-                '',
-                'Khóa học đã tham gia sau khi tốt nghiệp để đáp ứng yêu cầu công việc',
-                '',
-                '',
-                '',
-                '',
-                '',
-                'Giải pháp tăng tỷ lệ sinh viên có việc làm đúng ngành đào tạo',
-                '',
-                '',
-                '',
-                '',
-                ''
+                'Thu nhập bình quân/1 tháng', '', '', '',
+                'Hình thức tìm việc làm', '', '', '', '',
+                'Hình thức tuyển dụng', '', '', '', '', '',
+                'Kỹ năng mềm cần thiết cho công việc', '', '', '', '', '', '', '', '',
+                'Khóa học đã tham gia sau khi tốt nghiệp để đáp ứng yêu cầu công việc', '', '', '', '', '',
+                'Giải pháp tăng tỷ lệ sinh viên có việc làm đúng ngành đào tạo', '', '', '', '', ''
             ],
 
             // Row 7: Header Level 2
             [
-                '',
-                '',
-                '',
-                '',
-                '',
-                '',
-                '',
-                '',
-                '',
-                'Có việc làm',
-                '',
-                '',
-                'Tiếp tục học',
-                'Chưa có việc làm',
-                'Nhà nước',
-                'Tư nhân',
-                'Tự tạo việc làm',
-                'Có yếu tố nước ngoài',
-                '',
-                'Dưới 3 tháng',
-                'Từ 3 tháng đến dưới 6 tháng',
-                'Từ 6 tháng đến dưới 12 tháng',
-                'Từ 12 tháng trở lên',
-                'Đã học được',
-                'Chỉ học được một phần',
-                'Không học được',
-                '',
-                'Dưới 5 triệu đồng',
-                'Từ 5 triệu đến 10 triệu đồng',
-                'Từ trên 10 triệu đến 15 triệu đồng',
-                'Từ 15 triệu đồng trở lên',
-                'Do Học viện/khoa giới thiệu',
-                'Bạn bè, người quen giới thiệu',
-                'Tự tìm việc làm',
-                'Tự tạo việc làm',
-                'Hình thức khác',
-                'Thi tuyển',
-                'Hợp đồng',
-                'Điều động',
-                'Xét tuyển',
-                'Biệt phái',
-                'Hình thức khác',
-                'Kỹ năng giao tiếp',
-                'Kỹ năng thuyết trình',
-                'Kỹ năng làm việc nhóm',
-                'Kỹ năng viết báo cáo tài liệu',
-                'Kỹ năng lãnh đạo',
-                'Kỹ năng Tiếng Anh',
-                'Kỹ năng Tin học',
-                'Kỹ năng hội nhập quốc tế',
-                'Kỹ năng khác',
-                'Nâng cao kiến thức chuyên môn',
-                'Nâng cao kỹ năng chuyên môn nghiệp vụ',
-                'Nâng cao về kỹ năng công nghệ thông tin',
-                'Nâng cao kỹ năng ngoại ngữ',
-                'Phát triển kỹ năng quản lý',
-                'Tiếp tục học thạc sĩ, tiến sĩ',
+                '', '', '', '', '', '', '', '', '',
+                'Có việc làm', '', '', 'Tiếp tục học', 'Chưa có việc làm',
+                'Nhà nước', 'Tư nhân', 'Tự tạo việc làm', 'Có yếu tố nước ngoài', '',
+                'Dưới 3 tháng', 'Từ 3 tháng đến dưới 6 tháng', 'Từ 6 tháng đến dưới 12 tháng', 'Từ 12 tháng trở lên',
+                'Đã học được', 'Chỉ học được một phần', 'Không học được', '',
+                'Dưới 5 triệu đồng', 'Từ 5 triệu đến 10 triệu đồng', 'Từ trên 10 triệu đến 15 triệu đồng', 'Từ 15 triệu đồng trở lên',
+                'Do Học viện/khoa giới thiệu', 'Bạn bè, người quen giới thiệu', 'Tự tìm việc làm', 'Tự tạo việc làm', 'Hình thức khác',
+                'Thi tuyển', 'Hợp đồng', 'Điều động', 'Xét tuyển', 'Biệt phái', 'Hình thức khác',
+                'Kỹ năng giao tiếp', 'Kỹ năng thuyết trình', 'Kỹ năng làm việc nhóm', 'Kỹ năng viết báo cáo tài liệu',
+                'Kỹ năng lãnh đạo', 'Kỹ năng Tiếng Anh', 'Kỹ năng Tin học', 'Kỹ năng hội nhập quốc tế', 'Kỹ năng khác',
+                'Nâng cao kiến thức chuyên môn', 'Nâng cao kỹ năng chuyên môn nghiệp vụ', 'Nâng cao về kỹ năng công nghệ thông tin',
+                'Nâng cao kỹ năng ngoại ngữ', 'Phát triển kỹ năng quản lý', 'Tiếp tục học thạc sĩ, tiến sĩ',
                 'Học viện tổ chức các buổi trao đổi, chia sẻ kinh nghiệm tìm kiếm việc làm giữa cựu sinh viên với sinh viên',
                 'Học viện tổ chức các buổi trao đổi giữa đơn vị sử dụng lao động với sinh viên',
                 'Đơn vị sử dụng lao động tham gia vào quá trình đào tạo',
                 'Chương trình đào tạo được điều chỉnh và cập nhật theo nhu cầu của thị trường lao động',
-                'Tăng cường các hoạt động thực hành và chuyên môn tại cơ sở',
-                'Giải pháp khác'
+                'Tăng cường các hoạt động thực hành và chuyên môn tại cơ sở', 'Giải pháp khác'
             ],
 
             // Row 8: Header Level 3
             [
-                '',
-                '',
-                '',
-                '',
-                '',
-                '',
-                '',
-                '',
-                '',
-                'Đúng ngành đào tạo',
-                'Liên quan đến ngành đào tạo',
-                'Không liên quan đến ngành đào tạo',
-                '',
-                '',
-                'Nhà nước',
-                'Tư nhân',
-                'Tự tạo việc làm',
-                'Có yếu tố nước ngoài',
-                '',
-                'Dưới 3 tháng',
-                'Từ 3 tháng đến dưới  6 tháng',
-                'Từ  6 tháng  đến dưới 12 tháng',
-                'Từ 12 tháng trở lên',
-                'Đã học được',
-                'Chỉ học được một phần',
-                'Không học được',
-                '',
-                'Dưới 5 triệu',
-                'Từ 5 triệu đến dưới 10 triệu',
-                'Từ 10 triệu đến dưới 15 triệu',
-                'Từ 15 triệu trở lên',
-                'Do Học viện/khoa giới thiệu',
-                'Bạn bè, người quen giới thiệu',
-                'Tự tìm việc làm',
-                'Tự tạo việc làm',
-                'Hình thức khác',
-                'Thi tuyển',
-                'Hợp đồng',
-                'Điều động',
-                'Xét tuyển',
-                'Biệt phái',
-                'HÌnh thức khác',
-                'Kỹ năng giao tiếp',
-                'Kỹ năng thuyết trình',
-                'Kỹ năng làm việc nhóm',
-                'Kỹ năng viết báo cáo tài liệu',
-                'Kỹ năng lãnh đạo',
-                'Kỹ năng Tiếng Anh',
-                'Kỹ năng Tin học',
-                'Kỹ năng hội nhập quốc tế',
-                'Kỹ năng khác',
-                'Nâng cao kiến thức chuyên môn',
-                'Nâng cao kỹ năng chuyên môn nghiệp vụ',
-                'Nâng cao kỹ năng về công nghệ thông tin',
-                'Nâng cao kỹ năng ngoại ngữ',
-                'Phát triển kỹ năng quản lý',
-                'Tiếp tục học thạc sĩ, tiến sĩ',
+                '', '', '', '', '', '', '', '', '',
+                'Đúng ngành đào tạo', 'Liên quan đến ngành đào tạo', 'Không liên quan đến ngành đào tạo', '', '',
+                'Nhà nước', 'Tư nhân', 'Tự tạo việc làm', 'Có yếu tố nước ngoài', '',
+                'Dưới 3 tháng', 'Từ 3 tháng đến dưới 6 tháng', 'Từ 6 tháng đến dưới 12 tháng', 'Từ 12 tháng trở lên',
+                'Đã học được', 'Chỉ học được một phần', 'Không học được', '',
+                'Dưới 5 triệu', 'Từ 5 triệu đến dưới 10 triệu', 'Từ 10 triệu đến dưới 15 triệu', 'Từ 15 triệu trở lên',
+                'Do Học viện/khoa giới thiệu', 'Bạn bè, người quen giới thiệu', 'Tự tìm việc làm', 'Tự tạo việc làm', 'Hình thức khác',
+                'Thi tuyển', 'Hợp đồng', 'Điều động', 'Xét tuyển', 'Biệt phái', 'Hình thức khác',
+                'Kỹ năng giao tiếp', 'Kỹ năng thuyết trình', 'Kỹ năng làm việc nhóm', 'Kỹ năng viết báo cáo tài liệu',
+                'Kỹ năng lãnh đạo', 'Kỹ năng Tiếng Anh', 'Kỹ năng Tin học', 'Kỹ năng hội nhập quốc tế', 'Kỹ năng khác',
+                'Nâng cao kiến thức chuyên môn', 'Nâng cao kỹ năng chuyên môn nghiệp vụ', 'Nâng cao kỹ năng về công nghệ thông tin',
+                'Nâng cao kỹ năng ngoại ngữ', 'Phát triển kỹ năng quản lý', 'Tiếp tục học thạc sĩ, tiến sĩ',
                 'Học viện tổ chức các buổi trao đổi, chia sẻ kinh nghiệm tìm kiếm việc làm giữa cựu sinh viên với sinh viên',
                 'Học viện tổ chức các buổi trao đổi giữa đơn vị sử dụng lao động với sinh viên',
                 'Đơn vị sử dụng lao động tham gia vào quá trình đào tạo',
                 'Chương trình đào tạo được điều chỉnh và cập nhật theo nhu cầu của thị trường lao động',
-                'Tăng cường các hoạt động thực hành và chuyên môn tại cơ sở',
-                'Giải pháp khác',
-                ''
+                'Tăng cường các hoạt động thực hành và chuyên môn tại cơ sở', 'Giải pháp khác', ''
             ],
         ]);
 
@@ -270,12 +121,12 @@ class ReportSheet3 implements FromCollection, WithTitle, WithStyles, WithColumnW
                 $item->phone_number,
                 $item->email,
 
-                // Tình hình việc làm
+                // Tình hình việc làm - FIX EMPLOYMENT_STATUS
                 $item->trained_field == 1 ? 'x' : '',
                 $item->trained_field == 2 ? 'x' : '',
                 $item->trained_field == 3 ? 'x' : '',
-                $item->employment_status == 2 ? 'x' : '',
-                $item->employment_status == 3 ? 'x' : '',
+                $item->employment_status == 3 ? 'x' : '', // FIX: 3 = tiếp tục học
+                !in_array($item->employment_status, [1, 3]) ? 'x' : '', // FIX: Chưa có việc
 
                 // Khu vực làm việc
                 $item->work_area == '1' ? 'x' : '',
@@ -343,116 +194,26 @@ class ReportSheet3 implements FromCollection, WithTitle, WithStyles, WithColumnW
 
     public function columnWidths(): array
     {
-        // 78 cột từ A đến BZ
         return [
-            'A' => 5,   // TT
-            'B' => 12,  // Mã SV
-            'C' => 20,  // Họ tên
-            'D' => 12,  // Ngày sinh
-            'E' => 10,  // Giới tính
-            'F' => 15,  // CCCD
-            'G' => 12,  // Mã ngành
-            'H' => 12,  // Điện thoại
-            'I' => 20,  // Email
-            'J' => 12,  // Đúng ngành
-            'K' => 12,  // Liên quan
-            'L' => 12,  // Không liên quan
-            'M' => 12,  // Tiếp tục học
-            'N' => 12,  // Chưa có việc
-            'O' => 10,  // Nhà nước
-            'P' => 10,  // Tư nhân
-            'Q' => 12,  // Tự tạo
-            'R' => 12,  // Nước ngoài
-            'S' => 15,  // Nơi làm việc
-            'T' => 10,  // < 3 tháng
-            'U' => 10,  // 3-6 tháng
-            'V' => 10,  // 6-12 tháng
-            'W' => 10,  // >= 12 tháng
-            'X' => 12,  // Đã học được
-            'Y' => 12,  // Một phần
-            'Z' => 12,  // Không học được
-            'AA' => 12, // Mức lương
-            'AB' => 10, // < 5tr
-            'AC' => 10, // 5-10tr
-            'AD' => 10, // 10-15tr
-            'AE' => 10, // >= 15tr
-            'AF' => 12, // HV giới thiệu
-            'AG' => 12, // Bạn bè
-            'AH' => 12, // Tự tìm
-            'AI' => 12, // Tự tạo
-            'AJ' => 12, // Khác
-            'AK' => 10, // Thi tuyển
-            'AL' => 10, // Hợp đồng
-            'AM' => 10, // Điều động
-            'AN' => 10, // Xét tuyển
-            'AO' => 10, // Biệt phái
-            'AP' => 10, // Khác
-            'AQ' => 10, // KN giao tiếp
-            'AR' => 10, // KN thuyết trình
-            'AS' => 10, // KN nhóm
-            'AT' => 12, // KN viết BC
-            'AU' => 10, // KN lãnh đạo
-            'AV' => 10, // KN Tiếng Anh
-            'AW' => 10, // KN Tin học
-            'AX' => 10, // KN hội nhập
-            'AY' => 10, // KN khác
-            'AZ' => 12, // NC kiến thức
-            'BA' => 12, // NC kỹ năng
-            'BB' => 12, // NC CNTT
-            'BC' => 12, // NC ngoại ngữ
-            'BD' => 12, // Phát triển QL
-            'BE' => 12, // Tiếp tục học
-            'BF' => 15, // GP 1
-            'BG' => 15, // GP 2
-            'BH' => 15, // GP 3
-            'BI' => 15, // GP 4
-            'BJ' => 15, // GP 5
-            'BK' => 12, // GP khác
+            'A' => 5, 'B' => 12, 'C' => 20, 'D' => 12, 'E' => 10, 'F' => 15, 'G' => 12, 'H' => 12, 'I' => 20,
+            'J' => 12, 'K' => 12, 'L' => 12, 'M' => 12, 'N' => 12, 'O' => 10, 'P' => 10, 'Q' => 12, 'R' => 12,
+            'S' => 15, 'T' => 10, 'U' => 10, 'V' => 10, 'W' => 10, 'X' => 12, 'Y' => 12, 'Z' => 12, 'AA' => 12,
+            'AB' => 10, 'AC' => 10, 'AD' => 10, 'AE' => 10, 'AF' => 12, 'AG' => 12, 'AH' => 12, 'AI' => 12, 'AJ' => 12,
+            'AK' => 10, 'AL' => 10, 'AM' => 10, 'AN' => 10, 'AO' => 10, 'AP' => 10, 'AQ' => 10, 'AR' => 10, 'AS' => 10,
+            'AT' => 12, 'AU' => 10, 'AV' => 10, 'AW' => 10, 'AX' => 10, 'AY' => 10, 'AZ' => 12, 'BA' => 12, 'BB' => 12,
+            'BC' => 12, 'BD' => 12, 'BE' => 12, 'BF' => 15, 'BG' => 15, 'BH' => 15, 'BI' => 15, 'BJ' => 15, 'BK' => 12,
         ];
     }
 
     public function styles(Worksheet $sheet)
     {
         return [
-            1 => [
-                'font' => ['size' => 14, 'bold' => true, 'name' => 'Times New Roman'],
-                'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER],
-            ],
-            2 => [
-                'font' => ['size' => 14, 'bold' => true, 'underline' => true, 'name' => 'Times New Roman'],
-                'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER],
-            ],
-            4 => [
-                'font' => ['size' => 15, 'bold' => true, 'name' => 'Times New Roman'],
-                'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER],
-            ],
-            6 => [
-                'font' => ['bold' => true, 'size' => 10, 'name' => 'Times New Roman'],
-                'alignment' => [
-                    'horizontal' => Alignment::HORIZONTAL_CENTER,
-                    'vertical' => Alignment::VERTICAL_CENTER,
-                    'wrapText' => true
-                ],
-                'fill' => ['fillType' => Fill::FILL_SOLID, 'startColor' => ['rgb' => 'E8E8E8']],
-            ],
-            7 => [
-                'font' => ['bold' => true, 'size' => 10, 'name' => 'Times New Roman'],
-                'alignment' => [
-                    'horizontal' => Alignment::HORIZONTAL_CENTER,
-                    'vertical' => Alignment::VERTICAL_CENTER,
-                    'wrapText' => true
-                ],
-                'fill' => ['fillType' => Fill::FILL_SOLID, 'startColor' => ['rgb' => 'E8E8E8']],
-            ],
-            8 => [
-                'font' => ['bold' => true, 'size' => 10, 'name' => 'Times New Roman'],
-                'alignment' => [
-                    'horizontal' => Alignment::HORIZONTAL_CENTER,
-                    'vertical' => Alignment::VERTICAL_CENTER,
-                    'wrapText' => true
-                ],
-                'fill' => ['fillType' => Fill::FILL_SOLID, 'startColor' => ['rgb' => 'E8E8E8']],
-            ],
+            1 => ['font' => ['size' => 14, 'bold' => true, 'name' => 'Times New Roman'], 'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER]],
+            2 => ['font' => ['size' => 14, 'bold' => true, 'underline' => true, 'name' => 'Times New Roman'], 'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER]],
+            4 => ['font' => ['size' => 15, 'bold' => true, 'name' => 'Times New Roman'], 'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER]],
+            6 => ['font' => ['bold' => true, 'size' => 10, 'name' => 'Times New Roman'], 'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER, 'vertical' => Alignment::VERTICAL_CENTER, 'wrapText' => true], 'fill' => ['fillType' => Fill::FILL_SOLID, 'startColor' => ['rgb' => 'E8E8E8']]],
+            7 => ['font' => ['bold' => true, 'size' => 10, 'name' => 'Times New Roman'], 'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER, 'vertical' => Alignment::VERTICAL_CENTER, 'wrapText' => true], 'fill' => ['fillType' => Fill::FILL_SOLID, 'startColor' => ['rgb' => 'E8E8E8']]],
+            8 => ['font' => ['bold' => true, 'size' => 10, 'name' => 'Times New Roman'], 'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER, 'vertical' => Alignment::VERTICAL_CENTER, 'wrapText' => true], 'fill' => ['fillType' => Fill::FILL_SOLID, 'startColor' => ['rgb' => 'E8E8E8']]],
         ];
     }
 
@@ -463,82 +224,44 @@ class ReportSheet3 implements FromCollection, WithTitle, WithStyles, WithColumnW
                 $sheet = $event->sheet->getDelegate();
                 $lastRow = $sheet->getHighestRow();
 
-                // Font Times New Roman
-                // Apply Times New Roman to all cells
-                $sheet->getStyle('A1:O' . $lastRow)
-                    ->getFont()
-                    ->setName('Times New Roman')
-                    ->setSize(11);
+                $sheet->getStyle('A1:BK' . $lastRow)->getFont()->setName('Times New Roman')->setSize(11);
 
-                // Merge header
                 $sheet->mergeCells('A1:F1');
                 $sheet->mergeCells('A2:F2');
                 $sheet->mergeCells('A4:P4');
 
-                // Merge header table (Row 6-8)
-                $sheet->mergeCells('A6:A8'); // TT
-                $sheet->mergeCells('B6:B8'); // Mã SV
-                $sheet->mergeCells('C6:C8'); // Họ tên
-                $sheet->mergeCells('D6:D8'); // Ngày sinh
-                $sheet->mergeCells('E6:E8'); // Giới tính
-                $sheet->mergeCells('F6:F8'); // CCCD
-                $sheet->mergeCells('G6:G8'); // Mã ngành
-                $sheet->mergeCells('H6:H8'); // Điện thoại
-                $sheet->mergeCells('I6:I8'); // Email
-
-                // Tình hình việc làm
+                // Merge header table
+                $sheet->mergeCells('A6:A8');
+                $sheet->mergeCells('B6:B8');
+                $sheet->mergeCells('C6:C8');
+                $sheet->mergeCells('D6:D8');
+                $sheet->mergeCells('E6:E8');
+                $sheet->mergeCells('F6:F8');
+                $sheet->mergeCells('G6:G8');
+                $sheet->mergeCells('H6:H8');
+                $sheet->mergeCells('I6:I8');
                 $sheet->mergeCells('J6:N6');
-                $sheet->mergeCells('J7:L7'); // Có việc làm
-                $sheet->mergeCells('M7:M8'); // Tiếp tục học
-                $sheet->mergeCells('N7:N8'); // Chưa có việc
-
-                // Khu vực làm việc
+                $sheet->mergeCells('J7:L7');
+                $sheet->mergeCells('M7:M8');
+                $sheet->mergeCells('N7:N8');
                 $sheet->mergeCells('O6:R7');
-
-                $sheet->mergeCells('S6:S8'); // Nơi làm việc
-
-                // Thời gian tìm việc
+                $sheet->mergeCells('S6:S8');
                 $sheet->mergeCells('T6:W7');
-
-                // Kiến thức kỹ năng
                 $sheet->mergeCells('X6:Z7');
-
-                $sheet->mergeCells('AA6:AA8'); // Mức lương
-
-                // Thu nhập
+                $sheet->mergeCells('AA6:AA8');
                 $sheet->mergeCells('AB6:AE7');
-
-                // Hình thức tìm việc
                 $sheet->mergeCells('AF6:AJ7');
-
-                // Hình thức tuyển dụng
                 $sheet->mergeCells('AK6:AP7');
-
-                // Kỹ năng mềm
                 $sheet->mergeCells('AQ6:AY7');
-
-                // Khóa học
                 $sheet->mergeCells('AZ6:BE7');
-
-                // Giải pháp
                 $sheet->mergeCells('BF6:BK7');
 
                 // Borders
                 $sheet->getStyle('A6:BK' . $lastRow)->applyFromArray([
-                    'borders' => [
-                        'allBorders' => [
-                            'borderStyle' => Border::BORDER_THIN,
-                            'color' => ['rgb' => '000000'],
-                        ],
-                    ],
-                    'alignment' => [
-                        'horizontal' => Alignment::HORIZONTAL_CENTER,
-                        'vertical' => Alignment::VERTICAL_CENTER,
-                        'wrapText' => true
-                    ]
+                    'borders' => ['allBorders' => ['borderStyle' => Border::BORDER_THIN, 'color' => ['rgb' => '000000']]],
+                    'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER, 'vertical' => Alignment::VERTICAL_CENTER, 'wrapText' => true]
                 ]);
 
-                // Row heights
                 $sheet->getRowDimension(6)->setRowHeight(50);
                 $sheet->getRowDimension(7)->setRowHeight(40);
                 $sheet->getRowDimension(8)->setRowHeight(30);
@@ -547,21 +270,13 @@ class ReportSheet3 implements FromCollection, WithTitle, WithStyles, WithColumnW
                 $signatureRow = $lastRow + 4;
                 $richText = new RichText();
                 $year = date('Y');
-
                 $part1 = $richText->createTextRun("Hà Nội, ngày    tháng    năm {$year}\n\n");
                 $part1->getFont()->setName('Times New Roman')->setItalic(true);
-
                 $part2 = $richText->createTextRun("TRƯỞNG KHOA");
                 $part2->getFont()->setBold(true)->setName('Times New Roman');
-
                 $sheet->setCellValue('K' . $signatureRow, $richText);
                 $sheet->mergeCells('K' . $signatureRow . ':R' . ($signatureRow + 4));
-
-                $sheet->getStyle('K' . $signatureRow)
-                    ->getAlignment()
-                    ->setVertical(Alignment::VERTICAL_TOP)
-                    ->setHorizontal(Alignment::HORIZONTAL_CENTER)
-                    ->setWrapText(true);
+                $sheet->getStyle('K' . $signatureRow)->getAlignment()->setVertical(Alignment::VERTICAL_TOP)->setHorizontal(Alignment::HORIZONTAL_CENTER)->setWrapText(true);
             },
         ];
     }

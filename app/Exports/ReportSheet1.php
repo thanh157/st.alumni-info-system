@@ -4,7 +4,6 @@ namespace App\Exports;
 
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithTitle;
-use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithStyles;
 use Maatwebsite\Excel\Concerns\WithColumnWidths;
 use Maatwebsite\Excel\Concerns\WithEvents;
@@ -21,32 +20,21 @@ class ReportSheet1 implements FromCollection, WithTitle, WithStyles, WithColumnW
     protected $r1_trained_field;
     protected $r1_work_area;
     protected $r2;
+    protected $r1Majors;
 
-    public function __construct($schoolYear, $r1, $r1_trained_field, $r1_work_area, $r2)
+    public function __construct($schoolYear, $r1, $r1_trained_field, $r1_work_area, $r2, $r1Majors)
     {
         $this->schoolYear = $schoolYear;
         $this->r1 = $r1;
         $this->r1_trained_field = $r1_trained_field;
         $this->r1_work_area = $r1_work_area;
         $this->r2 = $r2;
+        $this->r1Majors = $r1Majors;
     }
 
     public function collection()
     {
-        // Tính toán tỷ lệ
-        $totalCoViecLam = ($this->r1_trained_field->dung_nganh ?? 0)
-            + ($this->r1_trained_field->lien_quan ?? 0)
-            + ($this->r1_trained_field->khong_lien_quan ?? 0);
-
-        $tyLeCoViecPhanHoi = $this->r1['total_res'] > 0
-            ? round(($totalCoViecLam / $this->r1['total_res']) * 100, 2) . '%'
-            : '0%';
-
-        $tyLeCoViecTotNghiep = $this->r1['total_student'] > 0
-            ? round(($totalCoViecLam / $this->r1['total_student']) * 100, 2) . '%'
-            : '0%';
-
-        return collect([
+        $data = collect([
             // Row 1: Header 1
             ['HỌC VIỆN NÔNG NGHIỆP VIỆT NAM'],
 
@@ -126,29 +114,70 @@ class ReportSheet1 implements FromCollection, WithTitle, WithStyles, WithColumnW
                 'Có yếu tố nước ngoài',
                 ''
             ],
-            // Row 11: Dữ liệu
-            [
-                '=ROW()-8', // thêm hàm đếm số thứ tự 
-                '',
-                '',
-                $this->r1['total_student'],
-                $this->r1['total_nu'],
-                $this->r1['total_res'],
-                $this->r1['total_res_nu'],
-                $this->r1_trained_field->dung_nganh ?? 0,
-                $this->r1_trained_field->lien_quan ?? 0,
-                $this->r1_trained_field->khong_lien_quan ?? 0,
-                $this->r2->where('employment_status', 2)->count(),
-                $this->r2->where('employment_status', 3)->count(),
-                $tyLeCoViecPhanHoi,
-                $tyLeCoViecTotNghiep,
-                $this->r1_work_area->nha_nuoc ?? 0,
-                $this->r1_work_area->tu_nhan ?? 0,
-                $this->r1_work_area->tu_tao ?? 0,
-                $this->r1_work_area->nuoc_ngoai ?? 0,
-                ''
-            ],
         ]);
+
+        // Thêm từng ngành
+        $rowNumber = 1;
+        foreach ($this->r1Majors as $major) {
+            $data->push([
+                $rowNumber++,
+                $major['major_code'],
+                $major['major_name'],
+                $major['total_student'],
+                $major['total_nu'],
+                $major['total_res'],
+                $major['total_res_nu'],
+                $major['dung_nganh'],
+                $major['lien_quan'],
+                $major['khong_lien_quan'],
+                $major['tiep_tuc_hoc'],
+                $major['chua_co_viec'],
+                $major['ty_le_co_viec_phan_hoi'] . '%',
+                $major['ty_le_co_viec_tot_nghiep'] . '%',
+                $major['nha_nuoc'],
+                $major['tu_nhan'],
+                $major['tu_tao'],
+                $major['nuoc_ngoai'],
+                ''
+            ]);
+        }
+
+        // Thêm dòng TỔNG HỢP
+        $totalCoViecLam = ($this->r1_trained_field->dung_nganh ?? 0)
+            + ($this->r1_trained_field->lien_quan ?? 0)
+            + ($this->r1_trained_field->khong_lien_quan ?? 0);
+
+        $tyLeCoViecPhanHoi = $this->r1['total_res'] > 0
+            ? round(($totalCoViecLam / $this->r1['total_res']) * 100, 2) . '%'
+            : '0%';
+
+        $tyLeCoViecTotNghiep = $this->r1['total_student'] > 0
+            ? round(($totalCoViecLam / $this->r1['total_student']) * 100, 2) . '%'
+            : '0%';
+
+        $data->push([
+            $rowNumber,
+            '',
+            'TỔNG HỢP',
+            $this->r1['total_student'],
+            $this->r1['total_nu'],
+            $this->r1['total_res'],
+            $this->r1['total_res_nu'],
+            $this->r1_trained_field->dung_nganh ?? 0,
+            $this->r1_trained_field->lien_quan ?? 0,
+            $this->r1_trained_field->khong_lien_quan ?? 0,
+            $this->r2->where('employment_status', 3)->count(),
+            $this->r2->whereNotIn('employment_status', [1, 3])->count(),
+            $tyLeCoViecPhanHoi,
+            $tyLeCoViecTotNghiep,
+            $this->r1_work_area->nha_nuoc ?? 0,
+            $this->r1_work_area->tu_nhan ?? 0,
+            $this->r1_work_area->tu_tao ?? 0,
+            $this->r1_work_area->nuoc_ngoai ?? 0,
+            ''
+        ]);
+
+        return $data;
     }
 
     public function title(): string
@@ -184,25 +213,18 @@ class ReportSheet1 implements FromCollection, WithTitle, WithStyles, WithColumnW
     public function styles(Worksheet $sheet)
     {
         return [
-            // Header 1 - Row 1
             1 => [
                 'font' => ['size' => 14, 'bold' => true],
                 'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER, 'vertical' => Alignment::VERTICAL_CENTER],
             ],
-
-            // Header 2 - Row 2
             2 => [
                 'font' => ['size' => 14, 'bold' => true, 'underline' => true],
                 'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER, 'vertical' => Alignment::VERTICAL_CENTER],
             ],
-
-            // Tiêu đề chính - Row 4
             4 => [
                 'font' => ['size' => 15, 'bold' => true],
                 'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER, 'vertical' => Alignment::VERTICAL_CENTER],
             ],
-
-            // Header table - Rows 6-9
             6 => [
                 'font' => ['bold' => true, 'size' => 11],
                 'alignment' => [
@@ -230,16 +252,6 @@ class ReportSheet1 implements FromCollection, WithTitle, WithStyles, WithColumnW
                 ],
                 'fill' => ['fillType' => Fill::FILL_SOLID, 'startColor' => ['rgb' => 'E8E8E8']],
             ],
-            9 => [
-                'font' => ['bold' => false, 'size' => 10],
-                'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER, 'vertical' => Alignment::VERTICAL_CENTER],
-                'fill' => ['fillType' => Fill::FILL_SOLID, 'startColor' => ['rgb' => 'F5F5F5']],
-            ],
-
-            // Data row - Row 11
-            11 => [
-                'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER, 'vertical' => Alignment::VERTICAL_CENTER],
-            ],
         ];
     }
 
@@ -248,32 +260,31 @@ class ReportSheet1 implements FromCollection, WithTitle, WithStyles, WithColumnW
         return [
             AfterSheet::class => function (AfterSheet $event) {
                 $sheet = $event->sheet->getDelegate();
+                $lastRow = $sheet->getHighestRow();
 
                 // Merge cells cho header
-                $sheet->mergeCells('A1:D1'); // HỌC VIỆN NÔNG NGHIỆP VIỆT NAM
-                $sheet->mergeCells('A2:D2'); // KHOA...
-                $sheet->mergeCells('A4:S4'); // Tiêu đề chính
+                $sheet->mergeCells('A1:D1');
+                $sheet->mergeCells('A2:D2');
+                $sheet->mergeCells('A4:S4');
 
                 // Merge cells cho header table
-                // Row 6 (header level 1)
-                $sheet->mergeCells('A6:A8'); // TT
-                $sheet->mergeCells('B6:B8'); // Mã ngành
-                $sheet->mergeCells('C6:C8'); // Tên ngành đào tạo
-                $sheet->mergeCells('D6:E7'); // Số sinh viên tốt nghiệp
-                $sheet->mergeCells('F6:G7'); // Số sinh viên phản hồi
-                $sheet->mergeCells('H6:L6'); // Tình hình việc làm
-                $sheet->mergeCells('M6:M8'); // Tỷ lệ 1
-                $sheet->mergeCells('N6:N8'); // Tỷ lệ 2
-                $sheet->mergeCells('O6:R7'); // Khu vực làm việc
-                $sheet->mergeCells('S6:S8'); // Nơi làm việc
+                $sheet->mergeCells('A6:A8');
+                $sheet->mergeCells('B6:B8');
+                $sheet->mergeCells('C6:C8');
+                $sheet->mergeCells('D6:E7');
+                $sheet->mergeCells('F6:G7');
+                $sheet->mergeCells('H6:L6');
+                $sheet->mergeCells('M6:M8');
+                $sheet->mergeCells('N6:N8');
+                $sheet->mergeCells('O6:R7');
+                $sheet->mergeCells('S6:S8');
 
-                // Row 7 (header level 2)
-                $sheet->mergeCells('H7:J7'); // Có việc làm
-                $sheet->mergeCells('K7:K8'); // Tiếp tục học
-                $sheet->mergeCells('L7:L8'); // Chưa có việc làm
+                $sheet->mergeCells('H7:J7');
+                $sheet->mergeCells('K7:K8');
+                $sheet->mergeCells('L7:L8');
 
-                // Apply borders cho toàn bộ bảng (từ row 6 đến row 11)
-                $sheet->getStyle('A6:S11')->applyFromArray([
+                // Apply borders
+                $sheet->getStyle('A6:S' . $lastRow)->applyFromArray([
                     'borders' => [
                         'allBorders' => [
                             'borderStyle' => Border::BORDER_THIN,
@@ -282,6 +293,13 @@ class ReportSheet1 implements FromCollection, WithTitle, WithStyles, WithColumnW
                     ],
                 ]);
 
+                // Center alignment cho data rows
+                $sheet->getStyle('A9:S' . $lastRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+                $sheet->getStyle('A9:S' . $lastRow)->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+
+                // Bold cho dòng TỔNG HỢP
+                $sheet->getStyle('A' . $lastRow . ':S' . $lastRow)->getFont()->setBold(true);
+
                 // Set row height
                 $sheet->getRowDimension(1)->setRowHeight(20);
                 $sheet->getRowDimension(2)->setRowHeight(20);
@@ -289,25 +307,22 @@ class ReportSheet1 implements FromCollection, WithTitle, WithStyles, WithColumnW
                 $sheet->getRowDimension(6)->setRowHeight(50);
                 $sheet->getRowDimension(7)->setRowHeight(30);
                 $sheet->getRowDimension(8)->setRowHeight(30);
-                $sheet->getRowDimension(9)->setRowHeight(20);
 
-                // Set màu đỏ cho text trong cột B (Mã ngành)
+                // Màu đỏ
                 $sheet->getStyle('B6:B8')->getFont()->getColor()->setRGB('FF0000');
-
-                // Set màu đỏ cho text trong cột S (Nơi làm việc)
                 $sheet->getStyle('S6:S8')->getFont()->getColor()->setRGB('FF0000');
 
-                // Thêm chữ ký ở cuối (giống ảnh mẫu)
-                $lastRow = 15; // Điều chỉnh vị trí chữ ký
-                $sheet->setCellValue('Q' . $lastRow, 'Hà Nội, ngày     tháng     năm 2025');
-                $sheet->mergeCells('Q' . $lastRow . ':S' . $lastRow);
-                $sheet->getStyle('Q' . $lastRow)->getFont()->setItalic(true);
-                $sheet->getStyle('Q' . $lastRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+                // Chữ ký
+                $signatureRow = $lastRow + 4;
+                $sheet->setCellValue('Q' . $signatureRow, 'Hà Nội, ngày     tháng     năm 2025');
+                $sheet->mergeCells('Q' . $signatureRow . ':S' . $signatureRow);
+                $sheet->getStyle('Q' . $signatureRow)->getFont()->setItalic(true);
+                $sheet->getStyle('Q' . $signatureRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
 
-                $sheet->setCellValue('Q' . ($lastRow + 1), 'TRƯỞNG KHOA');
-                $sheet->mergeCells('Q' . ($lastRow + 1) . ':S' . ($lastRow + 1));
-                $sheet->getStyle('Q' . ($lastRow + 1))->getFont()->setBold(true);
-                $sheet->getStyle('Q' . ($lastRow + 1))->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+                $sheet->setCellValue('Q' . ($signatureRow + 1), 'TRƯỞNG KHOA');
+                $sheet->mergeCells('Q' . ($signatureRow + 1) . ':S' . ($signatureRow + 1));
+                $sheet->getStyle('Q' . ($signatureRow + 1))->getFont()->setBold(true);
+                $sheet->getStyle('Q' . ($signatureRow + 1))->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
             },
         ];
     }

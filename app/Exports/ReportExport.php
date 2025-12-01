@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Exports;
-use App\Models\Major;
+
 use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 
 class ReportExport implements WithMultipleSheets
@@ -13,11 +13,10 @@ class ReportExport implements WithMultipleSheets
     protected $r2;
     protected $studentTab2;
     protected $alumniData;
+    protected $r1Majors;
     protected $type;
     protected $majors;
-    protected $graduationData;
     protected $responsesByCode;
-
 
     public function __construct(
         $schoolYear,
@@ -27,6 +26,7 @@ class ReportExport implements WithMultipleSheets
         $r2,
         $studentTab2,
         $alumniData,
+        $r1Majors,
         $type = 'all'
     ) {
         $this->schoolYear = $schoolYear;
@@ -36,32 +36,13 @@ class ReportExport implements WithMultipleSheets
         $this->r2 = $r2;
         $this->studentTab2 = $studentTab2;
         $this->alumniData = $alumniData;
+        $this->r1Majors = $r1Majors;
         $this->type = $type;
 
-
-        // Lấy dữ liệu dùng chung cho Tab 2 và Tab 3
-        // (Chỉ chạy khi cần export các tab này)
+        // Prepare data for tabs
         if (in_array($type, ['all', 'tab2', 'tab3'])) {
-            $this->majors = Major::all()->keyBy('id');
-            // $r2 đã có sẵn từ $this->r2
+            $this->majors = \App\Models\Major::all()->keyBy('id');
             $this->responsesByCode = $r2->keyBy('code_student');
-        }
-
-        // Lấy dữ liệu dùng chung cho Tab 2
-        // (Chỉ chạy khi cần export tab 2)
-        if (in_array($type, ['all', 'tab2', 'tab3'])) {
-            $this->majors = Major::all()->keyBy('id');
-            $this->responsesByCode = $r2->keyBy('code_student');
-        }
-
-        if (in_array($type, ['all', 'tab2'])) {
-            $studentIdsForGraduation = $studentTab2->pluck('id');
-            $this->graduationData = \Illuminate\Support\Facades\DB::table('graduation_student')
-                ->join('graduation', 'graduation_student.graduation_id', '=', 'graduation.id')
-                ->whereIn('graduation_student.student_id', $studentIdsForGraduation)
-                ->select('graduation_student.student_id', 'graduation.certification', 'graduation.certification_date')
-                ->get()
-                ->keyBy('student_id');
         }
     }
 
@@ -76,18 +57,16 @@ class ReportExport implements WithMultipleSheets
                     $this->r1,
                     $this->r1_trained_field,
                     $this->r1_work_area,
-                    $this->r2
+                    $this->r2,
+                    $this->r1Majors
                 );
                 break;
 
             case 'tab2':
-                // SỬA DÒNG NÀY: Truyền thêm 3 biến
                 $sheets[] = new ReportSheet2(
                     $this->schoolYear,
                     $this->studentTab2,
-                    $this->responsesByCode,
-                    $this->graduationData,
-                    $this->majors
+                    $this->responsesByCode
                 );
                 break;
 
@@ -110,23 +89,19 @@ class ReportExport implements WithMultipleSheets
                     $this->r1,
                     $this->r1_trained_field,
                     $this->r1_work_area,
-                    $this->r2
+                    $this->r2,
+                    $this->r1Majors
                 );
-                // SỬA DÒNG NÀY
                 $sheets[] = new ReportSheet2(
                     $this->schoolYear,
                     $this->studentTab2,
-                    $this->responsesByCode,
-                    $this->graduationData,
-                    $this->majors
+                    $this->responsesByCode
                 );
-                // SỬA DÒNG NÀY
                 $sheets[] = new ReportSheet3(
                     $this->schoolYear,
                     $this->r2,
                     $this->majors
                 );
-                // $sheets[] = new ReportSheet4($this->alumniData);
                 break;
         }
 

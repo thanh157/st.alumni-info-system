@@ -18,9 +18,6 @@ class ReportController extends Controller
 {
     public function __construct(private StudentService $studentService) {}
 
-    /**
-     * Lấy và cache token sinh viên
-     */
     private function getStudentToken(): ?string
     {
         try {
@@ -29,20 +26,16 @@ class ReportController extends Controller
                 throw new \Exception('User chưa đăng nhập');
             }
 
-            // Nếu đã có token thì dùng luôn
             if (!empty($user->st_students_token)) {
                 return $user->st_students_token;
             }
 
-            // Lấy token mới
             $tokenData = $this->studentService->getAccessTokenVerify();
             if (!$tokenData || empty($tokenData['token'])) {
                 throw new \Exception('Không lấy được access token của sinh viên.');
             }
 
             $token = $tokenData['token'];
-
-            // Lưu lại cho lần sau
             $user->update(['st_students_token' => $token]);
 
             return $token;
@@ -52,12 +45,6 @@ class ReportController extends Controller
         }
     }
 
-
-
-    /**
-     * Lấy danh sách sinh viên theo graduation IDs
-     * API trả về: { "data": { "survey_students": [...] } }
-     */
     private function fetchStudentsByGraduationIds(array $graduationIds): array
     {
         if (empty($graduationIds)) {
@@ -69,7 +56,6 @@ class ReportController extends Controller
         try {
             $user = auth()->user();
 
-            // Lấy access token nếu chưa có
             if (empty($user->st_students_token)) {
                 $tokenData = $this->studentService->getAccessTokenVerify();
                 if (!$tokenData || empty($tokenData['token'])) {
@@ -79,21 +65,9 @@ class ReportController extends Controller
             
             $response = Http::withToken($user->st_students_token)
                 ->timeout(10)
-                ->get($url, [
-                    'ids' => $graduationIds
-                ])
+                ->get($url, ['ids' => $graduationIds])
                 ->json();
-            // $token = $this->getStudentToken();
-            // if (empty($token)) {
-            //     throw new \Exception('Không có token sinh viên.');
-            // }
 
-            // $response = Http::withToken($token)
-            //     ->timeout(15)
-            //     ->post($url, ['ids' => array_values($graduationIds)])
-            //     ->json();
-
-            // API trả về data trong field 'survey_students'
             if (!isset($response['data']['survey_students']) || !is_array($response['data']['survey_students'])) {
                 Log::warning('API students trả về không hợp lệ', [
                     'response' => $response,
@@ -111,25 +85,18 @@ class ReportController extends Controller
         }
     }
 
-    /**
-     * Lấy tất cả dữ liệu báo cáo
-     * LUÔN trả về array, không bao giờ null
-     */
     private function getReportData(int $surveyId): array
     {
         $survey = Survey::findOrFail($surveyId);
 
-        // Lấy graduation IDs từ pivot table
         $graduationIds = GraduationSurvey::where('survey_id', $surveyId)
             ->pluck('graduation_id')
             ->toArray();
 
-        // Khởi tạo giá trị mặc định
         $schoolYear = 'N/A';
         $facultyName = 'KHOA';
         $studentTab2 = collect();
 
-        // Nếu có graduation IDs thì gọi API lấy sinh viên
         if (!empty($graduationIds)) {
             $studentsFromApi = $this->fetchStudentsByGraduationIds($graduationIds);
             
@@ -137,26 +104,16 @@ class ReportController extends Controller
                 return (object) $s;
             });
 
-            // Lấy school_year và faculty từ sinh viên đầu tiên (nếu có)
             if ($studentTab2->isNotEmpty()) {
                 $firstStudent = $studentTab2->first();
-                
-                // school_year từ school_year_end (ví dụ: "2020")
                 $schoolYear = $firstStudent->school_year_end ?? 'N/A';
-                
-                // faculty_id có thể map sang tên khoa (hoặc lấy từ DB local)
-                // Tạm thời để mặc định, có thể cải thiện sau
                 $facultyName = 'KHOA';
             }
         }
 
-        // Lấy dữ liệu phản hồi
         $r2 = EmploymentSurveyResponse::where('survey_period_id', $surveyId)->get();
-
-        // Danh sách mã SV đã phản hồi
         $studentCodesResponded = $r2->pluck('code_student')->unique()->toArray();
 
-        // Dữ liệu cựu sinh viên
         $alumniData = DB::table('alumni_contact_surveys')
             ->whereIn('student_code', $studentCodesResponded)
             ->orderBy('created_at', 'desc')
@@ -169,15 +126,13 @@ class ReportController extends Controller
             'responses_count' => $r2->count(),
         ]);
 
-        // Helper check giới tính nữ
         $isFemaleFn = function ($genderValue) {
             $gender = mb_strtolower($genderValue ?? '');
             return in_array($gender, ['nữ', 'nu', 'female', 'f', '0']);
         };
 
         // Tổng hợp chung
-        $totalGraduates = (int) ($survey->total_graduations ?? 0);
-
+        $totalGraduates = $studentTab2->count(); // ĐẾM TỪ API
         $totalNu = $studentTab2->filter(function ($s) use ($isFemaleFn) {
             return $isFemaleFn($s->gender ?? '');
         })->count();
@@ -191,7 +146,6 @@ class ReportController extends Controller
             })->count(),
         ];
 
-        // Thống kê theo ngành đào tạo
         $r1_trained_field = EmploymentSurveyResponse::selectRaw("
                 SUM(CASE WHEN trained_field = 1 AND employment_status = 1 THEN 1 ELSE 0 END) AS dung_nganh,
                 SUM(CASE WHEN trained_field = 2 AND employment_status = 1 THEN 1 ELSE 0 END) AS lien_quan,
@@ -200,7 +154,6 @@ class ReportController extends Controller
             ->where('survey_period_id', $surveyId)
             ->first();
 
-        // Thống kê theo khu vực làm việc
         $r1_work_area = EmploymentSurveyResponse::selectRaw("
                 SUM(CASE WHEN work_area = '1' AND employment_status = 1 THEN 1 ELSE 0 END) AS nha_nuoc,
                 SUM(CASE WHEN work_area = '2' AND employment_status = 1 THEN 1 ELSE 0 END) AS tu_nhan,
@@ -210,7 +163,7 @@ class ReportController extends Controller
             ->where('survey_period_id', $surveyId)
             ->first();
 
-        // Thống kê chi tiết theo ngành
+        // Thống kê theo ngành - ĐẾM TỪ API THEO industry_code
         $majorConfigs = config('survey.major_configs', [
             1 => ['code' => '7480201', 'name' => 'Công nghệ thông tin'],
             2 => ['code' => '7480102', 'name' => 'Mạng máy tính & Truyền dữ liệu'],
@@ -219,7 +172,12 @@ class ReportController extends Controller
         $r1Majors = [];
 
         foreach ($majorConfigs as $trainingIndustryId => $info) {
-            $studentsMajor = $studentTab2->where('training_industry_id', $trainingIndustryId);
+            // ĐẾM SINH VIÊN THEO industry_code TỪ API
+            $studentsMajor = $studentTab2->filter(function ($s) use ($info) {
+                return ($s->industry_code ?? '') === $info['code'];
+            });
+
+            // ĐẾM PHẢN HỒI THEO training_industry_id
             $responsesMajor = $r2->where('training_industry_id', $trainingIndustryId);
 
             $totalStudentMajor = $studentsMajor->count();
@@ -238,8 +196,8 @@ class ReportController extends Controller
             $lienQuan = $responsesEmployed->where('trained_field', 2)->count();
             $khongLienQuan = $responsesEmployed->where('trained_field', 3)->count();
 
-            $tiepTucHoc = $responsesMajor->where('employment_status', 2)->count();
-            $chuaCoViec = $responsesMajor->where('employment_status', 3)->count();
+            $tiepTucHoc = $responsesMajor->where('employment_status', 3)->count();
+            $chuaCoViec = $responsesMajor->whereNotIn('employment_status', [1, 3])->count();
 
             $nhaNuoc = $responsesEmployed->where('work_area', '1')->count();
             $tuNhan = $responsesEmployed->where('work_area', '2')->count();
@@ -282,7 +240,6 @@ class ReportController extends Controller
             ];
         }
 
-        // LUÔN return array (không bao giờ null)
         return compact(
             'survey',
             'schoolYear',
@@ -297,12 +254,8 @@ class ReportController extends Controller
         );
     }
 
-    /**
-     * Hiển thị trang báo cáo
-     */
     public function index(Request $request)
     {
-        // Giá trị mặc định
         $survey = null;
         $schoolYear = null;
         $r1 = [];
@@ -327,7 +280,6 @@ class ReportController extends Controller
             try {
                 $data = $this->getReportData((int) $request->survey_id);
 
-                // Gán dữ liệu từ kết quả
                 $survey = $data['survey'];
                 $schoolYear = $data['schoolYear'];
                 $r1 = $data['r1'];
@@ -370,9 +322,6 @@ class ReportController extends Controller
         ));
     }
 
-    /**
-     * Export báo cáo ra Excel
-     */
     public function export(Request $request)
     {
         if (!$request->filled('survey_id')) {
@@ -421,7 +370,8 @@ class ReportController extends Controller
                 $r2,
                 $studentTab2,
                 $alumniData,
-                $type
+                $type,
+                  $data['r1Majors'], 
             ),
             $fileName
         );
