@@ -25,7 +25,6 @@ class ReportController extends Controller
         $survey = Survey::findOrFail($surveyId);
 
         // 1. Lấy dữ liệu Tab 3: Danh sách sinh viên phản hồi về việc làm từ EmploymentSurveyResponse
-        // 1. Lấy dữ liệu Tab 3: Danh sách sinh viên phản hồi về việc làm từ EmploymentSurveyResponse
         $r2 = EmploymentSurveyResponse::where('survey_period_id', $surveyId)->get();
 
         if ($r2->isEmpty()) {
@@ -34,47 +33,43 @@ class ReportController extends Controller
         }
 
         // 2. Lấy các đợt tốt nghiệp gắn với survey
-            $allGraduations = $survey->graduations()->get();
-            $schoolYear = $allGraduations->first()->school_year ?? 'N/A';
-
-            $graduationIds = $allGraduations->pluck('id');
-
-            // 3. Từ bảng graduation_student -> lấy TOÀN BỘ sinh viên tốt nghiệp
-            $graduationStudent = GraduationStudent::whereIn('graduation_id', $graduationIds)->get();
-            $studentIds = $graduationStudent->pluck('student_id')->unique();
-
-            // 4. Lấy danh sách sinh viên từ Student theo ID (TAB 2 ĐÚNG)
-            $studentTab2 = Student::whereIn('id', $studentIds)->get();
-
-            // 5. Danh sách mã SV đã phản hồi (chỉ để check phản hồi, KHÔNG dùng để lọc student)
-            $studentCodesResponded = $r2->pluck('code_student')->unique()->toArray();
-
-            \Log::info('TAB 2 - ALL GRADUATED STUDENTS', [
-                'graduation_ids' => $graduationIds->toArray(),
-                'student_ids_count' => $studentIds->count(),
-                'studentTab2_count' => $studentTab2->count(),
-                'studentCodesResponded_count' => count($studentCodesResponded),
-            ]);
-
-        // 5. Lấy danh sách đợt tốt nghiệp (nếu cần)
         $allGraduations = $survey->graduations()->get();
         $schoolYear = $allGraduations->first()->school_year ?? 'N/A';
+
+        $graduationIds = $allGraduations->pluck('id');
+
+        // 3. Từ bảng graduation_student -> lấy TOÀN BỘ sinh viên tốt nghiệp
+        $graduationStudent = GraduationStudent::whereIn('graduation_id', $graduationIds)->get();
+        $studentIds = $graduationStudent->pluck('student_id')->unique();
+
+        // 4. Lấy danh sách sinh viên từ Student theo ID (TAB 2 ĐÚNG)
+        $studentTab2 = Student::whereIn('id', $studentIds)->get();
+
+        // 5. Danh sách mã SV đã phản hồi (chỉ để check phản hồi, KHÔNG dùng để lọc student)
+        $studentCodesResponded = $r2->pluck('code_student')->unique()->toArray();
+
+        \Log::info('TAB 2 - ALL GRADUATED STUDENTS', [
+            'graduation_ids' => $graduationIds->toArray(),
+            'student_ids_count' => $studentIds->count(),
+            'studentTab2_count' => $studentTab2->count(),
+            'studentCodesResponded_count' => count($studentCodesResponded),
+        ]);
 
         // 6. Tính toán Tab 1: Tổng hợp chung
         $totalGraduates = (int) ($survey->total_graduations ?? 0);
 
-            $totalNu = $studentTab2->filter(function ($s) {
-                return in_array(mb_strtolower($s->gender), ['nữ', 'female']);
-            })->count();
+        $totalNu = $studentTab2->filter(function ($s) {
+            return in_array(mb_strtolower($s->gender), ['nữ', 'female']);
+        })->count();
 
-            $r1 = [
-                'total_student'   => $totalGraduates,   
-                'total_nu'        => $totalNu,           
-                'total_res'       => $r2->count(),
-                'total_res_nu'    => $r2->filter(function ($s) {
-                    return in_array(mb_strtolower($s->gender), ['nữ', 'female']);
-                })->count(),
-            ];
+        $r1 = [
+            'total_student'   => $totalGraduates,
+            'total_nu'        => $totalNu,
+            'total_res'       => $r2->count(),
+            'total_res_nu'    => $r2->filter(function ($s) {
+                return in_array(mb_strtolower($s->gender), ['nữ', 'female']);
+            })->count(),
+        ];
 
         // 7. Thống kê theo ngành đào tạo (trained_field)
         // Chỉ tính những người CÓ VIỆC LÀM (employment_status = 1)
@@ -179,6 +174,9 @@ class ReportController extends Controller
             ];
         }
 
+        // ✅ THÊM DÒNG NÀY - Khởi tạo alumniData
+        $alumniData = collect();
+
         return compact(
             'survey',
             'schoolYear',
@@ -188,7 +186,8 @@ class ReportController extends Controller
             'studentTab2',
             'r2',
             'facultyName',
-            'r1Majors'
+            'r1Majors',
+            'alumniData'
         );
     }
 
@@ -216,7 +215,7 @@ class ReportController extends Controller
         $r2 = collect();
         $alumniData = collect();
         $facultyName = 'KHOA';
-        $r1Majors = collect(); // thêm
+        $r1Majors = collect();
 
         if ($request->filled('survey_id')) {
             try {
@@ -233,8 +232,9 @@ class ReportController extends Controller
                 $r1_work_area = $data['r1_work_area'];
                 $studentTab2 = $data['studentTab2'];
                 $r2 = $data['r2'];
-                 $facultyName = $data['facultyName'];
+                $facultyName = $data['facultyName'];
                 $r1Majors = collect($data['r1Majors'] ?? []);
+                $alumniData = $data['alumniData'] ?? collect(); // ✅ THÊM DÒNG NÀY
 
                 \Log::info('ReportController Data Assigned:', [
                     'r1' => $r1,
@@ -292,7 +292,18 @@ class ReportController extends Controller
         $r1_work_area = $data['r1_work_area'];
         $r2 = $data['r2'];
         $studentTab2 = $data['studentTab2'];
-        $alumniData = $data['alumniData'];
+        $alumniData = $data['alumniData'] ?? collect(); // ✅ THÊM ?? collect()
+
+        // ✅ THÊM LOG DEBUG
+        \Log::info('=== EXPORT DATA CHECK ===', [
+            'schoolYear' => $schoolYear,
+            'r1' => $r1,
+            'r1_trained_field' => (array)$r1_trained_field,
+            'r1_work_area' => (array)$r1_work_area,
+            'r2_count' => $r2->count(),
+            'studentTab2_count' => $studentTab2->count(),
+            'alumniData_count' => $alumniData->count(),
+        ]);
 
         // 4. Lấy type từ request (mặc định là 'all')
         $type = $request->get('type', 'all');
@@ -308,19 +319,31 @@ class ReportController extends Controller
 
         $fileName = ($fileNames[$type] ?? 'bao-cao') . '-' . date('Y-m-d-His') . '.xlsx';
 
-        // 6. Export
-        return Excel::download(
-            new ReportExport(
-                $schoolYear,
-                $r1,
-                $r1_trained_field,
-                $r1_work_area,
-                $r2,
-                $studentTab2,
-                $alumniData,
-                $type
-            ),
-            $fileName
-        );
+        // ✅ THÊM TRY-CATCH
+        try {
+            // 6. Export
+            return Excel::download(
+                new ReportExport(
+                    $schoolYear,
+                    $r1,
+                    $r1_trained_field,
+                    $r1_work_area,
+                    $r2,
+                    $studentTab2,
+                    $alumniData,
+                    $type
+                ),
+                $fileName
+            );
+        } catch (\Throwable $e) {
+            \Log::error('=== EXPORT ERROR ===', [
+                'message' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            
+            return back()->with('error', 'Lỗi khi xuất file Excel: ' . $e->getMessage());
+        }
     }
 }

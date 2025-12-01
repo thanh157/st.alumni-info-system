@@ -34,17 +34,24 @@ class ReportSheet1 implements FromCollection, WithTitle, WithStyles, WithColumnW
     public function collection()
     {
         // Tính toán tỷ lệ
-        $totalCoViecLam = ($this->r1_trained_field->dung_nganh ?? 0)
-            + ($this->r1_trained_field->lien_quan ?? 0)
-            + ($this->r1_trained_field->khong_lien_quan ?? 0);
+        $dungNganh = $this->r1_trained_field->dung_nganh ?? 0;
+        $lienQuan = $this->r1_trained_field->lien_quan ?? 0;
+        $khongLienQuan = $this->r1_trained_field->khong_lien_quan ?? 0;
 
-        $tyLeCoViecPhanHoi = $this->r1['total_res'] > 0
-            ? round(($totalCoViecLam / $this->r1['total_res']) * 100, 2) . '%'
+        $totalCoViecLam = $dungNganh + $lienQuan + $khongLienQuan;
+
+        // SỬA: Thêm ?? 0 để tránh lỗi
+        $totalRes = $this->r1['total_res'] ?? 0;
+        $totalStudent = $this->r1['total_student'] ?? 0;
+
+        $tyLeCoViecPhanHoi = $totalRes > 0
+            ? round(($totalCoViecLam / $totalRes) * 100, 2) . '%'
             : '0%';
 
-        $tyLeCoViecTotNghiep = $this->r1['total_student'] > 0
-            ? round(($totalCoViecLam / $this->r1['total_student']) * 100, 2) . '%'
+        $tyLeCoViecTotNghiep = $totalStudent > 0
+            ? round(($totalCoViecLam / $totalStudent) * 100, 2) . '%'
             : '0%';
+
 
         return collect([
             // Row 1: Header 1
