@@ -178,7 +178,7 @@ class ReportController extends Controller
             $tuTao = $responsesEmployed->where('work_area', '3')->count();
             $nuocNgoai = $responsesEmployed->where('work_area', '4')->count();
 
-            $coViecLam = $dungNganh + $lienQuan + $khongLienQuan;
+            $coViecLam = $dungNganh + $lienQuan + $khongLienQuan + $tiepTucHoc;
 
             $tyLeCoViecPhanHoi = $totalResMajor > 0
                 ? round(($coViecLam / $totalResMajor) * 100, 2)

@@ -2,6 +2,7 @@
 
 namespace App\Exports;
 
+use Carbon\Carbon;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithTitle;
 use Maatwebsite\Excel\Concerns\WithStyles;
@@ -94,7 +95,7 @@ class ReportSheet2 implements FromCollection, WithTitle, WithStyles, WithColumnW
                 $student->citizen_identification ?? '',
                 $student->industry_code ?? '', // DÙNG industry_code TỪ API
                 $student->certification ?? '',
-                $student->certification_date ?? '',
+                Carbon::parse($student->certification_date)->format('d/m/Y') ?: '',
                 $student->phone ?? '',
                 $student->email ?? '',
                 '', // Hình thức khảo sát
