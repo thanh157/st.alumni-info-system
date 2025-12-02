@@ -119,6 +119,20 @@ class ReportSheet1 implements FromCollection, WithTitle, WithStyles, WithColumnW
         // Thêm từng ngành
         $rowNumber = 1;
         foreach ($this->r1Majors as $major) {
+             $currentMajorId = $major['training_industry_id'];  
+            
+             $topCity = $this->r2->where('training_industry_id', $currentMajorId)
+                ->map(function ($item) {
+                    if (empty($item->recruit_partner_address)) return null;
+                    $parts = explode(',', $item->recruit_partner_address);
+                    $city = trim(end($parts));
+                    return mb_convert_case($city, MB_CASE_TITLE, "UTF-8");
+                })
+                ->filter()       
+                ->countBy()      
+                ->sortDesc()    
+                ->keys()         
+                ->first();       
             $data->push([
                 $rowNumber++,
                 $major['major_code'],
@@ -138,7 +152,7 @@ class ReportSheet1 implements FromCollection, WithTitle, WithStyles, WithColumnW
                 $major['tu_nhan'],
                 $major['tu_tao'],
                 $major['nuoc_ngoai'],
-                ''
+                $topCity ?? ''
             ]);
         }
 

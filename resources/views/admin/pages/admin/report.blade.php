@@ -293,7 +293,7 @@
                                             <td>{{ $row['tu_nhan'] }}</td>
                                             <td>{{ $row['tu_tao'] }}</td>
                                             <td>{{ $row['nuoc_ngoai'] }}</td>
-                                            <td></td>
+                                            <td>{{ $row['top_city'] }}</td>
                                         </tr>
                                     @endforeach
 

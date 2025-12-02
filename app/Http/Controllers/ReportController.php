@@ -153,8 +153,21 @@ class ReportController extends Controller
 
             // ĐẾM PHẢN HỒI THEO training_industry_id
             $responsesMajor = $r2->where('training_industry_id', $trainingIndustryId);
-
-            $totalStudentMajor = $studentsMajor->count();
+            $topCity = $responsesMajor->map(function ($item) {
+        if (empty($item->recruit_partner_address)) return null;
+        
+        $parts = explode(',', $item->recruit_partner_address);
+        $city = trim(end($parts));
+        
+                // Chuẩn hóa: hanoi -> Hà Nội
+                return mb_convert_case($city, MB_CASE_TITLE, "UTF-8");
+            })
+            ->filter()       
+            ->countBy()      
+            ->sortDesc()     
+            ->keys()        
+            ->first();       
+                $totalStudentMajor = $studentsMajor->count();
             $totalNuMajor = $studentsMajor->filter(function ($s) use ($isFemaleFn) {
                 return $isFemaleFn($s->gender ?? '');
             })->count();
@@ -211,6 +224,7 @@ class ReportController extends Controller
 
                 'ty_le_co_viec_phan_hoi' => $tyLeCoViecPhanHoi,
                 'ty_le_co_viec_tot_nghiep' => $tyLeCoViecTotNghiep,
+                'top_city' => $topCity ?? '',
             ];
         }
 
