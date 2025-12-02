@@ -389,6 +389,13 @@
                                     @php
                                         // Kiểm tra sinh viên này có phản hồi trong bảng employ không
                                         $hasResponse = $responsesByCode->has($item->code ?? '');
+
+                                        $studentCode = $item->code ?? ''; 
+                                        $responseItem = $responsesByCode->get($studentCode); 
+                                        $cccd = $item->citizen_identification; // Lấy từ API 
+                                        if (empty($cccd) && $hasResponse) { 
+                                            $cccd = $responseItem->identification_card_number; // Fallback lấy từ DB 
+                                        } 
                                     @endphp
                                     <tr>
                                         <td>{{ $loop->iteration }}</td>
@@ -403,7 +410,7 @@
                                         <td>{{ ($item->gender ?? '') === 'female' ? 'X' : '' }}</td>
 
                                         {{-- CCCD --}}
-                                        <td>{{ $item->citizen_identification ?? '' }}</td>
+                                        <td>{{ $cccd }}</td>
 
                                         {{-- Mã ngành đào tạo (API trả về industry_code) --}}
                                         <td>{{ $item->industry_code ?? '' }}</td>
