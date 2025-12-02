@@ -256,7 +256,7 @@
                                         $tong_tu_tao     = $majorsRows->sum('tu_tao');
                                         $tong_nuoc_ngoai = $majorsRows->sum('nuoc_ngoai');
 
-                                        $tong_co_viec_lam = $tong_dung_nganh + $tong_lien_quan + $tong_khong_lien_quan;
+                                        $tong_co_viec_lam = $tong_dung_nganh + $tong_lien_quan + $tong_khong_lien_quan + $tong_tiep_tuc_hoc;
 
                                         $tong_ty_le_co_viec_phan_hoi =
                                             $tong_total_res > 0
@@ -405,12 +405,11 @@
                                         {{-- CCCD --}}
                                         <td>{{ $item->citizen_identification ?? '' }}</td>
 
-                                        {{-- Mã ngành đào tạo (API trả về industry_name) --}}
-                                        <td>{{ $item->industry_name ?? '' }}</td>
+                                        {{-- Mã ngành đào tạo (API trả về industry_code) --}}
+                                        <td>{{ $item->industry_code ?? '' }}</td>
 
-                                        {{-- Quyết định tốt nghiệp (API chưa có, để trống) --}}
-                                        <td></td>
-                                        <td></td>
+                                        <td>{{ $item->certification }}</td>
+                                        <td>{{ \Carbon\Carbon::parse($item->certification_date)->format('d/m/Y') }}</td>
 
                                         {{-- Số điện thoại --}}
                                         <td>{{ $item->phone ?? '' }}</td>
@@ -419,7 +418,7 @@
                                         <td>{{ $item->email ?? '' }}</td>
 
                                         {{-- Hình thức khảo sát (hiện tại chưa có nguồn) --}}
-                                        <td></td>
+                                        <td>Online</td>
 
                                         {{-- Có phản hồi --}}
                                         <td>{{ $hasResponse ? 'X' : '' }}</td>
@@ -431,7 +430,7 @@
                                         <td>{{ $item->industry_name ?? '' }}</td>
 
                                         {{-- Khoa --}}
-                                        <td>Công Nghệ Thông Tin</td>
+                                        <td>Công nghệ thông tin</td>
                                     </tr>
                                 @empty
                                     <tr>
