@@ -370,8 +370,7 @@ class ReportController extends Controller
                 $r2,
                 $studentTab2,
                 $alumniData,
-                $type,
-                  $data['r1Majors'], 
+                $type
             ),
             $fileName
         );
