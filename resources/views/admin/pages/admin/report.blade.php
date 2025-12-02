@@ -579,7 +579,7 @@
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $item->code_student }}</td>
                                             <td>{{ $item->full_name }}</td>
-                                            <td>{{ !empty($item->dob) ? date('d-m-Y', strtotime($item->dob)) : '' }}</td>
+                                            <td>{{ !empty($item->dob) ? date('d/m/Y', strtotime($item->dob)) : '' }}</td>
                                             <td>{{ $item->gender == 'Nam' ? 'Nam' : 'Nữ' }}</td>
                                             <td>{{ $item->identification_card_number }}</td>
                                             <td>{{ optional($majors->get($item->training_industry_id))->code }}</td>

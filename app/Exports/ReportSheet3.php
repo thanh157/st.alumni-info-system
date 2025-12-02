@@ -109,12 +109,18 @@ class ReportSheet3 implements FromCollection, WithTitle, WithStyles, WithColumnW
             $softSkills = json_decode($item->soft_skills_required, true);
             $attendedCourses = json_decode($item->must_attended_courses, true);
             $solutions = json_decode($item->solutions_get_job, true);
+             $city = '';
+            if (!empty($item->recruit_partner_address)) {
+                    $parts = explode(',', $item->recruit_partner_address);
+                    $city = trim(end($parts));
+                }
 
+                
             $row = [
                 $index + 1,
                 $item->code_student,
                 $item->full_name,
-                !empty($item->dob) ? date('d-m-Y', strtotime($item->dob)) : '',
+                !empty($item->dob) ? date('d/m/Y', strtotime($item->dob)) : '',
                 $item->gender == 'male' ? 'Nam' : 'Nữ',
                 $item->identification_card_number,
                 optional($major)->code,
@@ -133,8 +139,9 @@ class ReportSheet3 implements FromCollection, WithTitle, WithStyles, WithColumnW
                 $item->work_area == '2' ? 'x' : '',
                 $item->work_area == '3' ? 'x' : '',
                 $item->work_area == '4' ? 'x' : '',
-
-                $item->city_work_id ?? '',
+               
+                $city, 
+               
 
                 // Thời gian tìm việc (4 cột)
                 $item->employed_since == 1 ? 'x' : '',
@@ -264,7 +271,7 @@ class ReportSheet3 implements FromCollection, WithTitle, WithStyles, WithColumnW
 
                 $sheet->getRowDimension(6)->setRowHeight(50);
                 $sheet->getRowDimension(7)->setRowHeight(40);
-                $sheet->getRowDimension(8)->setRowHeight(30);
+                $sheet->getRowDimension(8)->setRowHeight(40);
 
                 // Chữ ký
                 $signatureRow = $lastRow + 4;
@@ -277,7 +284,9 @@ class ReportSheet3 implements FromCollection, WithTitle, WithStyles, WithColumnW
                 $sheet->setCellValue('K' . $signatureRow, $richText);
                 $sheet->mergeCells('K' . $signatureRow . ':R' . ($signatureRow + 4));
                 $sheet->getStyle('K' . $signatureRow)->getAlignment()->setVertical(Alignment::VERTICAL_TOP)->setHorizontal(Alignment::HORIZONTAL_CENTER)->setWrapText(true);
-            },
+                $sheet->getStyle('C9:C' . $lastRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+                $sheet->getStyle('C9:C' . $lastRow)->getAlignment()->setIndent(1);
+            },  
         ];
     }
 }
