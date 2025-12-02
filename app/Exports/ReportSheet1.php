@@ -155,12 +155,24 @@ class ReportSheet1 implements FromCollection, WithTitle, WithStyles, WithColumnW
                 $topCity ?? ''
             ]);
         }
+        
+        $majorsCollection = collect($this->r1Majors);
 
-        // Thêm dòng TỔNG HỢP
-        $totalCoViecLam = ($this->r1_trained_field->dung_nganh ?? 0)
-            + ($this->r1_trained_field->lien_quan ?? 0)
-            + ($this->r1_trained_field->khong_lien_quan ?? 0);
+        $sumDungNganh      = $majorsCollection->sum('dung_nganh');
+        $sumLienQuan       = $majorsCollection->sum('lien_quan');
+        $sumKhongLienQuan  = $majorsCollection->sum('khong_lien_quan');
+        $sumTiepTucHoc     = $majorsCollection->sum('tiep_tuc_hoc'); // Quan trọng: Lấy tổng tiếp tục học
+        $sumChuaCoViec     = $majorsCollection->sum('chua_co_viec');
+        
+        $sumNhaNuoc        = $majorsCollection->sum('nha_nuoc');
+        $sumTuNhan         = $majorsCollection->sum('tu_nhan');
+        $sumTuTao          = $majorsCollection->sum('tu_tao');
+        $sumNuocNgoai      = $majorsCollection->sum('nuoc_ngoai');
 
+        // 2. Tính tổng có việc làm (Bao gồm cả tiếp tục học)
+        $totalCoViecLam = $sumDungNganh + $sumLienQuan + $sumKhongLienQuan + $sumTiepTucHoc;
+
+        // 3. Tính lại tỷ lệ %
         $tyLeCoViecPhanHoi = $this->r1['total_res'] > 0
             ? round(($totalCoViecLam / $this->r1['total_res']) * 100, 2) . '%'
             : '0%';
@@ -169,6 +181,7 @@ class ReportSheet1 implements FromCollection, WithTitle, WithStyles, WithColumnW
             ? round(($totalCoViecLam / $this->r1['total_student']) * 100, 2) . '%'
             : '0%';
 
+        // 4. Push dòng tổng hợp vào Excel
         $data->push([
             $rowNumber,
             '',
@@ -177,17 +190,17 @@ class ReportSheet1 implements FromCollection, WithTitle, WithStyles, WithColumnW
             $this->r1['total_nu'],
             $this->r1['total_res'],
             $this->r1['total_res_nu'],
-            $this->r1_trained_field->dung_nganh ?? 0,
-            $this->r1_trained_field->lien_quan ?? 0,
-            $this->r1_trained_field->khong_lien_quan ?? 0,
-            $this->r2->where('employment_status', 3)->count(),
-            $this->r2->whereNotIn('employment_status', [1, 3])->count(),
+            $sumDungNganh,
+            $sumLienQuan,
+            $sumKhongLienQuan,
+            $sumTiepTucHoc,    // Đã khớp với logic tổng
+            $sumChuaCoViec,
             $tyLeCoViecPhanHoi,
             $tyLeCoViecTotNghiep,
-            $this->r1_work_area->nha_nuoc ?? 0,
-            $this->r1_work_area->tu_nhan ?? 0,
-            $this->r1_work_area->tu_tao ?? 0,
-            $this->r1_work_area->nuoc_ngoai ?? 0,
+            $sumNhaNuoc,
+            $sumTuNhan,
+            $sumTuTao,
+            $sumNuocNgoai,
             ''
         ]);
 
