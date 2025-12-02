@@ -98,11 +98,11 @@ class ReportSheet2 implements FromCollection, WithTitle, WithStyles, WithColumnW
                 Carbon::parse($student->certification_date)->format('d/m/Y') ?: '',
                 $student->phone ?? '',
                 $student->email ?? '',
-                '', // Hình thức khảo sát
+                'Online', // Hình thức khảo sát
                 $response ? 'X' : '',
                 $student->note ?? '',
                 $student->industry_name ?? '', // DÙNG industry_name TỪ API
-                'Công Nghệ Thông Tin'
+                'Công nghệ thông tin',
             ]);
         }
 
