@@ -6,6 +6,7 @@ use App\Exports\ReportExport;
 use App\Models\EmploymentSurveyResponse;
 use App\Models\Survey;
 use App\Models\GraduationSurvey;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
@@ -17,33 +18,6 @@ use Throwable;
 class ReportController extends Controller
 {
     public function __construct(private StudentService $studentService) {}
-
-    private function getStudentToken(): ?string
-    {
-        try {
-            $user = auth()->user();
-            if (!$user) {
-                throw new \Exception('User chưa đăng nhập');
-            }
-
-            if (!empty($user->st_students_token)) {
-                return $user->st_students_token;
-            }
-
-            $tokenData = $this->studentService->getAccessTokenVerify();
-            if (!$tokenData || empty($tokenData['token'])) {
-                throw new \Exception('Không lấy được access token của sinh viên.');
-            }
-
-            $token = $tokenData['token'];
-            $user->update(['st_students_token' => $token]);
-
-            return $token;
-        } catch (Throwable $th) {
-            Log::error('getStudentToken error: ' . $th->getMessage());
-            return null;
-        }
-    }
 
     private function fetchStudentsByGraduationIds(array $graduationIds): array
     {
@@ -106,7 +80,7 @@ class ReportController extends Controller
 
             if ($studentTab2->isNotEmpty()) {
                 $firstStudent = $studentTab2->first();
-                $schoolYear = $firstStudent->school_year_end ?? 'N/A';
+                $schoolYear = Carbon::parse($firstStudent->certification_date)->format('Y');
                 $facultyName = 'KHOA';
             }
         }
@@ -348,6 +322,7 @@ class ReportController extends Controller
         $r2 = $data['r2'];
         $studentTab2 = $data['studentTab2'];
         $alumniData = $data['alumniData'];
+        $r1Majors = collect($data['r1Majors'] ?? []);
 
         $type = $request->get('type', 'all');
 
@@ -370,6 +345,7 @@ class ReportController extends Controller
                 $r2,
                 $studentTab2,
                 $alumniData,
+                $r1Majors,
                 $type
             ),
             $fileName
