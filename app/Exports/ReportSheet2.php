@@ -40,16 +40,13 @@ class ReportSheet2 implements FromCollection, WithTitle, WithStyles, WithColumnW
             // Row 2: Header 2
             ['KHOA CÔNG NGHỆ THÔNG TIN'],
 
-            // Row 3: Dòng trống
-            [''],
-
-            // Row 4: Tiêu đề chính
+            // Row 3: Tiêu đề chính
             ['DANH SÁCH SINH VIÊN TỐT NGHIỆP NĂM ' . $this->schoolYear],
 
-            // Row 5: Dòng trống
+            // Row 4: Dòng trống
             [''],
 
-            // Row 6-7: Header table (2 rows)
+            // Row 5-7: Header table (3 rows)
             [
                 'TT',
                 'Mã sinh viên',
@@ -84,9 +81,27 @@ class ReportSheet2 implements FromCollection, WithTitle, WithStyles, WithColumnW
                 '',
                 ''
             ],
+            // Row 7: Dòng số thứ tự (1), (2), (3)...
+            [
+                '(1)',
+                '(2)',
+                '(3)',
+                '(4)',
+                '(5)',
+                '(6)',
+                '(7)',
+                '(8)',
+                '(9)',
+                '(10)',
+                '(11)',
+                '(12)',
+                '(13)',
+                '(14)',
+                '(15)'
+            ],
         ]);
 
-        // Add student data - DÙNG DỮ LIỆU TỪ API
+        // Add student data
         foreach ($this->studentTab2 as $index => $student) {
             $studentCode = $student->code ?? '';
             
@@ -145,15 +160,15 @@ class ReportSheet2 implements FromCollection, WithTitle, WithStyles, WithColumnW
                 $studentCode,
                 $student->full_name ?? '',
                 ($student->gender ?? '') == 'female' ? 'X' : '',
-                $cccd,                          // Biến đã xử lý
+                $student->citizen_identification ?? '',
                 $student->industry_code ?? '',
                 $student->certification ?? '',
-                $certDate,
-                $phone,                         // Biến đã xử lý
-                $email,                         // Biến đã xử lý
+                Carbon::parse($student->certification_date)->format('d/m/Y') ?: '',
+                $student->phone ?? '',
+                $student->email ?? '',
                 'Online',
-                $hasResponse ? 'X' : '',
-                $finalNote,                     // Biến đã xử lý
+                $response ? 'X' : '',
+                $student->note ?? '',
                 $student->industry_name ?? '',
                 'Công nghệ thông tin',
             ]);
@@ -191,35 +206,44 @@ class ReportSheet2 implements FromCollection, WithTitle, WithStyles, WithColumnW
     public function styles(Worksheet $sheet)
     {
         return [
+            // Header 1 - Row 1 - KHÔNG IN ĐẬM
             1 => [
+                'font' => ['size' => 14, 'bold' => false, 'name' => 'Times New Roman'],
+                'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER, 'vertical' => Alignment::VERTICAL_CENTER],
+            ],
+
+            // Header 2 - Row 2 - IN ĐẬM, BỎ GẠCH CHÂN
+            2 => [
                 'font' => ['size' => 14, 'bold' => true, 'name' => 'Times New Roman'],
                 'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER, 'vertical' => Alignment::VERTICAL_CENTER],
             ],
-            2 => [
-                'font' => ['size' => 14, 'bold' => true, 'underline' => true, 'name' => 'Times New Roman'],
+
+            // Tiêu đề chính - Row 3
+            3 => [
+                'font' => ['size' => 14, 'bold' => true, 'name' => 'Times New Roman'],
                 'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER, 'vertical' => Alignment::VERTICAL_CENTER],
             ],
-            4 => [
-                'font' => ['size' => 15, 'bold' => true, 'name' => 'Times New Roman'],
-                'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER, 'vertical' => Alignment::VERTICAL_CENTER],
+
+            // Header table - Rows 5-7 - CHỮ ĐEN, BỎ MÀU NỀN
+            5 => [
+                'font' => ['bold' => true, 'size' => 12, 'name' => 'Times New Roman'],
+                'alignment' => [
+                    'horizontal' => Alignment::HORIZONTAL_CENTER,
+                    'vertical' => Alignment::VERTICAL_CENTER,
+                    'wrapText' => true
+                ],
             ],
             6 => [
-                'font' => ['bold' => true, 'size' => 11, 'name' => 'Times New Roman'],
+                'font' => ['bold' => true, 'size' => 12, 'name' => 'Times New Roman'],
                 'alignment' => [
                     'horizontal' => Alignment::HORIZONTAL_CENTER,
                     'vertical' => Alignment::VERTICAL_CENTER,
                     'wrapText' => true
                 ],
-                'fill' => ['fillType' => Fill::FILL_SOLID, 'startColor' => ['rgb' => 'E8E8E8']],
             ],
             7 => [
-                'font' => ['bold' => true, 'size' => 11, 'name' => 'Times New Roman'],
-                'alignment' => [
-                    'horizontal' => Alignment::HORIZONTAL_CENTER,
-                    'vertical' => Alignment::VERTICAL_CENTER,
-                    'wrapText' => true
-                ],
-                'fill' => ['fillType' => Fill::FILL_SOLID, 'startColor' => ['rgb' => 'E8E8E8']],
+                'font' => ['bold' => false, 'size' => 12, 'name' => 'Times New Roman'],
+                'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER, 'vertical' => Alignment::VERTICAL_CENTER],
             ],
         ];
     }
@@ -231,34 +255,39 @@ class ReportSheet2 implements FromCollection, WithTitle, WithStyles, WithColumnW
                 $sheet = $event->sheet->getDelegate();
                 $lastRow = $sheet->getHighestRow();
 
-                // Apply Times New Roman to all cells
+               // CHỈ set Times New Roman cho toàn bộ (KHÔNG set size ở đây)
                 $sheet->getStyle('A1:O' . $lastRow)
                     ->getFont()
-                    ->setName('Times New Roman')
-                    ->setSize(11);
+                    ->setName('Times New Roman');
+                // Set size 11 CHỈ cho phần dữ liệu (từ row 8 trở đi)
+                if ($lastRow >= 8) {
+                    $sheet->getStyle('A8:O' . $lastRow)
+                        ->getFont()
+                        ->setSize(11);
+                }
 
                 // Merge cells cho header
-                $sheet->mergeCells('A1:D1');
-                $sheet->mergeCells('A2:D2');
-                $sheet->mergeCells('A4:O4');
+                $sheet->mergeCells('A1:D1'); // HỌC VIỆN NÔNG NGHIỆP VIỆT NAM
+                $sheet->mergeCells('A2:D2'); // KHOA CÔNG NGHỆ THÔNG TIN
+                $sheet->mergeCells('A3:O3'); // Tiêu đề chính
 
                 // Merge cells cho header table
-                $sheet->mergeCells('A6:A7');
-                $sheet->mergeCells('B6:B7');
-                $sheet->mergeCells('C6:C7');
-                $sheet->mergeCells('D6:D7');
-                $sheet->mergeCells('E6:E7');
-                $sheet->mergeCells('F6:F7');
-                $sheet->mergeCells('G6:H6');
-                $sheet->mergeCells('I6:J6');
-                $sheet->mergeCells('K6:K7');
-                $sheet->mergeCells('L6:L7');
-                $sheet->mergeCells('M6:M7');
-                $sheet->mergeCells('N6:N7');
-                $sheet->mergeCells('O6:O7');
+                $sheet->mergeCells('A5:A6'); // TT
+                $sheet->mergeCells('B5:B6'); // Mã sinh viên
+                $sheet->mergeCells('C5:C6'); // Họ và tên
+                $sheet->mergeCells('D5:D6'); // Nữ
+                $sheet->mergeCells('E5:E6'); // Số thẻ CCCD
+                $sheet->mergeCells('F5:F6'); // Mã ngành đào tạo
+                $sheet->mergeCells('G5:H5'); // Quyết định tốt nghiệp
+                $sheet->mergeCells('I5:J5'); // Thông tin liên hệ
+                $sheet->mergeCells('K5:K6'); // Hình thức khảo sát
+                $sheet->mergeCells('L5:L6'); // Có phản hồi
+                $sheet->mergeCells('M5:M6'); // Ghi chú
+                $sheet->mergeCells('N5:N6'); // Ngành
+                $sheet->mergeCells('O5:O6'); // Khoa
 
                 // Apply borders
-                $sheet->getStyle('A6:O' . $lastRow)->applyFromArray([
+                $sheet->getStyle('A5:O' . $lastRow)->applyFromArray([
                     'borders' => [
                         'allBorders' => [
                             'borderStyle' => Border::BORDER_THIN,
@@ -272,16 +301,27 @@ class ReportSheet2 implements FromCollection, WithTitle, WithStyles, WithColumnW
                     ]
                 ]);
 
+                // // Set row height
+                // $sheet->getRowDimension(1)->setRowHeight(20);
+                // $sheet->getRowDimension(2)->setRowHeight(20);
+                // $sheet->getRowDimension(3)->setRowHeight(25);
+                // $sheet->getRowDimension(5)->setRowHeight(60);
+                // $sheet->getRowDimension(6)->setRowHeight(140);
+                // $sheet->getRowDimension(7)->setRowHeight(20);
+
                 // Set row height
                 $sheet->getRowDimension(1)->setRowHeight(20);
                 $sheet->getRowDimension(2)->setRowHeight(20);
-                $sheet->getRowDimension(4)->setRowHeight(25);
-                $sheet->getRowDimension(6)->setRowHeight(60);
-                $sheet->getRowDimension(7)->setRowHeight(60);
+                $sheet->getRowDimension(3)->setRowHeight(25);
+                $sheet->getRowDimension(5)->setRowHeight(80);
+                $sheet->getRowDimension(6)->setRowHeight(160);
+                $sheet->getRowDimension(7)->setRowHeight(25);
 
-                // Màu đỏ
-                $sheet->getStyle('E6:E7')->getFont()->getColor()->setRGB('FF0000');
-                $sheet->getStyle('I6:J7')->getFont()->getColor()->setRGB('FF0000');
+                // Set chiều cao cho các dòng dữ liệu (từ row 8 trở đi)
+                for ($row = 8; $row <= $lastRow; $row++) {
+                    $sheet->getRowDimension($row)->setRowHeight(30);
+                }
+                // BỎ MÀU ĐỎ - GIỮ MÀU ĐEN HẾT
 
                 // Chữ ký
                 $signatureRow = $lastRow + 4;
@@ -303,14 +343,6 @@ class ReportSheet2 implements FromCollection, WithTitle, WithStyles, WithColumnW
                     ->setHorizontal(Alignment::HORIZONTAL_CENTER)
                     ->setWrapText(true);
             },
-        ];
-    }
-
-    public function columnFormats(): array
-    {
-        return [
-            'E' => NumberFormat::FORMAT_TEXT, // Cột E: Số thẻ CCCD
-            'I' => NumberFormat::FORMAT_TEXT, // Cột I: Số điện thoại (để tránh mất số 0 đầu hoặc bị E+)
         ];
     }
 }
