@@ -15,7 +15,10 @@ use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\RichText\RichText;
 
-class ReportSheet2 implements FromCollection, WithTitle, WithStyles, WithColumnWidths, WithEvents
+use Maatwebsite\Excel\Concerns\WithColumnFormatting;
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat;     
+
+class ReportSheet2 implements FromCollection, WithTitle, WithStyles, WithColumnWidths, WithEvents, WithColumnFormatting
 {
     protected $schoolYear;
     protected $studentTab2;
@@ -85,23 +88,73 @@ class ReportSheet2 implements FromCollection, WithTitle, WithStyles, WithColumnW
 
         // Add student data - DÙNG DỮ LIỆU TỪ API
         foreach ($this->studentTab2 as $index => $student) {
-            $response = $this->responsesByCode->get($student->code ?? '');
+            $studentCode = $student->code ?? '';
+            
+            // 1. Lấy response từ biến đã keyBy sẵn
+            $response = $this->responsesByCode->get($studentCode);
+            $hasResponse = !is_null($response);
+
+            // 2. Logic CCCD: Ưu tiên API -> Fallback DB
+            $cccd = $student->citizen_identification; 
+            if (empty($cccd) && $hasResponse && !empty($response->identification_card_number)) {
+                $cccd = $response->identification_card_number;
+            }
+
+            // --- KHẮC PHỤC LỖI E+11 TẠI ĐÂY ---
+            // Thêm một khoảng trắng vào sau số CCCD để ép kiểu Text
+            if (!empty($cccd)) {
+                $cccd = $cccd . ' '; 
+            }
+
+            // 3. Logic SĐT, Email và Ghi chú
+            $noteParts = [];
+            
+            // -- Phone --
+            $phone = $student->phone ?? '';
+            if ($hasResponse && !empty($response->phone_number)) {
+                $phone = $response->phone_number;
+                $noteParts[] = 'SĐT'; // Đánh dấu đã lấy từ khảo sát
+            }
+            if (!empty($phone)) {
+                $phone = $phone . ' ';
+            }
+
+            // -- Email --
+            $email = $student->email ?? '';
+            if ($hasResponse && !empty($response->email)) {
+                $email = $response->email;
+                $noteParts[] = 'Email'; // Đánh dấu đã lấy từ khảo sát
+            }
+
+            // -- Note --
+            $originalNote = $student->note ?? '';
+            $addedNote = implode(', ', $noteParts);
+            
+            $finalNote = $originalNote;
+            if (!empty($addedNote)) {
+                $finalNote = !empty($finalNote) ? ($finalNote . ', ' . $addedNote) : $addedNote;
+            }
+
+            // 4. Format ngày
+            $certDate = !empty($student->certification_date) 
+                ? Carbon::parse($student->certification_date)->format('d/m/Y') 
+                : '';
 
             $data->push([
                 $index + 1,
-                $student->code ?? '',
+                $studentCode,
                 $student->full_name ?? '',
                 ($student->gender ?? '') == 'female' ? 'X' : '',
-                $student->citizen_identification ?? '',
-                $student->industry_code ?? '', // DÙNG industry_code TỪ API
+                $cccd,                          // Biến đã xử lý
+                $student->industry_code ?? '',
                 $student->certification ?? '',
-                Carbon::parse($student->certification_date)->format('d/m/Y') ?: '',
-                $student->phone ?? '',
-                $student->email ?? '',
-                'Online', // Hình thức khảo sát
-                $response ? 'X' : '',
-                $student->note ?? '',
-                $student->industry_name ?? '', // DÙNG industry_name TỪ API
+                $certDate,
+                $phone,                         // Biến đã xử lý
+                $email,                         // Biến đã xử lý
+                'Online',
+                $hasResponse ? 'X' : '',
+                $finalNote,                     // Biến đã xử lý
+                $student->industry_name ?? '',
                 'Công nghệ thông tin',
             ]);
         }
@@ -250,6 +303,14 @@ class ReportSheet2 implements FromCollection, WithTitle, WithStyles, WithColumnW
                     ->setHorizontal(Alignment::HORIZONTAL_CENTER)
                     ->setWrapText(true);
             },
+        ];
+    }
+
+    public function columnFormats(): array
+    {
+        return [
+            'E' => NumberFormat::FORMAT_TEXT, // Cột E: Số thẻ CCCD
+            'I' => NumberFormat::FORMAT_TEXT, // Cột I: Số điện thoại (để tránh mất số 0 đầu hoặc bị E+)
         ];
     }
 }
