@@ -163,11 +163,10 @@ class ReportController extends Controller
                 return mb_convert_case($city, MB_CASE_TITLE, "UTF-8");
             })
             ->filter()       
-            ->countBy()      
-            ->sortDesc()     
-            ->keys()        
-            ->first();       
-                $totalStudentMajor = $studentsMajor->count();
+            ->unique()      
+            ->values()
+            ->implode("\n");     
+               $totalStudentMajor = $studentsMajor->count();
             $totalNuMajor = $studentsMajor->filter(function ($s) use ($isFemaleFn) {
                 return $isFemaleFn($s->gender ?? '');
             })->count();

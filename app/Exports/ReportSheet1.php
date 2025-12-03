@@ -128,11 +128,10 @@ class ReportSheet1 implements FromCollection, WithTitle, WithStyles, WithColumnW
                     $city = trim(end($parts));
                     return mb_convert_case($city, MB_CASE_TITLE, "UTF-8");
                 })
-                ->filter()       
-                ->countBy()      
-                ->sortDesc()    
-                ->keys()         
-                ->first();       
+                 ->filter()       
+                ->unique()      
+                ->values()
+                ->implode("\n");       
             $data->push([
                 $rowNumber++,
                 $major['major_code'],
@@ -217,7 +216,7 @@ class ReportSheet1 implements FromCollection, WithTitle, WithStyles, WithColumnW
         return [
             'A' => 6,   // TT
             'B' => 20,  // Mã ngành
-            'C' => 25,  // Tên ngành đào tạo
+            'C' => 35,  // Tên ngành đào tạo
             'D' => 10,  // Tổng số
             'E' => 10,  // Nữ
             'F' => 10,  // Tổng số
@@ -333,7 +332,7 @@ class ReportSheet1 implements FromCollection, WithTitle, WithStyles, WithColumnW
                 $sheet->getRowDimension(4)->setRowHeight(25);
                 $sheet->getRowDimension(6)->setRowHeight(50);
                 $sheet->getRowDimension(7)->setRowHeight(30);
-                $sheet->getRowDimension(8)->setRowHeight(30);
+                $sheet->getRowDimension(8)->setRowHeight(35);
 
                 // Màu đỏ
                 $sheet->getStyle('B6:B8')->getFont()->getColor()->setRGB('FF0000');
@@ -350,6 +349,7 @@ class ReportSheet1 implements FromCollection, WithTitle, WithStyles, WithColumnW
                 $sheet->mergeCells('Q' . ($signatureRow + 1) . ':S' . ($signatureRow + 1));
                 $sheet->getStyle('Q' . ($signatureRow + 1))->getFont()->setBold(true);
                 $sheet->getStyle('Q' . ($signatureRow + 1))->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+                $sheet->getStyle('S9:S' . $lastRow)->getAlignment()->setWrapText(true);
             },
         ];
     }
