@@ -18,7 +18,7 @@ use PhpOffice\PhpSpreadsheet\RichText\RichText;
 use Maatwebsite\Excel\Concerns\WithColumnFormatting;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;     
 
-class ReportSheet2 implements FromCollection, WithTitle, WithStyles, WithColumnWidths, WithEvents, WithColumnFormatting
+class ReportSheet2 implements FromCollection, WithTitle, WithStyles, WithColumnWidths, WithEvents
 {
     protected $schoolYear;
     protected $studentTab2;
