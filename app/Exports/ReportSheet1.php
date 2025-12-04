@@ -370,7 +370,7 @@ class ReportSheet1 implements FromCollection, WithTitle, WithStyles, WithColumnW
                 // Set row height cho data rows (từ row 9 đến row cuối - 1)
                 // Dòng cuối cùng là TỔNG HỢP sẽ có chiều cao khác
                 for ($row = 9; $row < $lastRow; $row++) {
-                    $sheet->getRowDimension($row)->setRowHeight(600);
+                    $sheet->getRowDimension($row)->setRowHeight(250);
                 }
                 
                 // Set chiều cao cho dòng TỔNG HỢP (dòng cuối cùng)
