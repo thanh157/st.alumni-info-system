@@ -271,14 +271,19 @@ class ReportSheet3 implements FromCollection, WithTitle, WithStyles, WithColumnW
                 $parts = explode(',', $item->recruit_partner_address);
                 $city = trim(end($parts));
             }
+            
+            $cccd = $item->identification_card_number;
+            if (!empty($cccd)) {
+                $cccd = $cccd . ' '; 
+            }
 
             $row = [
                 $index + 1,
                 $item->code_student,
                 $item->full_name,
                 !empty($item->dob) ? date('d/m/Y', strtotime($item->dob)) : '',
-                $item->gender == 'male' ? 'Nam' : 'Nữ',
-                $item->identification_card_number,
+                $item->gender == 'Nam' ? 'Nam' : 'Nữ',
+                $cccd,
                 optional($major)->code,
                 $item->phone_number,
                 $item->email,
