@@ -307,6 +307,7 @@ class KhaoSatController extends Controller
                 'employment_status' => request('employment_status'),
                 'recruit_partner_name' => request('recruit_partner_name'),
                 'recruit_partner_address' => request('recruit_partner_address'),
+                'recruit_partner_city' => request('recruit_partner_city'),
                 'recruit_partner_date' => request('recruit_partner_date'),
                 'recruit_partner_position' => request('recruit_partner_position'),
                 'work_area' => request('work_area'),
