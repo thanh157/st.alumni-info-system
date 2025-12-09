@@ -194,7 +194,8 @@
                             <div style="font-style: italic; margin-bottom: 15px; font-size: 13px; text-align: right;">
                                 Ngày {{ now()->format('d') }} / {{ now()->format('m') }} / {{ now()->format('Y') }}
                             </div>
-                           <div style="font-size: 14px; text-transform: uppercase; color: #1f2937; font-weight:normal;; margin-bottom: 6px; text-align: right;">
+                            <div
+                                style="font-size: 14px; text-transform: uppercase; color: #1f2937; font-weight:normal;; margin-bottom: 6px; text-align: right;">
                                 BỘ NÔNG NGHIỆP VÀ MÔI TRƯỜNG
                             </div>
                             <div
@@ -211,10 +212,10 @@
                 </table>
 
                 <div style="text-align: center; margin-top: 25px;">
-                   
+
                     <h5 style="font-weight: bold; text-transform: uppercase; font-size: 16px; margin: 0 0 5px 0;">
                         {{ $survey->title }}</h5>
-                     
+
                 </div>
 
                 <div style="margin-top: 25px;">
@@ -229,9 +230,9 @@
                     </p>
 
                     <p style="font-weight: 600; font-style: italic; text-align: left; margin-left: 22px;">
-                         
-                            Trân trọng cảm ơn sự cộng tác của các Anh/Chị!
-                         
+
+                        Trân trọng cảm ơn sự cộng tác của các Anh/Chị!
+
                     </p>
                 </div>
 
@@ -309,11 +310,11 @@
                         <label class="form-label">6. Số căn cước công dân</label>
                         <input type="text" class="form-control mb-2"
                             value="{{ $response->identification_card_number }}" readonly>
-                        <label class="form-label">Ngày cấp</label>
+                        <label class="form-label">Cấp ngày:</label>
                         <input type="text" class="form-control mb-2"
                             value="{{ $response->identification_issuance_date ? \Carbon\Carbon::parse($response->identification_issuance_date)->format('d/m/Y') : '' }}"
                             readonly>
-                        <label class="form-label">Nơi cấp</label>
+                        <label class="form-label">Tại:</label>
                         <input type="text" class="form-control"
                             value="{{ $response->identification_issuance_place }}" readonly>
                     </div>
@@ -323,7 +324,7 @@
                             <input type="text" class="form-control" value="{{ $response->course }}" readonly>
                         </div>
                         <div class="col-12 col-md-6 mb-3">
-                            <label class="form-label">8. Tên ngành đào tạo</label>
+                            <label class="form-label">8. Tên ngành được đào tạo</label>
                             @php
                                 $tenNganh = ''; // Đảm bảo biến được khởi tạo
                                 if ($response->training_industry_id == 1) {
@@ -349,7 +350,7 @@
 
                     <div class="mb-4">
                         <label class="form-label fw-bold">11. Anh/Chị vui lòng cho biết tình trạng việc làm hiện
-                            tại</label>
+                            tại của Anh/Chị</label>
                         @php $tinh_trang = config('config.tinh_trang'); @endphp
                         @foreach ($tinh_trang as $index => $value)
                             @if (!empty($value))
@@ -399,7 +400,9 @@
                 <h6 class="mb-4 fw-bold">Phần II: Nội dung khảo sát</h6>
 
                 <div class="mb-4">
-                    <label class="form-label fw-bold">16. Đơn vị Anh/Chị đang làm việc thuộc khu vực nào?</label>
+                    <label class="form-label fw-bold">16. Đơn vị Anh/Chị đang làm việc thuộc khu vực làm
+                        việc
+                        nào?</label>
                     @foreach (config('config.work_area') as $index => $item)
                         @if (!empty($item))
                             {{-- Kiểm tra giá trị rỗng --}}
@@ -415,7 +418,8 @@
                 </div>
 
                 <div class="mb-4">
-                    <label class="form-label fw-bold">17. Sau khi tốt nghiệp, Anh/Chị có việc làm từ khi nào?</label>
+                    <label class="form-label fw-bold">17. Sau khi tốt nghiệp, Anh/Chị có việc làm từ khi
+                        nào?</label>
                     @foreach (config('config.employed_since') as $key => $item)
                         @if (!empty($item))
                             {{-- Kiểm tra giá trị rỗng --}}
@@ -431,7 +435,10 @@
                 </div>
 
                 <div class="mb-4">
-                    <label class="form-label fw-bold">18. Công việc Anh/Chị đang làm có phù hợp với ngành đào tạo
+                    <label class="form-label fw-bold">18. Công việc Anh/Chị đang đảm nhận có phù hợp với
+                        ngành
+                        đào
+                        tạo
                         không?</label>
                     @foreach (config('config.trained_field') as $key => $item)
                         @if (!empty($item))
@@ -448,9 +455,10 @@
                 </div>
 
                 <div class="mb-4">
-                    <label class="form-label fw-bold">19. Công việc Anh/Chị đang đảm nhận có phù hợp với trình độ
-                        chuyên
-                        môn không?</label>
+                    <label class="form-label fw-bold">19. Công việc Anh/Chị đang đảm nhận có phù hợp với
+                        trình
+                        độ
+                        chuyên môn không?</label>
                     @foreach (config('config.professional_qualification_field') as $key => $item)
                         @if (!empty($item))
                             {{-- Kiểm tra giá trị rỗng --}}
@@ -467,8 +475,9 @@
                 </div>
 
                 <div class="mb-4">
-                    <label class="form-label fw-bold">20. Anh/Chị có học được kiến thức/kỹ năng cần thiết từ trường cho
-                        công việc không?</label>
+                    <label class="form-label fw-bold">20. Anh/chị có học được các kiến thức và kỹ năng cần
+                        thiết từ
+                        nhà trường cho công việc theo ngành tốt nghiệp không?</label>
                     @foreach (config('config.level_knowledge_acquired') as $key => $item)
                         @if (!empty($item))
                             {{-- Kiểm tra giá trị rỗng --}}
@@ -484,13 +493,16 @@
                 </div>
 
                 <div class="mb-4">
-                    <label class="form-label fw-bold">21. Mức lương khởi điểm (triệu đồng/tháng)</label>
+                    <label class="form-label fw-bold">21. Mức lương khởi điểm của Anh/Chị (triệu
+                        đồng/tháng)</label>
                     <input type="text" class="form-control" name="starting_salary"
                         value="{{ $response->starting_salary }}" readonly>
                 </div>
 
                 <div class="mb-4">
-                    <label class="form-label fw-bold">22. Mức thu nhập bình quân/tháng hiện nay (triệu đồng)</label>
+                    <label class="form-label fw-bold">22. Mức thu nhập bình quân/tháng tính theo VNĐ của
+                        Anh/Chị
+                        hiện nay</label>
                     @foreach (config('config.average_income') as $key => $item)
                         @if (!empty($item))
                             {{-- Kiểm tra giá trị rỗng --}}
@@ -506,7 +518,9 @@
                 </div>
 
                 <div class="mb-4">
-                    <label class="form-label fw-bold">23. Anh/Chị tìm được việc làm thông qua những hình thức nào?
+                    <label class="form-label fw-bold">23. Anh/Chị tìm được việc làm thông qua những hình
+                        thức
+                        nào?
                         <span class="fw-normal">(Có thể chọn nhiều lựa chọn)</span></label>
                     @php
                         $tim_viec = config('config.recruitment_type');
@@ -539,7 +553,8 @@
                         // Đảm bảo $job_search_method_value['value'] là một mảng
                         $jobSearchValues = $job_search_method_value['value'] ?? [];
                     @endphp
-                    <label class="form-label fw-bold">24. Anh/Chị được tuyển theo hình thức nào?</label>
+                    <label class="form-label fw-bold">24. Anh/chị được tuyển dụng theo hình thức
+                        nào?</label>
                     @foreach (config('config.job_search_method') as $key => $item)
                         @if (!empty($item))
                             {{-- Kiểm tra giá trị rỗng --}}
@@ -561,8 +576,11 @@
                 </div>
 
                 <div class="mb-4">
-                    <label class="form-label fw-bold">25. Trong quá trình làm việc, Anh/Chị cần những kỹ năng mềm nào
-                        sau đây? <span class="fw-normal">(Có thể chọn nhiều lựa chọn)</span></label>
+                    <label class="form-label fw-bold">25. Trong quá trình làm việc, Anh/Chị cần những kỹ
+                        năng
+                        mềm
+                        nào
+                        sau đây?<span class="fw-normal">(Có thể chọn nhiều lựa chọn)</span></label>
                     @php
                         $ky_nang = config('config.soft_skills_required');
                         $soft_skills_required = json_decode($response->soft_skills_required, true);
@@ -589,8 +607,10 @@
                 </div>
 
                 <div class="mb-4">
-                    <label class="form-label fw-bold">26. Sau khi được tuyển dụng, Anh/Chị có phải tham gia khóa học
-                        nâng cao nào dưới đây để đáp ứng công việc không? <span class="fw-normal">(Có thể chọn nhiều
+                    <label class="form-label fw-bold">26. Sau khi được tuyển dụng, Anh/Chị có phải tham gia
+                        khóa
+                        học
+                        nâng cao nào dưới đây để đáp ứng công việc không<span class="fw-normal">(Có thể chọn nhiều
                             lựa
                             chọn)</span></label>
                     @php
@@ -620,8 +640,10 @@
 
 
                 <div class="mb-4">
-                    <label class="form-label fw-bold">27. Theo Anh/Chị, những giải pháp nào sau đây giúp tăng tỷ lệ có
-                        việc làm đúng ngành của sinh viên tốt nghiệp từ chương trình đào tạo mà Anh/Chị đã học? <span
+                    <label class="form-label fw-bold">27. Theo Anh/Chị, những giải pháp nào sau đây giúp tăng
+                                    tỷ lệ
+                                    có
+                                    việc làm đúng ngành của sinh viên tốt nghiệp từ chương trình đào tạo mà Anh/Chị đã học?<span
                             class="fw-normal">(Có thể chọn nhiều lựa chọn)</span></label>
                     @php
                         $giai_phap = config('config.solutions_get_job');
@@ -649,10 +671,8 @@
                 </div>
 
                 <div class="text-center mt-4">
-                    <p class="fw-semibold mb-1" style="font-style: italic;">Xin trân trọng cảm ơn sự hợp tác của
-                        Anh/Chị!</p>
-                    <p style="font-style: italic; color: #6b7280; margin-top: 0.5rem;">Kính chúc Anh/Chị sức khỏe và
-                        thành công!</p>
+                    <p class="fw-semibold mb-1" style="font-style: italic;">Xin trân trọng cảm ơn sự hợp tác của Anh/Chị!</p>
+                    <p style="font-style: italic; color: #6b7280; margin-top: 0.5rem;">Kính chúc Anh/Chị sức khỏe và thành công!</p>
                 </div>
             </form>
         </div>

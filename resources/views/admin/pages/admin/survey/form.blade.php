@@ -257,9 +257,7 @@
 
                     <!-- Tiêu đề phiếu -->
                     <div class="text-center mt-5 form-title">
-                        <h5 class="fw-bold text-uppercase mb-1">PHIẾU KHẢO SÁT</h5>
-                        <h5 class="fw-bold text-uppercase">TÌNH HÌNH VIỆC LÀM CỦA SINH VIÊN TỐT NGHIỆP</h5>
-                        <h5 class="fw-bold text-uppercase">NĂM {{ $survey->year ?? '2024' }}</h5>
+                         <h5 class="fw-bold text-center mb-3">{{ $survey->title }}</h5>
                     </div>
 
                     <!-- Phần thân gửi -->
@@ -269,7 +267,7 @@
                         </p>
 
                         <p class="text-justify fst-italic first-line-indent">
-                            {{ $survey->description ?? 'Mô tả khảo sát sẽ hiển thị tại đây...' }}
+                            {{ $survey->description}}
                         </p>
 
                         <p class="fst-italic ms-4 mt-2">
@@ -329,29 +327,62 @@
                         <div class="row">
                             <div class="col-12 col-md-6 mb-3">
                                 <label class="form-label">7. Khóa học</label>
-                                <input type="text" class="form-control" disabled placeholder="">
+                                  <input type="text" class="form-control" placeholder="Nhập khóa học" name="course"
+                                    required>
                             </div>
-                            <div class="col-12 col-md-6 mb-3">
+                             <div class="col-12 col-md-6 mb-3">
                                 <label class="form-label">8. Tên ngành được đào tạo</label>
-                                <input type="text" class="form-control" disabled placeholder="">
+                                <input type="text" id="ten_nganh_hien_thi" class="form-control" placeholder=""
+                                    readonly>
+                                <input type="hidden" name="training_industry_id" id="training_industry_id">
                             </div>
+                            <script>
+                                const maNgheSelect = document.getElementById('ma_nghanh_dao_tao'); // mã ngành bạn đã có ở câu 5
+                                const tenNganhDisplay = document.getElementById('ten_nganh_hien_thi'); // hiển thị
+                                const tenNganhHidden = document.getElementById('training_industry_id'); // gửi về server
+
+                                // Map mã ngành -> tên ngành + ID trong DB
+                                const majorMap = {
+                                    "7480201": {
+                                        id: 1,
+                                        name: "Công nghệ thông tin"
+                                    },
+                                    "7480102": {
+                                        id: 2,
+                                        name: "Mạng máy tính và truyền thông dữ liệu"
+                                    }
+                                };
+
+                                maNgheSelect.addEventListener("change", function() {
+                                    const code = this.value;
+
+                                    if (majorMap[code]) {
+                                        tenNganhDisplay.value = majorMap[code].name; // hiện tên ngành
+                                        tenNganhHidden.value = majorMap[code].id; // gửi ID về server
+                                    } else {
+                                        tenNganhDisplay.value = "";
+                                        tenNganhHidden.value = "";
+                                    }
+                                });
+                            </script>
+
                         </div>
 
                         <div class="row">
                             <div class="col-12 col-md-6 mb-3">
                                 <label class="form-label">9. Số điện thoại</label>
-                                <input type="text" class="form-control" disabled placeholder="">
+                              <input type="text" class="form-control" placeholder="Nhập số điện thoại">
                             </div>
                             <div class="col-12 col-md-6 mb-3">
                                 <label class="form-label">10. Email</label>
-                                <input type="email" class="form-control" disabled placeholder="">
+                                 <input type="email" class="form-control" placeholder="Nhập email" name="email">
                             </div>
                         </div>
 
                         <!-- 11. Tình trạng việc làm -->
                         <div class="mb-4">
-                            <label class="form-label fw-bold">11. Anh/Chị vui lòng cho biết tình trạng việc làm hiện tại của
-                                Anh/Chị</label>
+                            <label class="form-label fw-bold">11. Anh/Chị vui lòng cho biết tình trạng việc làm hiện
+                                    tại của Anh/Chị</label>
                             @php $tinh_trang = config('config.tinh_trang', ['Đang đi làm', 'Chưa có việc làm', 'Đang học tiếp']); @endphp
                             @foreach ($tinh_trang as $index => $value)
                                 <div class="form-check mb-2">
@@ -361,16 +392,17 @@
                                 </div>
                             @endforeach
                             <i class="question-10" style="font-size: 14px; color:rgb(94, 6, 6)">
-                                *Nếu chưa có việc làm hoặc đang tiếp tục học, anh/chị trả lời tiếp câu 27.
-                                Nếu đã có việc làm, anh/chị trả lời tiếp các câu sau
+                              *Nếu chưa có việc làm
+                                    hoặc
+                                    đang tiếp tục học, anh/chị trả lời tiếp câu 27.
+                                    Nếu đã có việc làm, anh/chị trả lời tiếp các câu sau
                             </i>
                         </div>
 
                         <div class="employment-details">
                             <div class="mb-3">
                                 <label class="form-label">12. Tên đơn vị tuyển dụng</label>
-                                <input type="text" class="form-control" disabled
-                                    placeholder="Nhập tên công ty / tổ chức">
+                               <input type="text" class="form-control" placeholder="Nhập tên công ty / tổ chức">
                             </div>
 
                             <div class="mb-3">
@@ -395,8 +427,9 @@
                             <h6 class="mb-4 fw-bold">Phần II: Nội dung khảo sát</h6>
 
                             <div class="mb-4">
-                                <label class="form-label fw-bold">16. Đơn vị Anh/Chị đang làm việc thuộc khu vực làm việc
-                                    nào?</label>
+                                <label class="form-label fw-bold">16. Đơn vị Anh/Chị đang làm việc thuộc khu vực làm
+                                        việc
+                                        nào?</label>
                                 @foreach (config('config.work_area') as $key => $item)
                                     <div class="form-check mb-2">
                                         <input class="form-check-input" type="radio" disabled
@@ -469,13 +502,13 @@
                             <div class="mb-4">
                                 <label class="form-label fw-bold">21. Mức lương khởi điểm của Anh/Chị (triệu
                                     đồng/tháng)</label>
-                                <input type="text" class="form-control" disabled placeholder="10">
+                                <input type="text" class="form-control" disabled placeholder="">
                             </div>
 
                             <div class="mb-4">
                                 <label class="form-label fw-bold">22. Mức thu nhập bình quân/tháng tính theo VNĐ của
-                                    Anh/Chị
-                                    hiện nay</label>
+                                        Anh/Chị
+                                        hiện nay</label>
                                 @foreach (config('config.average_income') as $key => $item)
                                     <div class="form-check mb-2">
                                         <input class="form-check-input" type="radio" disabled
@@ -586,7 +619,7 @@
                             </a>
                         </button>
                         <button type="button" class="btn btn-primary" disabled>
-                            <i class="bi bi-send me-2"></i>Gửi (Vô hiệu hóa)
+                            <i class="bi bi-send me-2"></i>Gửi
                         </button>
                     </div>
                 </form>
