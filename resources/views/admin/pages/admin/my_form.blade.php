@@ -107,8 +107,8 @@
             }
 
             /* .form-title h5 {
-                                        font-size: 0.9rem;
-                                    } */
+                                            font-size: 0.9rem;
+                                        } */
 
             .first-line-indent {
                 text-indent: 18px;
@@ -154,8 +154,8 @@
             }
 
             /* .form-title h5 {
-                                        font-size: 0.4rem;
-                                    } */
+                                            font-size: 0.4rem;
+                                        } */
 
             .first-line-indent {
                 text-indent: 12px;
@@ -201,8 +201,8 @@
 
                     <!-- Tiêu đề phiếu -->
                     <div class="text-center mt-5 form-title">
-                       <h5 style="font-weight: bold; text-transform: uppercase; font-size: 16px; margin: 0 0 5px 0;">
-                        {{ $survey->title }}</h5>
+                        <h5 style="font-weight: bold; text-transform: uppercase; font-size: 16px; margin: 0 0 5px 0;">
+                            {{ $survey->title }}</h5>
                     </div>
 
                     {{-- <div class="text-center mt-5 form-title">
@@ -295,8 +295,7 @@
                             </div>
                             <div class="col-12 col-md-6 mb-3">
                                 <label class="form-label">8. Tên ngành được đào tạo</label>
-                                <input type="text" id="ten_nganh_hien_thi" class="form-control" placeholder=""
-                                    readonly>
+                                <input type="text" id="ten_nganh_hien_thi" class="form-control" placeholder="" readonly>
                                 <input type="hidden" name="training_industry_id" id="training_industry_id">
                             </div>
                             <script>
@@ -377,7 +376,8 @@
                                         placeholder="VD: Khu 2 Hoàng Khương, Thanh Ba, Phú Thọ"
                                         name="recruit_partner_address" required>
                                     <label class="form-label">Tỉnh/Thành phố</label>
-                                    <input type="text" class="form-control mb-1" placeholder="VD: Hà Nội"required>
+                                    <input type="text" class="form-control mb-1" placeholder="VD: Hà Nội"
+                                        name="recruit_partner_city" required>
 
                                 </div>
 
@@ -652,8 +652,8 @@
                                             <input class="form-check-input solutions_get_job_other" type="checkbox"
                                                 name="solutions_get_job[]" id="ht26_{{ $index }}"
                                                 value="{{ $index }}">
-                                            <label class="form-check-label fw-normal"
-                                                for="ht26_{{ $index }}">Các giải pháp khác (xin ghi rõ)</label>
+                                            <label class="form-check-label fw-normal" for="ht26_{{ $index }}">Các
+                                                giải pháp khác (xin ghi rõ)</label>
                                         </div>
                                     @else
                                         <div class="form-check mb-2">
@@ -666,8 +666,8 @@
                                 @endforeach
                                 <div id="solutions_get_job_other_wrapper" style="display: none;" class="mt-2">
                                     <input type="text" name="solutions_get_job_other" id="solutions_get_job_other"
-                                        class="form-control other-input"
-                                        placeholder="Nhập giải pháp khác tại đây..." autocomplete="off">
+                                        class="form-control other-input" placeholder="Nhập giải pháp khác tại đây..."
+                                        autocomplete="off">
                                 </div>
                                 <div id="solutions_get_job_error" class="text-danger small d-none"></div>
                             </div>
@@ -706,7 +706,7 @@
                         </div>
                 </form>
             </div>
-            
+
         </div>
 
 
@@ -934,7 +934,7 @@
 
                                 // if (response) {
                                 //     // --- 1. ĐIỀN THÔNG TIN CÁ NHÂN (PHẦN I) ---
-                                    
+
                                 //     // Các input text/date đơn giản
                                 //     $('#code_student').val(response.code_student); // ID: code_student
                                 //     $('#full_names').val(response.full_name);      // ID: full_names
@@ -953,7 +953,7 @@
                                 //         let codeToSelect = "";
                                 //         if (response.training_industry_id == 1) codeToSelect = "7480201"; // CNTT
                                 //         if (response.training_industry_id == 2) codeToSelect = "7480102"; // Mạng
-                                        
+
                                 //         if (codeToSelect) {
                                 //             $('#ma_nghanh_dao_tao').val(codeToSelect).trigger('change'); 
                                 //             // trigger change để script có sẵn cập nhật input #ten_nganh_hien_thi
@@ -994,12 +994,12 @@
 
 
                                 //     // --- 3. ĐIỀN CHECKBOX & RADIO NHIỀU LỰA CHỌN (KÈM Ô "KHÁC") ---
-                                    
+
                                 //     // Hàm hỗ trợ check mảng và kích hoạt sự kiện change để hiện ô "Khác" nếu cần
                                 //     function checkMulti(name, values) {
                                 //         // Reset trước
                                 //         $(`input[name="${name}[]"]`).prop('checked', false);
-                                        
+
                                 //         if (Array.isArray(values)) {
                                 //             values.forEach(val => {
                                 //                 // Check và Trigger change để logic toggleOther hoạt động
