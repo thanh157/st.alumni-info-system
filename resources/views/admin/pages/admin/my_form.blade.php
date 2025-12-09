@@ -201,9 +201,8 @@
 
                     <!-- Tiêu đề phiếu -->
                     <div class="text-center mt-5 form-title">
-                        <h5 class="fw-bold text-uppercase mb-1">PHIẾU KHẢO SÁT</h5>
-                        <h5 class="fw-bold text-uppercase">TÌNH HÌNH VIỆC LÀM CỦA SINH VIÊN TỐT NGHIỆP</h5>
-                        <h5 class="fw-bold text-uppercase">NĂM 2024</h5>
+                       <h5 style="font-weight: bold; text-transform: uppercase; font-size: 16px; margin: 0 0 5px 0;">
+                        {{ $survey->title }}</h5>
                     </div>
 
                     {{-- <div class="text-center mt-5 form-title">
