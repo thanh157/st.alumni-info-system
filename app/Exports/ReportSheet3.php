@@ -293,7 +293,7 @@ class ReportSheet3 implements FromCollection, WithTitle, WithStyles, WithColumnW
                 $item->trained_field == 2 ? 'x' : '',
                 $item->trained_field == 3 ? 'x' : '',
                 $item->employment_status == 2 ? 'x' : '', // FIX: 2 = tiếp tục học
-                $item->employment_status == 3 ? 'x' : '', // FIX: 3 = Chưa có việc
+                !in_array($item->employment_status, [1, 2]) ? 'x' : '' ,// FIX: Chưa có việc
 
                 // Khu vực làm việc
                 $item->work_area == '1' ? 'x' : '',

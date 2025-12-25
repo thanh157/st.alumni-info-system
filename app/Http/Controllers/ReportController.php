@@ -182,8 +182,8 @@ class ReportController extends Controller
             $lienQuan = $responsesEmployed->where('trained_field', 2)->count();
             $khongLienQuan = $responsesEmployed->where('trained_field', 3)->count();
 
-            $tiepTucHoc = $responsesMajor->where('employment_status', 3)->count();
-            $chuaCoViec = $responsesMajor->whereNotIn('employment_status', [1, 3])->count();
+            $tiepTucHoc = $responsesMajor->where('employment_status', 2)->count();
+            $chuaCoViec = $responsesMajor->whereNotIn('employment_status', [1, 2])->count();
 
             $nhaNuoc = $responsesEmployed->where('work_area', '1')->count();
             $tuNhan = $responsesEmployed->where('work_area', '2')->count();
