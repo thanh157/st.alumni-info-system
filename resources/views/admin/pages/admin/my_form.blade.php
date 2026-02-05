@@ -107,8 +107,8 @@
             }
 
             /* .form-title h5 {
-                                                    font-size: 0.9rem;
-                                                } */
+                                                        font-size: 0.9rem;
+                                                    } */
 
             .first-line-indent {
                 text-indent: 18px;
@@ -154,8 +154,8 @@
             }
 
             /* .form-title h5 {
-                                                    font-size: 0.4rem;
-                                                } */
+                                                        font-size: 0.4rem;
+                                                    } */
 
             .first-line-indent {
                 text-indent: 12px;
@@ -332,10 +332,10 @@
                                 <div class="col-12 col-md-6 mb-3">
                                     <label class="form-label">9. Số điện thoại</label>
                                     <input type="text" class="form-control" placeholder="Nhập số điện thoại"
-                                        name="phone_number" pattern="^(0[3|5|7|8|9])([0-9]{8})$"
+                                        name="phone_number" id="phone_number" pattern="^(0[3|5|7|8|9])([0-9]{8})$"
                                         title="Vui lòng nhập số điện thoại Việt Nam hợp lệ (10 chữ số, bắt đầu bằng 0)"
-                                        maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '')" required>
-                                    <div class="invalid-feedback">
+                                        maxlength="10" required>
+                                    <div class="invalid-feedback" id="phone-error">
                                         Số điện thoại phải có 10 chữ số và bắt đầu bằng 03, 05, 07, 08, 09
                                     </div>
                                 </div>
