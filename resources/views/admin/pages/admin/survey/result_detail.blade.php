@@ -317,6 +317,9 @@
                                 <label class="form-label">13. Địa chỉ đơn vị</label>
                                 <input type="text" class="form-control"
                                     value="{{ $response->recruit_partner_address }}" readonly>
+                                <label class="form-label">Tỉnh/Thành phố</label>
+                                <input type="text" class="form-control mb-1"
+                                    value="{{ $response->recruit_partner_city}}" readonly>
                             </div>
 
                             <div class="mb-3">
@@ -373,18 +376,16 @@
                                 @endforeach
                             </div> --}}
                             <div class="mb-4" id="group-question-18">
-                                <label class="form-label fw-bold">18. Công việc Anh/Chị đang đảm nhận có phù hợp với ngành đào tạo không?</label>
-                                
+                                <label class="form-label fw-bold">18. Công việc Anh/Chị đang đảm nhận có phù hợp với ngành
+                                    đào tạo không?</label>
+
                                 <div id="q18-data" data-current-value="{{ $response->trained_field }}"></div>
-                            
+
                                 @foreach (config('config.trained_field') as $key => $item)
                                     <div class="form-check mb-2">
-                                        <input class="form-check-input q18-radio" 
-                                               type="radio" 
-                                               name="trained_field" 
-                                               id="tf_{{ $key }}" 
-                                               value="{{ $key }}"
-                                               {{ $response->trained_field == $key ? 'checked' : '' }}>
+                                        <input class="form-check-input q18-radio" type="radio" name="trained_field"
+                                            id="tf_{{ $key }}" value="{{ $key }}"
+                                            {{ $response->trained_field == $key ? 'checked' : '' }}>
                                         <label class="form-check-label fw-normal" for="tf_{{ $key }}">
                                             {{ $item }}
                                         </label>
@@ -567,7 +568,8 @@
             </div>
         </div>
 
-        <div class="modal fade" id="confirmChangeModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" aria-hidden="true">
+        <div class="modal fade" id="confirmChangeModal" tabindex="-1" data-bs-backdrop="static"
+            data-bs-keyboard="false" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -619,7 +621,7 @@
             // --- LOGIC CẬP NHẬT CÂU 18 (RADIO) ---
             const radios = document.querySelectorAll('.q18-radio');
             const dataDiv = document.getElementById('q18-data');
-            
+
             // Lấy Modal và các nút
             const confirmModalEl = document.getElementById('confirmChangeModal');
             const confirmModal = new bootstrap.Modal(confirmModalEl);
@@ -667,51 +669,50 @@
                 btnConfirm.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Đang lưu...';
 
                 // Gọi AJAX
-                fetch('{{ route("api.update_question_18") }}', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                    },
-                    body: JSON.stringify({
-                        id: '{{ $response->id }}', 
-                        trained_field: pendingValue
+                fetch('{{ route('api.update_question_18') }}', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        },
+                        body: JSON.stringify({
+                            id: '{{ $response->id }}',
+                            trained_field: pendingValue
+                        })
                     })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        // --- THÀNH CÔNG ---
-                        // 1. Cập nhật giá trị gốc (savedValue) thành giá trị mới
-                        savedValue = pendingValue; 
-                        
-                        // 2. Cập nhật lại thuộc tính data để đồng bộ
-                        dataDiv.setAttribute('data-current-value', savedValue);
-                        
-                        alert('Cập nhật thành công!'); 
-                        confirmModal.hide(); 
-                    } else {
-                        // --- THẤT BẠI (Server trả về lỗi) ---
-                        alert('Có lỗi xảy ra: ' + (data.message || 'Vui lòng thử lại'));
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // --- THÀNH CÔNG ---
+                            // 1. Cập nhật giá trị gốc (savedValue) thành giá trị mới
+                            savedValue = pendingValue;
+
+                            // 2. Cập nhật lại thuộc tính data để đồng bộ
+                            dataDiv.setAttribute('data-current-value', savedValue);
+
+                            alert('Cập nhật thành công!');
+                            confirmModal.hide();
+                        } else {
+                            // --- THẤT BẠI (Server trả về lỗi) ---
+                            alert('Có lỗi xảy ra: ' + (data.message || 'Vui lòng thử lại'));
+                            revertSelection(); // Quay lại radio cũ
+                            confirmModal.hide();
+                        }
+                    })
+                    .catch(error => {
+                        // --- LỖI MẠNG HOẶC CODE ---
+                        console.error('Error:', error);
+                        alert('Lỗi hệ thống, không thể cập nhật.');
                         revertSelection(); // Quay lại radio cũ
                         confirmModal.hide();
-                    }
-                })
-                .catch(error => {
-                    // --- LỖI MẠNG HOẶC CODE ---
-                    console.error('Error:', error);
-                    alert('Lỗi hệ thống, không thể cập nhật.');
-                    revertSelection(); // Quay lại radio cũ
-                    confirmModal.hide();
-                })
-                .finally(() => {
-                    // Reset lại nút bấm
-                    btnConfirm.disabled = false;
-                    btnConfirm.textContent = 'Đồng ý cập nhật';
-                });
+                    })
+                    .finally(() => {
+                        // Reset lại nút bấm
+                        btnConfirm.disabled = false;
+                        btnConfirm.textContent = 'Đồng ý cập nhật';
+                    });
             });
-            
-        });
 
+        });
     </script>
 @endsection

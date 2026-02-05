@@ -390,12 +390,47 @@
                                         // Kiểm tra sinh viên này có phản hồi trong bảng employ không
                                         $hasResponse = $responsesByCode->has($item->code ?? '');
 
-                                        $studentCode = $item->code ?? ''; 
-                                        $responseItem = $responsesByCode->get($studentCode); 
-                                        $cccd = $item->citizen_identification; // Lấy từ API 
-                                        if (empty($cccd) && $hasResponse) { 
-                                            $cccd = $responseItem->identification_card_number; // Fallback lấy từ DB 
-                                        } 
+                                        $studentCode = $item->code ?? '';
+        
+                                        // Lấy object phản hồi từ RAM (đã keyBy ở trên)
+                                        $responseItem = $responsesByCode->get($studentCode);
+                                        $hasResponse = !is_null($responseItem);
+
+                                        // --- 1. Xử lý CCCD ---
+                                        $cccd = $item->citizen_identification; // Mặc định lấy API
+                                        // Nếu API rỗng VÀ có phản hồi VÀ phản hồi có CCCD -> Lấy fallback từ DB
+                                        if (empty($cccd) && $hasResponse && !empty($responseItem->identification_card_number)) {
+                                            $cccd = $responseItem->identification_card_number;
+                                        }
+
+                                        // --- 2. Xử lý SĐT, Email và Ghi chú ---
+                                        $noteParts = []; // Mảng để chứa text thêm vào ghi chú (ví dụ: ['SĐT', 'Email'])
+                                        
+                                        // -- Xử lý Phone --
+                                        $phone = $item->phone ?? ''; // Mặc định lấy API
+                                        // Nếu có phản hồi VÀ trong phản hồi có SĐT -> Lấy SĐT khảo sát & đánh dấu ghi chú
+                                        if ($hasResponse && !empty($responseItem->phone_number)) {
+                                            $phone = $responseItem->phone_number;
+                                            $noteParts[] = 'SĐT';
+                                        }
+
+                                        // -- Xử lý Email --
+                                        $email = $item->email ?? ''; // Mặc định lấy API
+                                        // Nếu có phản hồi VÀ trong phản hồi có Email -> Lấy Email khảo sát & đánh dấu ghi chú
+                                        if ($hasResponse && !empty($responseItem->email)) {
+                                            $email = $responseItem->email;
+                                            $noteParts[] = 'Email';
+                                        }
+
+                                        // -- Tạo chuỗi Ghi chú hoàn chỉnh --
+                                        $originalNote = $item->note ?? ''; // Ghi chú gốc từ API
+                                        $addedNote = implode(', ', $noteParts); // Nối mảng thành chuỗi: "SĐT, Email"
+
+                                        $finalNote = $originalNote;
+                                        if (!empty($addedNote)) {
+                                            // Nếu có ghi chú gốc thì thêm dấu phẩy, không thì gán luôn
+                                            $finalNote = !empty($finalNote) ? ($finalNote . ', ' . $addedNote) : $addedNote;
+                                        }
                                     @endphp
                                     <tr>
                                         <td>{{ $loop->iteration }}</td>
@@ -419,10 +454,10 @@
                                         <td>{{ \Carbon\Carbon::parse($item->certification_date)->format('d/m/Y') }}</td>
 
                                         {{-- Số điện thoại --}}
-                                        <td>{{ $item->phone ?? '' }}</td>
+                                        <td>{{ $phone }}</td>
 
                                         {{-- Email --}}
-                                        <td>{{ $item->email ?? '' }}</td>
+                                        <td>{{ $email }}</td>
 
                                         {{-- Hình thức khảo sát (hiện tại chưa có nguồn) --}}
                                         <td>Online</td>
@@ -431,7 +466,7 @@
                                         <td>{{ $hasResponse ? 'X' : '' }}</td>
 
                                         {{-- Ghi chú --}}
-                                        <td>{{ $item->note ?? '' }}</td>
+                                        <td>{{ $finalNote }}</td>
 
                                         {{-- Ngành --}}
                                         <td>{{ $item->industry_name ?? '' }}</td>

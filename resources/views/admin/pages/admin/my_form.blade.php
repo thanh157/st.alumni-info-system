@@ -201,9 +201,8 @@
 
                     <!-- Tiêu đề phiếu -->
                     <div class="text-center mt-5 form-title">
-                        <h5 class="fw-bold text-uppercase mb-1">PHIẾU KHẢO SÁT</h5>
-                        <h5 class="fw-bold text-uppercase">TÌNH HÌNH VIỆC LÀM CỦA SINH VIÊN TỐT NGHIỆP</h5>
-                        <h5 class="fw-bold text-uppercase">NĂM 2024</h5>
+                        <h5 style="font-weight: bold; text-transform: uppercase; font-size: 16px; margin: 0 0 5px 0;">
+                            {{ $survey->title }}</h5>
                     </div>
 
                     {{-- <div class="text-center mt-5 form-title">
@@ -477,7 +476,8 @@
                                         </style>
                                     @endpush
                                     <label class="form-label">Tỉnh/Thành phố</label>
-                                    <input type="text" class="form-control mb-1" placeholder="VD: Hà Nội" required>
+                                    <input type="text" class="form-control mb-1" placeholder="VD: Hà Nội"
+                                        name="recruit_partner_city" required>
 
                                 </div>
 
@@ -732,9 +732,10 @@
                                     @if ($value == 'Các giải pháp khác (xin ghi rõ)')
                                         <div class="form-check mb-2">
                                             <input class="form-check-input solutions_get_job_other" type="checkbox"
-                                                name="solutions_get_job[]" id="ht26_{{ $index }}" value="{{ $index }}">
-                                            <label class="form-check-label fw-normal" for="ht26_{{ $index }}">Các giải pháp khác
-                                                (xin ghi rõ)</label>
+                                                name="solutions_get_job[]" id="ht26_{{ $index }}"
+                                                value="{{ $index }}">
+                                            <label class="form-check-label fw-normal" for="ht26_{{ $index }}">Các
+                                                giải pháp khác (xin ghi rõ)</label>
                                         </div>
                                     @else
                                         <div class="form-check mb-2">
