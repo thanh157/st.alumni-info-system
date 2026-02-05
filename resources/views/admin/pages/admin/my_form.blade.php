@@ -107,8 +107,8 @@
             }
 
             /* .form-title h5 {
-                                                    font-size: 0.9rem;
-                                                } */
+                                                font-size: 0.9rem;
+                                            } */
 
             .first-line-indent {
                 text-indent: 18px;
@@ -154,8 +154,8 @@
             }
 
             /* .form-title h5 {
-                                                    font-size: 0.4rem;
-                                                } */
+                                                font-size: 0.4rem;
+                                            } */
 
             .first-line-indent {
                 text-indent: 12px;
@@ -368,164 +368,191 @@
                                     <input type="text" class="form-control" placeholder="Nhập tên công ty / tổ chức"
                                         name="recruit_partner_name" required>
                                 </div>
-                                <!-- #region -->
+
                                 <div class="mb-3">
                                     <div class="mb-3">
                                         <label class="form-label">13. Địa chỉ đơn vị</label>
-                                        <input type="text" class="form-control mb-1" id="address-autocomplete"
+                                        <input type="text" class="form-control mb-1" id="vn-address-autocomplete"
                                             placeholder="VD: 121 Nguyễn An Ninh, Phường 7, Quận 10, TP.HCM"
                                             name="recruit_partner_address" autocomplete="off" required>
-                                        <div id="suggestions" class="list-group" style="display: none;"></div>
+                                        <div id="vn-suggestions" class="list-group"
+                                            style="display: none; max-height: 200px; overflow-y: auto;"></div>
                                     </div>
 
+                                    @push('script')
+                                        <script>
+                                            let vietnamAddresses = [];
+                                            let worldCountries = [];
+
+                                            $(document).ready(function () {
+                                                // Load địa chỉ Việt Nam
+                                                $.ajax({
+                                                    url: 'https://raw.githubusercontent.com/kenzouno1/DiaGioiHanhChinhVN/master/data.json',
+                                                    method: 'GET',
+                                                    dataType: 'json',
+                                                    success: function (provinces) {
+                                                        provinces.forEach(function (province) {
+                                                            vietnamAddresses.push({
+                                                                text: province.Name,
+                                                                type: 'province'
+                                                            });
+
+                                                            if (province.Districts) {
+                                                                province.Districts.forEach(function (district) {
+                                                                    vietnamAddresses.push({
+                                                                        text: `${district.Name}, ${province.Name}`,
+                                                                        type: 'district'
+                                                                    });
+
+                                                                    if (district.Wards) {
+                                                                        district.Wards.forEach(function (ward) {
+                                                                            vietnamAddresses.push({
+                                                                                text: `${ward.Name}, ${district.Name}, ${province.Name}`,
+                                                                                type: 'ward'
+                                                                            });
+                                                                        });
+                                                                    }
+                                                                });
+                                                            }
+                                                        });
+                                                        console.log('Đã load', vietnamAddresses.length, 'địa chỉ VN');
+                                                    },
+                                                    error: function () {
+                                                        console.error('Không thể load địa chỉ VN');
+                                                    }
+                                                });
+
+                                                // Load danh sách quốc gia
+                                                $.ajax({
+                                                    url: 'https://restcountries.com/v3.1/all',
+                                                    method: 'GET',
+                                                    dataType: 'json',
+                                                    success: function (countries) {
+                                                        countries.forEach(function (country) {
+                                                            worldCountries.push({
+                                                                text: country.name.common,
+                                                                type: 'country'
+                                                            });
+                                                            // Thêm thủ đô nếu có
+                                                            if (country.capital && country.capital[0]) {
+                                                                worldCountries.push({
+                                                                    text: `${country.capital[0]}, ${country.name.common}`,
+                                                                    type: 'capital'
+                                                                });
+                                                            }
+                                                        });
+                                                        console.log('Đã load', worldCountries.length, 'địa chỉ quốc tế');
+                                                    },
+                                                    error: function () {
+                                                        console.error('Không thể load địa chỉ quốc tế');
+                                                    }
+                                                });
+
+                                                // Autocomplete với Google Places API (tùy chọn - cần API key)
+                                                // Hoặc sử dụng logic tìm kiếm thông minh
+                                                $('#vn-address-autocomplete').on('input', function () {
+                                                    const query = $(this).val().toLowerCase().trim();
+                                                    const $suggestions = $('#vn-suggestions');
+
+                                                    if (query.length < 2) {
+                                                        $suggestions.hide().empty();
+                                                        return;
+                                                    }
+
+                                                    let matches = [];
+
+                                                    // Kiểm tra nếu có số đầu tiên (địa chỉ đường phố)
+                                                    const hasNumber = /^\d+/.test(query);
+
+                                                    if (hasNumber) {
+                                                        // Tìm trong địa chỉ VN (phường/xã, quận/huyện, tỉnh/thành)
+                                                        const streetPart = query.split(',')[0].trim(); // Phần đường
+                                                        const restPart = query.substring(streetPart.length).replace(/^,\s*/, '').toLowerCase();
+
+                                                        matches = vietnamAddresses
+                                                            .filter(addr => addr.text.toLowerCase().includes(restPart))
+                                                            .map(addr => ({
+                                                                text: `${streetPart}, ${addr.text}`,
+                                                                type: 'street'
+                                                            }))
+                                                            .slice(0, 5);
+                                                    } else {
+                                                        // Tìm kiếm bình thường trong VN
+                                                        const vnMatches = vietnamAddresses
+                                                            .filter(addr => addr.text.toLowerCase().includes(query))
+                                                            .slice(0, 7);
+
+                                                        // Tìm kiếm trong quốc gia
+                                                        const worldMatches = worldCountries
+                                                            .filter(addr => addr.text.toLowerCase().includes(query))
+                                                            .slice(0, 3);
+
+                                                        matches = [...vnMatches, ...worldMatches];
+                                                    }
+
+                                                    if (matches.length === 0) {
+                                                        $suggestions.hide().empty();
+                                                        return;
+                                                    }
+
+                                                    // Hiển thị gợi ý
+                                                    $suggestions.empty();
+                                                    matches.forEach(function (item) {
+                                                        const badge = item.type === 'country' || item.type === 'capital'
+                                                            ? '<span class="badge bg-primary ms-2">Quốc tế</span>'
+                                                            : '';
+
+                                                        const $item = $('<a href="#" class="list-group-item list-group-item-action small">')
+                                                            .html(item.text + badge)
+                                                            .on('click', function (e) {
+                                                                e.preventDefault();
+                                                                $('#vn-address-autocomplete').val(item.text);
+                                                                $suggestions.hide().empty();
+                                                            });
+                                                        $suggestions.append($item);
+                                                    });
+
+                                                    $suggestions.show();
+                                                });
+
+                                                // Ẩn khi click ra ngoài
+                                                $(document).on('click', function (e) {
+                                                    if (!$(e.target).closest('#vn-address-autocomplete, #vn-suggestions').length) {
+                                                        $('#vn-suggestions').hide();
+                                                    }
+                                                });
+                                            });
+                                        </script>
+
+                                        <style>
+                                            #vn-suggestions {
+                                                position: absolute;
+                                                z-index: 1000;
+                                                width: calc(100% - 30px);
+                                                margin-top: -8px;
+                                                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+                                                background: white;
+                                            }
+
+                                            #vn-suggestions .list-group-item {
+                                                cursor: pointer;
+                                                padding: 8px 12px;
+                                            }
+
+                                            #vn-suggestions .list-group-item:hover {
+                                                background-color: #f0f0f0;
+                                            }
+
+                                            #vn-suggestions .badge {
+                                                font-size: 0.7rem;
+                                            }
+                                        </style>
+                                    @endpush
+
                                     <label class="form-label">Tỉnh/Thành phố</label>
-                                    <input type="text" class="form-control mb-1" id="city" placeholder="VD: Hồ Chí Minh"
+                                    <input type="text" class="form-control mb-1" placeholder="VD: Hà Nội hoặc New York, USA"
                                         name="recruit_partner_city" required>
                                 </div>
-
-                                @push('script')
-                                    <script>
-                                        $(document).ready(function () {
-                                            let timeout = null;
-
-                                            $('#address-autocomplete').on('input', function () {
-                                                clearTimeout(timeout);
-                                                const query = $(this).val().trim();
-                                                const $suggestions = $('#suggestions');
-
-                                                if (query.length < 3) {
-                                                    $suggestions.hide().empty();
-                                                    return;
-                                                }
-
-                                                timeout = setTimeout(function () {
-                                                    $.ajax({
-                                                        url: 'https://photon.komoot.io/api/',
-                                                        method: 'GET',
-                                                        data: {
-                                                            q: query,
-                                                            limit: 10,
-                                                            lang: 'vi'
-                                                        },
-                                                        success: function (data) {
-                                                            $suggestions.empty();
-
-                                                            if (data.features && data.features.length > 0) {
-                                                                data.features.forEach(function (item) {
-                                                                    const props = item.properties;
-                                                                    let address = '';
-                                                                    let city = '';
-
-                                                                    // Build địa chỉ đầy đủ
-                                                                    if (props.housenumber) address += props.housenumber + ' ';
-                                                                    if (props.street) address += props.street;
-                                                                    if (props.district) address += (address ? ', ' : '') + props.district;
-                                                                    if (props.city) {
-                                                                        address += (address ? ', ' : '') + props.city;
-                                                                        city = props.city;
-                                                                    } else if (props.state) {
-                                                                        address += (address ? ', ' : '') + props.state;
-                                                                        city = props.state;
-                                                                    }
-                                                                    if (props.country) address += (address ? ', ' : '') + props.country;
-
-                                                                    // Nếu không có đủ thông tin, dùng name
-                                                                    if (!address) address = props.name;
-
-                                                                    const $item = $('<a href="#" class="list-group-item list-group-item-action small">')
-                                                                        .html(`<div class="fw-medium">${address || props.name}</div>
-                                                       <small class="text-muted">${props.osm_type || ''}</small>`)
-                                                                        .data('address', address || props.name)
-                                                                        .data('city', city || props.state || props.country)
-                                                                        .on('click', function (e) {
-                                                                            e.preventDefault();
-                                                                            $('#address-autocomplete').val($(this).data('address'));
-                                                                            $('#city').val($(this).data('city'));
-                                                                            $suggestions.hide();
-                                                                        });
-                                                                    $suggestions.append($item);
-                                                                });
-                                                                $suggestions.show();
-                                                            } else {
-                                                                $suggestions.hide();
-                                                            }
-                                                        },
-                                                        error: function () {
-                                                            console.error('Lỗi khi gọi Photon API');
-                                                            $suggestions.hide();
-                                                        }
-                                                    });
-                                                }, 400); // Debounce 400ms
-                                            });
-
-                                            // Ẩn suggestions khi click ra ngoài
-                                            $(document).on('click', function (e) {
-                                                if (!$(e.target).closest('#address-autocomplete, #suggestions').length) {
-                                                    $('#suggestions').hide();
-                                                }
-                                            });
-
-                                            // Ẩn khi nhấn ESC
-                                            $('#address-autocomplete').on('keydown', function (e) {
-                                                if (e.key === 'Escape') {
-                                                    $('#suggestions').hide();
-                                                }
-                                            });
-                                        });
-                                    </script>
-
-                                    <style>
-                                        #suggestions {
-                                            position: absolute;
-                                            z-index: 1000;
-                                            width: calc(100% - 50px);
-                                            margin-top: -8px;
-                                            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-                                            max-height: 350px;
-                                            overflow-y: auto;
-                                            background: white;
-                                            border-radius: 4px;
-                                        }
-
-                                        #suggestions .list-group-item {
-                                            cursor: pointer;
-                                            padding: 12px 15px;
-                                            border-left: 3px solid transparent;
-                                            transition: all 0.2s;
-                                        }
-
-                                        #suggestions .list-group-item:hover {
-                                            background-color: #f8f9fa;
-                                            border-left-color: #007bff;
-                                        }
-
-                                        #suggestions .list-group-item .fw-medium {
-                                            color: #212529;
-                                        }
-
-                                        #suggestions .list-group-item .text-muted {
-                                            font-size: 0.85rem;
-                                        }
-
-                                        /* Scrollbar styling */
-                                        #suggestions::-webkit-scrollbar {
-                                            width: 6px;
-                                        }
-
-                                        #suggestions::-webkit-scrollbar-track {
-                                            background: #f1f1f1;
-                                        }
-
-                                        #suggestions::-webkit-scrollbar-thumb {
-                                            background: #888;
-                                            border-radius: 3px;
-                                        }
-
-                                        #suggestions::-webkit-scrollbar-thumb:hover {
-                                            background: #555;
-                                        }
-                                    </style>
-                                @endpush
                                 <div class="mb-3">
                                     <label class="form-label">14. Thời gian tuyển dụng</label>
                                     <input type="date" class="form-control"
@@ -776,13 +803,16 @@
                                 @foreach ($giai_phap as $index => $value)
                                     @if ($value == 'Các giải pháp khác (xin ghi rõ)')
                                         <div class="form-check mb-2">
-                                            <input class="form-check-input solutions_get_job_other" type="checkbox"
+                                            <input class="form-check-input solutions_get_job_other" type="checkbox" <<<<<<< HEAD
                                                 name="solutions_get_job[]" id="ht26_{{ $index }}" value="{{ $index }}">
                                             <label class="form-check-label fw-normal" for="ht26_{{ $index }}">Các giải pháp khác
                                                 (xin ghi rõ)</label>
-
+                                            =======
+                                            name="solutions_get_job[]" id="ht26_{{ $index }}"
+                                            value="{{ $index }}">
                                             <label class="form-check-label fw-normal" for="ht26_{{ $index }}">Các
                                                 giải pháp khác (xin ghi rõ)</label>
+                                            >>>>>>> 8c7baf09dcae4678a72c7e3afcb579e2e058c4a9
                                         </div>
                                     @else
                                         <div class="form-check mb-2">
@@ -886,8 +916,8 @@
                         <div class="mb-3">
                             <label for="phone" class="form-label fw-semibold">Số điện thoại</label>
                             <input type="text" id="phone" name="m_phone" class="form-control rounded-3"
-                                pattern="^(0[3|5|7|8|9])([0-9]{8})$"
-                                title="Vui lòng nhập số điện thoại Việt Nam hợp lệ (10 chữ số, bắt đầu bằng 0)"
+                            pattern="^(0[3|5|7|8|9])([0-9]{8})$"
+                            title="Vui lòng nhập số điện thoại Việt Nam hợp lệ (10 chữ số, bắt đầu bằng 0)"
                                 placeholder="Nhập số điện thoại liên hệ">
                         </div>
 
