@@ -107,8 +107,8 @@
             }
 
             /* .form-title h5 {
-                                        font-size: 0.9rem;
-                                    } */
+                                            font-size: 0.9rem;
+                                        } */
 
             .first-line-indent {
                 text-indent: 18px;
@@ -154,8 +154,8 @@
             }
 
             /* .form-title h5 {
-                                        font-size: 0.4rem;
-                                    } */
+                                            font-size: 0.4rem;
+                                        } */
 
             .first-line-indent {
                 text-indent: 12px;
@@ -247,8 +247,8 @@
 
                         <div class="mb-3">
                             <label for="ma_sv">1. Mã sinh viên</label>
-                            <input type="text" class="form-control" id="code_student" name="code_student" value=""
-                                readonly required placeholder="Nhập mã sinh viên">
+                            <input type="text" class="form-control" id="code_student" name="code_student" value="" readonly
+                                required placeholder="Nhập mã sinh viên">
                         </div>
 
                         <div class="mb-3">
@@ -291,13 +291,11 @@
                         <div class="row">
                             <div class="col-12 col-md-6 mb-3">
                                 <label class="form-label">7. Khóa học</label>
-                                <input type="text" class="form-control" placeholder="Nhập khóa học" name="course"
-                                    required>
+                                <input type="text" class="form-control" placeholder="Nhập khóa học" name="course" required>
                             </div>
                             <div class="col-12 col-md-6 mb-3">
                                 <label class="form-label">8. Tên ngành được đào tạo</label>
-                                <input type="text" id="ten_nganh_hien_thi" class="form-control" placeholder=""
-                                    readonly>
+                                <input type="text" id="ten_nganh_hien_thi" class="form-control" placeholder="" readonly>
                                 <input type="hidden" name="training_industry_id" id="training_industry_id">
                             </div>
                             <script>
@@ -317,7 +315,7 @@
                                     }
                                 };
 
-                                maNgheSelect.addEventListener("change", function() {
+                                maNgheSelect.addEventListener("change", function () {
                                     const code = this.value;
 
                                     if (majorMap[code]) {
@@ -334,12 +332,13 @@
                                 <div class="col-12 col-md-6 mb-3">
                                     <label class="form-label">9. Số điện thoại</label>
                                     <input type="text" class="form-control" placeholder="Nhập số điện thoại"
-                                        name="phone_number" required>
+                                        name="phone_number" pattern="^(0[3|5|7|8|9])([0-9]{8})$"
+                                        title="Vui lòng nhập số điện thoại Việt Nam hợp lệ (10 chữ số, bắt đầu bằng 0)"
+                                        required>
                                 </div>
                                 <div class="col-12 col-md-6 mb-3">
                                     <label class="form-label">10. Email</label>
-                                    <input type="email" class="form-control" placeholder="Nhập email" name="email"
-                                        required>
+                                    <input type="email" class="form-control" placeholder="Nhập email" name="email" required>
                                 </div>
                             </div>
 
@@ -353,10 +352,8 @@
                                 @foreach ($tinh_trang as $index => $value)
                                     <div class="form-check mb-2">
                                         <input class="form-check-input employment-status-radio" type="radio"
-                                            name="employment_status" required id="tt_{{ $index }}"
-                                            value="{{ $index }}">
-                                        <label class="form-check-label fw-normal"
-                                            for="tt_{{ $index }}">{{ $value }}</label>
+                                            name="employment_status" required id="tt_{{ $index }}" value="{{ $index }}">
+                                        <label class="form-check-label fw-normal" for="tt_{{ $index }}">{{ $value }}</label>
                                     </div>
                                 @endforeach
                                 <i class="question-10" style="font-size: 14px; color:rgb(94, 6, 6)"> *Nếu chưa có việc làm
@@ -373,12 +370,114 @@
                                 </div>
 
                                 <div class="mb-3">
-                                    <label class="form-label">13. Địa chỉ đơn vị</label>
-                                    <input type="text" class="form-control mb-1"
-                                        placeholder="VD: Khu 2 Hoàng Khương, Thanh Ba, Phú Thọ"
-                                        name="recruit_partner_address" required>
+                                    <div class="mb-3">
+                                        <label class="form-label">13. Địa chỉ đơn vị</label>
+                                        <input type="text" class="form-control mb-1" id="vn-address-autocomplete"
+                                            placeholder="VD: Khu 2 Hoàng Khương, Thanh Ba, Phú Thọ"
+                                            name="recruit_partner_address" autocomplete="o" required>
+                                        <div id="vn-suggestions" class="list-group"
+                                            style="display: none; max-height: 200px; overflow-y: auto;"></div>
+                                    </div>
+
+                                    @push('script')
+                                        <script>
+                                            let vietnamAddresses = [];
+
+                                            $(document).ready(function () {
+                                                 $.ajax({
+                                                    url: 'https://raw.githubusercontent.com/kenzouno1/DiaGioiHanhChinhVN/master/data.json',
+                                                    method: 'GET',
+                                                    dataType: 'json',
+                                                    success: function (provinces) {
+                                                         provinces.forEach(function (province) {
+                                                            vietnamAddresses.push(province.Name);
+
+                                                            if (province.Districts) {
+                                                                province.Districts.forEach(function (district) {
+                                                                    vietnamAddresses.push(`${district.Name}, ${province.Name}`);
+
+                                                                    if (district.Wards) {
+                                                                        district.Wards.forEach(function (ward) {
+                                                                            vietnamAddresses.push(`${ward.Name}, ${district.Name}, ${province.Name}`);
+                                                                        });
+                                                                    }
+                                                                });
+                                                            }
+                                                        });
+
+                                                        console.log('Đã load', vietnamAddresses.length, 'địa chỉ');
+                                                    },
+                                                    error: function () {
+                                                        console.error('Không thể load địa chỉ');
+                                                    }
+                                                });
+
+                                                // Autocomplete
+                                                $('#vn-address-autocomplete').on('input', function () {
+                                                    const query = $(this).val().toLowerCase().trim();
+                                                    const $suggestions = $('#vn-suggestions');
+
+                                                    if (query.length < 2) {
+                                                        $suggestions.hide().empty();
+                                                        return;
+                                                    }
+
+                                                    // Tìm kiếm
+                                                    const matches = vietnamAddresses.filter(addr =>
+                                                        addr.toLowerCase().includes(query)
+                                                    ).slice(0, 10); // Giới hạn 10 kết quả
+
+                                                    if (matches.length === 0) {
+                                                        $suggestions.hide().empty();
+                                                        return;
+                                                    }
+
+                                                    // Hiển thị gợi ý
+                                                    $suggestions.empty();
+                                                    matches.forEach(function (address) {
+                                                        const $item = $('<a href="#" class="list-group-item list-group-item-action small">')
+                                                            .text(address)
+                                                            .on('click', function (e) {
+                                                                e.preventDefault();
+                                                                $('#vn-address-autocomplete').val(address);
+                                                                $suggestions.hide().empty();
+                                                            });
+                                                        $suggestions.append($item);
+                                                    });
+
+                                                    $suggestions.show();
+                                                });
+
+                                                // Ẩn khi click ra ngoài
+                                                $(document).on('click', function (e) {
+                                                    if (!$(e.target).closest('#vn-address-autocomplete, #vn-suggestions').length) {
+                                                        $('#vn-suggestions').hide();
+                                                    }
+                                                });
+                                            });
+                                        </script>
+
+                                        <style>
+                                            #vn-suggestions {
+                                                position: absolute;
+                                                z-index: 1000;
+                                                width: calc(100% - 30px);
+                                                margin-top: -8px;
+                                                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+                                            }
+
+                                            #vn-suggestions .list-group-item {
+                                                cursor: pointer;
+                                                padding: 8px 12px;
+                                            }
+
+                                            #vn-suggestions .list-group-item:hover {
+                                                background-color: #f0f0f0;
+                                            }
+                                        </style>
+                                    @endpush
                                     <label class="form-label">Tỉnh/Thành phố</label>
-                                    <input type="text" class="form-control mb-1" placeholder="VD: Hà Nội"required>
+                                    <input type="text" class="form-control mb-1" placeholder="VD: Hà Nội" required>
 
                                 </div>
 
@@ -391,8 +490,8 @@
 
                                 <div class="mb-3">
                                     <label class="form-label">15. Chức vụ, vị trí việc làm</label>
-                                    <input type="text" class="form-control" placeholder=""
-                                        name="recruit_partner_position" required>
+                                    <input type="text" class="form-control" placeholder="" name="recruit_partner_position"
+                                        required>
                                 </div>
 
                                 {{-- PHẦN II: NỘI DUNG KHẢO SÁT --}}
@@ -407,8 +506,7 @@
                                         <div class="form-check mb-2">
                                             <input class="form-check-input" type="radio" name="work_area" required
                                                 id="kv_{{ $key }}" value="{{ $key }}">
-                                            <label class="form-check-label fw-normal"
-                                                for="kv_{{ $key }}">{{ $item }}</label>
+                                            <label class="form-check-label fw-normal" for="kv_{{ $key }}">{{ $item }}</label>
                                         </div>
                                     @endforeach
                                 </div>
@@ -421,8 +519,7 @@
                                         <div class="form-check mb-2">
                                             <input class="form-check-input" type="radio" name="employed_since" required
                                                 id="tg_{{ $key }}" value="{{ $key }}">
-                                            <label class="form-check-label fw-normal"
-                                                for="tg_{{ $key }}">{{ $item }}</label>
+                                            <label class="form-check-label fw-normal" for="tg_{{ $key }}">{{ $item }}</label>
                                         </div>
                                     @endforeach
                                 </div>
@@ -438,8 +535,7 @@
                                         <div class="form-check mb-2">
                                             <input class="form-check-input" type="radio" name="trained_field" required
                                                 id="nganh_{{ $key }}" value="{{ $key }}">
-                                            <label class="form-check-label fw-normal"
-                                                for="nganh_{{ $key }}">{{ $item }}</label>
+                                            <label class="form-check-label fw-normal" for="nganh_{{ $key }}">{{ $item }}</label>
                                         </div>
                                     @endforeach
                                 </div>
@@ -452,9 +548,8 @@
                                         chuyên môn không?</label>
                                     @foreach (config('config.professional_qualification_field') as $key => $item)
                                         <div class="form-check mb-2">
-                                            <input class="form-check-input" type="radio"
-                                                name="professional_qualification_field" required
-                                                id="trinhdo_{{ $key }}" value="{{ $key }}">
+                                            <input class="form-check-input" type="radio" name="professional_qualification_field"
+                                                required id="trinhdo_{{ $key }}" value="{{ $key }}">
                                             <label class="form-check-label fw-normal"
                                                 for="trinhdo_{{ $key }}">{{ $item }}</label>
                                         </div>
@@ -468,11 +563,9 @@
                                         nhà trường cho công việc theo ngành tốt nghiệp không?</label>
                                     @foreach (config('config.level_knowledge_acquired') as $key => $item)
                                         <div class="form-check mb-2">
-                                            <input class="form-check-input" type="radio"
-                                                name="level_knowledge_acquired" required id="kt_{{ $key }}"
-                                                value="{{ $key }}">
-                                            <label class="form-check-label fw-normal"
-                                                for="kt_{{ $key }}">{{ $item }}</label>
+                                            <input class="form-check-input" type="radio" name="level_knowledge_acquired"
+                                                required id="kt_{{ $key }}" value="{{ $key }}">
+                                            <label class="form-check-label fw-normal" for="kt_{{ $key }}">{{ $item }}</label>
                                         </div>
                                     @endforeach
                                 </div>
@@ -493,8 +586,7 @@
                                         <div class="form-check mb-2">
                                             <input class="form-check-input" type="radio" name="average_income"
                                                 id="tn_{{ $key }}" value="{{ $key }}">
-                                            <label class="form-check-label fw-normal"
-                                                for="tn_{{ $key }}">{{ $item }}</label>
+                                            <label class="form-check-label fw-normal" for="tn_{{ $key }}">{{ $item }}</label>
                                         </div>
                                     @endforeach
                                 </div>
@@ -511,17 +603,15 @@
                                         @if ($value == 'Hình thức khác')
                                             <div class="form-check mb-2">
                                                 <input class="form-check-input recruitment_type_other" type="checkbox"
-                                                    name="recruitment_type[]" id="ht_{{ $index }}"
-                                                    value="{{ $index }}">
-                                                <label class="form-check-label fw-normal"
-                                                    for="ht_{{ $index }}">Hình thức khác</label>
+                                                    name="recruitment_type[]" id="ht_{{ $index }}" value="{{ $index }}">
+                                                <label class="form-check-label fw-normal" for="ht_{{ $index }}">Hình thức
+                                                    khác</label>
                                             </div>
                                         @else
                                             <div class="form-check mb-2">
                                                 <input class="form-check-input" type="checkbox" name="recruitment_type[]"
                                                     id="ht_{{ $index }}" value="{{ $index }}">
-                                                <label class="form-check-label fw-normal"
-                                                    for="ht_{{ $index }}">{{ $value }}</label>
+                                                <label class="form-check-label fw-normal" for="ht_{{ $index }}">{{ $value }}</label>
                                             </div>
                                         @endif
                                     @endforeach
@@ -542,17 +632,15 @@
                                         @if ($item == 'Hình thức khác')
                                             <div class="form-check mb-2">
                                                 <input class="form-check-input job_search_method_other" type="radio"
-                                                    name="job_search_method[]" id="ht23_{{ $key }}"
-                                                    value="{{ $key }}">
-                                                <label class="form-check-label fw-normal"
-                                                    for="ht23_{{ $key }}">Hình thức khác</label>
+                                                    name="job_search_method[]" id="ht23_{{ $key }}" value="{{ $key }}">
+                                                <label class="form-check-label fw-normal" for="ht23_{{ $key }}">Hình thức
+                                                    khác</label>
                                             </div>
                                         @else
                                             <div class="form-check mb-2">
                                                 <input class="form-check-input" type="radio" name="job_search_method[]"
                                                     id="ht23_{{ $key }}" value="{{ $key }}">
-                                                <label class="form-check-label fw-normal"
-                                                    for="ht23_{{ $key }}">{{ $item }}</label>
+                                                <label class="form-check-label fw-normal" for="ht23_{{ $key }}">{{ $item }}</label>
                                             </div>
                                         @endif
                                     @endforeach
@@ -575,25 +663,21 @@
                                         @if ($value == 'Khác')
                                             <div class="form-check mb-2">
                                                 <input class="form-check-input soft_skills_required_other" type="checkbox"
-                                                    name="soft_skills_required[]" id="ht_{{ $index }}"
-                                                    value="{{ $index }}">
-                                                <label class="form-check-label fw-normal"
-                                                    for="ht_{{ $index }}">Khác</label>
+                                                    name="soft_skills_required[]" id="ht_{{ $index }}" value="{{ $index }}">
+                                                <label class="form-check-label fw-normal" for="ht_{{ $index }}">Khác</label>
                                             </div>
                                         @else
                                             <div class="form-check mb-2">
-                                                <input class="form-check-input" type="checkbox"
-                                                    name="soft_skills_required[]" id="kn_{{ $index }}"
-                                                    value="{{ $index }}">
-                                                <label class="form-check-label fw-normal"
-                                                    for="kn_{{ $index }}">{{ $value }}</label>
+                                                <input class="form-check-input" type="checkbox" name="soft_skills_required[]"
+                                                    id="kn_{{ $index }}" value="{{ $index }}">
+                                                <label class="form-check-label fw-normal" for="kn_{{ $index }}">{{ $value }}</label>
                                             </div>
                                         @endif
                                     @endforeach
                                     <div id="soft_skills_required_other_wrapper" style="display: none;" class="mt-2">
-                                        <input type="text" name="soft_skills_required_other"
-                                            id="soft_skills_required_other" class="form-control other-input"
-                                            placeholder="Nhập kỹ năng mềm..." autocomplete="off">
+                                        <input type="text" name="soft_skills_required_other" id="soft_skills_required_other"
+                                            class="form-control other-input" placeholder="Nhập kỹ năng mềm..."
+                                            autocomplete="off">
                                     </div>
                                     <div id="soft_skills_required_error" class="text-danger small d-none"></div>
                                 </div>
@@ -612,19 +696,16 @@
                                     @foreach ($nang_cao as $index => $value)
                                         @if ($value == 'Khóa học khác(xin ghi rõ)')
                                             <div class="form-check mb-2">
-                                                <input class="form-check-input must_attended_courses_other"
-                                                    type="checkbox" name="must_attended_courses[]"
-                                                    id="ht_{{ $index }}" value="{{ $index }}">
-                                                <label class="form-check-label fw-normal"
-                                                    for="ht_{{ $index }}">Khóa học khác(xin ghi rõ)</label>
+                                                <input class="form-check-input must_attended_courses_other" type="checkbox"
+                                                    name="must_attended_courses[]" id="ht_{{ $index }}" value="{{ $index }}">
+                                                <label class="form-check-label fw-normal" for="ht_{{ $index }}">Khóa học khác(xin
+                                                    ghi rõ)</label>
                                             </div>
                                         @else
                                             <div class="form-check mb-2">
-                                                <input class="form-check-input" type="checkbox"
-                                                    name="must_attended_courses[]" id="nc_{{ $index }}"
-                                                    value="{{ $index }}">
-                                                <label class="form-check-label fw-normal"
-                                                    for="nc_{{ $index }}">{{ $value }}</label>
+                                                <input class="form-check-input" type="checkbox" name="must_attended_courses[]"
+                                                    id="nc_{{ $index }}" value="{{ $index }}">
+                                                <label class="form-check-label fw-normal" for="nc_{{ $index }}">{{ $value }}</label>
                                             </div>
                                         @endif
                                     @endforeach
@@ -651,24 +732,22 @@
                                     @if ($value == 'Các giải pháp khác (xin ghi rõ)')
                                         <div class="form-check mb-2">
                                             <input class="form-check-input solutions_get_job_other" type="checkbox"
-                                                name="solutions_get_job[]" id="ht26_{{ $index }}"
-                                                value="{{ $index }}">
-                                            <label class="form-check-label fw-normal"
-                                                for="ht26_{{ $index }}">Các giải pháp khác (xin ghi rõ)</label>
+                                                name="solutions_get_job[]" id="ht26_{{ $index }}" value="{{ $index }}">
+                                            <label class="form-check-label fw-normal" for="ht26_{{ $index }}">Các giải pháp khác
+                                                (xin ghi rõ)</label>
                                         </div>
                                     @else
                                         <div class="form-check mb-2">
                                             <input class="form-check-input" type="checkbox" name="solutions_get_job[]"
                                                 id="ht26_{{ $index }}" value="{{ $index }}">
-                                            <label class="form-check-label fw-normal"
-                                                for="ht26_{{ $index }}">{{ $value }}</label>
+                                            <label class="form-check-label fw-normal" for="ht26_{{ $index }}">{{ $value }}</label>
                                         </div>
                                     @endif
                                 @endforeach
                                 <div id="solutions_get_job_other_wrapper" style="display: none;" class="mt-2">
                                     <input type="text" name="solutions_get_job_other" id="solutions_get_job_other"
-                                        class="form-control other-input"
-                                        placeholder="Nhập giải pháp khác tại đây..." autocomplete="off">
+                                        class="form-control other-input" placeholder="Nhập giải pháp khác tại đây..."
+                                        autocomplete="off">
                                 </div>
                                 <div id="solutions_get_job_error" class="text-danger small d-none"></div>
                             </div>
@@ -698,8 +777,7 @@
 
                             <!-- Nút gửi -->
                             <div class="d-flex justify-content-end gap-2">
-                                <button type="submit" class="btn {{ $outDate ? 'btn-danger' : 'btn-primary' }}"
-                                    {{ $outDate ? 'disabled' : '' }}>
+                                <button type="submit" class="btn {{ $outDate ? 'btn-danger' : 'btn-primary' }}" {{ $outDate ? 'disabled' : '' }}>
                                     {{ $outDate ? 'Hết hạn gửi' : 'Gửi' }}
                                 </button>
                             </div>
@@ -707,7 +785,7 @@
                         </div>
                 </form>
             </div>
-            
+
         </div>
 
 
@@ -718,8 +796,8 @@
 
                     <!-- Header: Logo + Tiêu đề -->
                     <div class="text-center mb-3 modal-header-professional">
-                        <img src="{{ asset('assets/client/images/logo-vnua.jpg') }}" width="60"
-                            class="logo-professional" alt="Logo Học viện Nông nghiệp Việt Nam">
+                        <img src="{{ asset('assets/client/images/logo-vnua.jpg') }}" width="60" class="logo-professional"
+                            alt="Logo Học viện Nông nghiệp Việt Nam">
                         {{-- <h6 class="school-name">Học viện Nông nghiệp Việt Nam</h6> --}}
                         <h5 class="fw-bold modal-title-professional">Xác thực thông tin sinh viên</h5>
                         <small class="text-muted fst-italic note-professional">
@@ -831,7 +909,7 @@
 
         <!-- JS -->
         <script>
-            document.addEventListener('DOMContentLoaded', function() {
+            document.addEventListener('DOMContentLoaded', function () {
                 const modalEl = document.getElementById('verifyStudentModal');
                 const modal = new bootstrap.Modal(modalEl, {
                     backdrop: 'static',
@@ -840,7 +918,7 @@
                 modal.show();
 
                 // Animation modal header
-                modalEl.addEventListener('shown.bs.modal', function() {
+                modalEl.addEventListener('shown.bs.modal', function () {
                     const logo = modalEl.querySelector('.logo-professional');
                     const schoolName = modalEl.querySelector('.school-name');
                     const title = modalEl.querySelector('.modal-title-professional');
@@ -872,7 +950,7 @@
 
 
                 // Xử lý submit form xác thực
-                $('#verifyStudentForm').on('submit', function(e) {
+                $('#verifyStudentForm').on('submit', function (e) {
                     e.preventDefault(); // Ngăn reload trang
 
                     const survey_id = $('input[name="survey_id"]').val().trim();
@@ -906,7 +984,7 @@
                             dob,
                             _token: '{{ csrf_token() }}'
                         },
-                        success: function(res) {
+                        success: function (res) {
                             if (res.success) {
                                 const modalInstance = bootstrap.Modal.getInstance(modalEl);
                                 modalInstance.hide();
@@ -935,7 +1013,7 @@
 
                                 // if (response) {
                                 //     // --- 1. ĐIỀN THÔNG TIN CÁ NHÂN (PHẦN I) ---
-                                    
+
                                 //     // Các input text/date đơn giản
                                 //     $('#code_student').val(response.code_student); // ID: code_student
                                 //     $('#full_names').val(response.full_name);      // ID: full_names
@@ -954,7 +1032,7 @@
                                 //         let codeToSelect = "";
                                 //         if (response.training_industry_id == 1) codeToSelect = "7480201"; // CNTT
                                 //         if (response.training_industry_id == 2) codeToSelect = "7480102"; // Mạng
-                                        
+
                                 //         if (codeToSelect) {
                                 //             $('#ma_nghanh_dao_tao').val(codeToSelect).trigger('change'); 
                                 //             // trigger change để script có sẵn cập nhật input #ten_nganh_hien_thi
@@ -995,12 +1073,12 @@
 
 
                                 //     // --- 3. ĐIỀN CHECKBOX & RADIO NHIỀU LỰA CHỌN (KÈM Ô "KHÁC") ---
-                                    
+
                                 //     // Hàm hỗ trợ check mảng và kích hoạt sự kiện change để hiện ô "Khác" nếu cần
                                 //     function checkMulti(name, values) {
                                 //         // Reset trước
                                 //         $(`input[name="${name}[]"]`).prop('checked', false);
-                                        
+
                                 //         if (Array.isArray(values)) {
                                 //             values.forEach(val => {
                                 //                 // Check và Trigger change để logic toggleOther hoạt động
@@ -1059,7 +1137,7 @@
                                     .removeClass('d-none');
                             }
                         },
-                        error: function() {
+                        error: function () {
                             $('#total-error').text('Đã có lỗi xảy ra, vui lòng thử lại.')
                                 .removeClass('d-none');
                         }
@@ -1067,18 +1145,18 @@
                 });
             });
         </script>
-    @endsection
+@endsection
 
     @push('script')
         <script>
-            $(document).on('change', 'input[type=radio], input[type=checkbox]', function() {
+            $(document).on('change', 'input[type=radio], input[type=checkbox]', function () {
                 const $input = $(this);
                 const isOther = $input.data('is-other') === true || $input.data('is-other') === 'true';
 
                 // Với radio: ẩn tất cả các ô "Khác" cùng nhóm trước
                 if ($input.attr('type') === 'radio') {
                     const name = $input.attr('name');
-                    $(`input[name="${name}"]`).each(function() {
+                    $(`input[name="${name}"]`).each(function () {
                         $(this).closest('.form-check').find('.other-input').addClass('d-none');
                     });
                 }
@@ -1109,7 +1187,7 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
         <script>
-            document.addEventListener('DOMContentLoaded', function() {
+            document.addEventListener('DOMContentLoaded', function () {
                 const verified = '{{ old('mssv_verified') }}';
                 console.log(verified, '//verified')
                 if (!verified) {
@@ -1122,8 +1200,8 @@
                 }
             });
 
-            $(document).ready(function() {
-                $('#verify-mssv-btn').on('click', function() {
+            $(document).ready(function () {
+                $('#verify-mssv-btn').on('click', function () {
                     const survey_id = $('input[name="survey_id"]').val().trim();
                     const mssv = $('input[name="m_mssv"]').val().trim();
                     const email = $('input[name="m_email"]').val().trim();
@@ -1167,7 +1245,7 @@
                             training_industry_id: nganh,
                             _token: '{{ csrf_token() }}'
                         },
-                        success: function(res) {
+                        success: function (res) {
                             if (res.success) {
                                 const modal = bootstrap.Modal.getInstance(document.getElementById(
                                     'mssvModal'));
@@ -1200,7 +1278,7 @@
                                     'd-none');
                             }
                         },
-                        error: function() {
+                        error: function () {
                             $totalError.text('Đã có lỗi xảy ra, vui lòng thử lại.').removeClass(
                                 'd-none');
                         }
@@ -1208,7 +1286,7 @@
                 });
 
                 // 22
-                $('.recruitment_type_other').on('change', function() {
+                $('.recruitment_type_other').on('change', function () {
                     const wrapper = $('#recruitment_type_other_wrapper');
                     const input = $('#recruitment_type_other');
 
@@ -1220,7 +1298,7 @@
                     }
                 });
                 // 23
-                $('.job_search_method_other').on('change', function() {
+                $('.job_search_method_other').on('change', function () {
                     const wrapper = $('#job_search_method_other_wrapper');
                     const input = $('#job_search_method_other');
 
@@ -1233,7 +1311,7 @@
                 });
 
                 // 24
-                $('.soft_skills_required_other').on('change', function() {
+                $('.soft_skills_required_other').on('change', function () {
                     const wrapper = $('#soft_skills_required_other_wrapper');
                     const input = $('#soft_skills_required_other');
 
@@ -1246,7 +1324,7 @@
                 });
 
                 // 25
-                $('.must_attended_courses_other').on('change', function() {
+                $('.must_attended_courses_other').on('change', function () {
                     const wrapper = $('#must_attended_courses_other_wrapper');
                     const input = $('#must_attended_courses_other');
 
@@ -1259,7 +1337,7 @@
                 });
 
                 // 26
-                $('.solutions_get_job_other').on('change', function() {
+                $('.solutions_get_job_other').on('change', function () {
                     const wrapper = $('#solutions_get_job_other_wrapper');
                     const input = $('#solutions_get_job_other');
 
@@ -1274,42 +1352,42 @@
         </script>
 
         <script>
-            $(document).ready(function() {
+            $(document).ready(function () {
                 const otherGroups = [{
-                        checkboxClass: '.recruitment_type_other',
-                        wrapperId: '#recruitment_type_other_wrapper',
-                        inputId: '#recruitment_type_other',
-                        groupName: 'recruitment_type[]',
-                        errorId: '#recruitment_type_error'
-                    },
-                    {
-                        checkboxClass: '.job_search_method_other',
-                        wrapperId: '#job_search_method_other_wrapper',
-                        inputId: '#job_search_method_other',
-                        groupName: 'job_search_method[]',
-                        errorId: '#job_search_method_error'
-                    },
-                    {
-                        checkboxClass: '.soft_skills_required_other',
-                        wrapperId: '#soft_skills_required_other_wrapper',
-                        inputId: '#soft_skills_required_other',
-                        groupName: 'soft_skills_required[]',
-                        errorId: '#soft_skills_required_error'
-                    },
-                    {
-                        checkboxClass: '.must_attended_courses_other',
-                        wrapperId: '#must_attended_courses_other_wrapper',
-                        inputId: '#must_attended_courses_other',
-                        groupName: 'must_attended_courses[]',
-                        errorId: '#must_attended_courses_error'
-                    },
-                    {
-                        checkboxClass: '.solutions_get_job_other',
-                        wrapperId: '#solutions_get_job_other_wrapper',
-                        inputId: '#solutions_get_job_other',
-                        groupName: 'solutions_get_job[]',
-                        errorId: '#solutions_get_job_error'
-                    }
+                    checkboxClass: '.recruitment_type_other',
+                    wrapperId: '#recruitment_type_other_wrapper',
+                    inputId: '#recruitment_type_other',
+                    groupName: 'recruitment_type[]',
+                    errorId: '#recruitment_type_error'
+                },
+                {
+                    checkboxClass: '.job_search_method_other',
+                    wrapperId: '#job_search_method_other_wrapper',
+                    inputId: '#job_search_method_other',
+                    groupName: 'job_search_method[]',
+                    errorId: '#job_search_method_error'
+                },
+                {
+                    checkboxClass: '.soft_skills_required_other',
+                    wrapperId: '#soft_skills_required_other_wrapper',
+                    inputId: '#soft_skills_required_other',
+                    groupName: 'soft_skills_required[]',
+                    errorId: '#soft_skills_required_error'
+                },
+                {
+                    checkboxClass: '.must_attended_courses_other',
+                    wrapperId: '#must_attended_courses_other_wrapper',
+                    inputId: '#must_attended_courses_other',
+                    groupName: 'must_attended_courses[]',
+                    errorId: '#must_attended_courses_error'
+                },
+                {
+                    checkboxClass: '.solutions_get_job_other',
+                    wrapperId: '#solutions_get_job_other_wrapper',
+                    inputId: '#solutions_get_job_other',
+                    groupName: 'solutions_get_job[]',
+                    errorId: '#solutions_get_job_error'
+                }
                 ];
 
                 // Toggle input "Khác"
@@ -1340,7 +1418,7 @@
 
 
                 // Validate khi submit
-                $('#form-wrapper').on('submit', function(e) {
+                $('#form-wrapper').on('submit', function (e) {
                     let hasError = false;
                     otherGroups.forEach(group => {
                         const checkedCount = $(`input[name="${group.groupName}"]:checked`).length;
@@ -1370,7 +1448,7 @@
                 });
             });
 
-            $(document).ready(function() {
+            $(document).ready(function () {
                 function toggleEmploymentDetails() {
                     var employedValue =
                         '{{ array_key_first(config('config.tinh_trang')) }}';
@@ -1403,7 +1481,7 @@
                 $('.employment-details').hide();
                 $('#question-26').hide();
 
-                $(document).on('change', '.employment-status-radio', function() {
+                $(document).on('change', '.employment-status-radio', function () {
                     toggleEmploymentDetails();
                 });
 
