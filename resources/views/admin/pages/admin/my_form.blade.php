@@ -107,8 +107,8 @@
             }
 
             /* .form-title h5 {
-                                            font-size: 0.9rem;
-                                        } */
+                                                font-size: 0.9rem;
+                                            } */
 
             .first-line-indent {
                 text-indent: 18px;
@@ -154,8 +154,8 @@
             }
 
             /* .form-title h5 {
-                                            font-size: 0.4rem;
-                                        } */
+                                                font-size: 0.4rem;
+                                            } */
 
             .first-line-indent {
                 text-indent: 12px;
@@ -202,7 +202,8 @@
                     <!-- Tiêu đề phiếu -->
                     <div class="text-center mt-5 form-title">
                         <h5 style="font-weight: bold; text-transform: uppercase; font-size: 16px; margin: 0 0 5px 0;">
-                            {{ $survey->title }}</h5>
+                            {{ $survey->title }}
+                        </h5>
                     </div>
 
                     {{-- <div class="text-center mt-5 form-title">
@@ -372,8 +373,8 @@
                                     <div class="mb-3">
                                         <label class="form-label">13. Địa chỉ đơn vị</label>
                                         <input type="text" class="form-control mb-1" id="vn-address-autocomplete"
-                                            placeholder="VD: Khu 2 Hoàng Khương, Thanh Ba, Phú Thọ"
-                                            name="recruit_partner_address" autocomplete="o" required>
+                                            placeholder="VD: 121 Nguyễn An Ninh, Phường 7, Quận 10, TP.HCM"
+                                            name="recruit_partner_address" autocomplete="off" required>
                                         <div id="vn-suggestions" class="list-group"
                                             style="display: none; max-height: 200px; overflow-y: auto;"></div>
                                     </div>
@@ -381,37 +382,74 @@
                                     @push('script')
                                         <script>
                                             let vietnamAddresses = [];
+                                            let worldCountries = [];
 
                                             $(document).ready(function () {
-                                                 $.ajax({
+                                                // Load địa chỉ Việt Nam
+                                                $.ajax({
                                                     url: 'https://raw.githubusercontent.com/kenzouno1/DiaGioiHanhChinhVN/master/data.json',
                                                     method: 'GET',
                                                     dataType: 'json',
                                                     success: function (provinces) {
-                                                         provinces.forEach(function (province) {
-                                                            vietnamAddresses.push(province.Name);
+                                                        provinces.forEach(function (province) {
+                                                            vietnamAddresses.push({
+                                                                text: province.Name,
+                                                                type: 'province'
+                                                            });
 
                                                             if (province.Districts) {
                                                                 province.Districts.forEach(function (district) {
-                                                                    vietnamAddresses.push(`${district.Name}, ${province.Name}`);
+                                                                    vietnamAddresses.push({
+                                                                        text: `${district.Name}, ${province.Name}`,
+                                                                        type: 'district'
+                                                                    });
 
                                                                     if (district.Wards) {
                                                                         district.Wards.forEach(function (ward) {
-                                                                            vietnamAddresses.push(`${ward.Name}, ${district.Name}, ${province.Name}`);
+                                                                            vietnamAddresses.push({
+                                                                                text: `${ward.Name}, ${district.Name}, ${province.Name}`,
+                                                                                type: 'ward'
+                                                                            });
                                                                         });
                                                                     }
                                                                 });
                                                             }
                                                         });
-
-                                                        console.log('Đã load', vietnamAddresses.length, 'địa chỉ');
+                                                        console.log('Đã load', vietnamAddresses.length, 'địa chỉ VN');
                                                     },
                                                     error: function () {
-                                                        console.error('Không thể load địa chỉ');
+                                                        console.error('Không thể load địa chỉ VN');
                                                     }
                                                 });
 
-                                                // Autocomplete
+                                                // Load danh sách quốc gia
+                                                $.ajax({
+                                                    url: 'https://restcountries.com/v3.1/all',
+                                                    method: 'GET',
+                                                    dataType: 'json',
+                                                    success: function (countries) {
+                                                        countries.forEach(function (country) {
+                                                            worldCountries.push({
+                                                                text: country.name.common,
+                                                                type: 'country'
+                                                            });
+                                                            // Thêm thủ đô nếu có
+                                                            if (country.capital && country.capital[0]) {
+                                                                worldCountries.push({
+                                                                    text: `${country.capital[0]}, ${country.name.common}`,
+                                                                    type: 'capital'
+                                                                });
+                                                            }
+                                                        });
+                                                        console.log('Đã load', worldCountries.length, 'địa chỉ quốc tế');
+                                                    },
+                                                    error: function () {
+                                                        console.error('Không thể load địa chỉ quốc tế');
+                                                    }
+                                                });
+
+                                                // Autocomplete với Google Places API (tùy chọn - cần API key)
+                                                // Hoặc sử dụng logic tìm kiếm thông minh
                                                 $('#vn-address-autocomplete').on('input', function () {
                                                     const query = $(this).val().toLowerCase().trim();
                                                     const $suggestions = $('#vn-suggestions');
@@ -421,10 +459,36 @@
                                                         return;
                                                     }
 
-                                                    // Tìm kiếm
-                                                    const matches = vietnamAddresses.filter(addr =>
-                                                        addr.toLowerCase().includes(query)
-                                                    ).slice(0, 10); // Giới hạn 10 kết quả
+                                                    let matches = [];
+
+                                                    // Kiểm tra nếu có số đầu tiên (địa chỉ đường phố)
+                                                    const hasNumber = /^\d+/.test(query);
+
+                                                    if (hasNumber) {
+                                                        // Tìm trong địa chỉ VN (phường/xã, quận/huyện, tỉnh/thành)
+                                                        const streetPart = query.split(',')[0].trim(); // Phần đường
+                                                        const restPart = query.substring(streetPart.length).replace(/^,\s*/, '').toLowerCase();
+
+                                                        matches = vietnamAddresses
+                                                            .filter(addr => addr.text.toLowerCase().includes(restPart))
+                                                            .map(addr => ({
+                                                                text: `${streetPart}, ${addr.text}`,
+                                                                type: 'street'
+                                                            }))
+                                                            .slice(0, 5);
+                                                    } else {
+                                                        // Tìm kiếm bình thường trong VN
+                                                        const vnMatches = vietnamAddresses
+                                                            .filter(addr => addr.text.toLowerCase().includes(query))
+                                                            .slice(0, 7);
+
+                                                        // Tìm kiếm trong quốc gia
+                                                        const worldMatches = worldCountries
+                                                            .filter(addr => addr.text.toLowerCase().includes(query))
+                                                            .slice(0, 3);
+
+                                                        matches = [...vnMatches, ...worldMatches];
+                                                    }
 
                                                     if (matches.length === 0) {
                                                         $suggestions.hide().empty();
@@ -433,12 +497,16 @@
 
                                                     // Hiển thị gợi ý
                                                     $suggestions.empty();
-                                                    matches.forEach(function (address) {
+                                                    matches.forEach(function (item) {
+                                                        const badge = item.type === 'country' || item.type === 'capital'
+                                                            ? '<span class="badge bg-primary ms-2">Quốc tế</span>'
+                                                            : '';
+
                                                         const $item = $('<a href="#" class="list-group-item list-group-item-action small">')
-                                                            .text(address)
+                                                            .html(item.text + badge)
                                                             .on('click', function (e) {
                                                                 e.preventDefault();
-                                                                $('#vn-address-autocomplete').val(address);
+                                                                $('#vn-address-autocomplete').val(item.text);
                                                                 $suggestions.hide().empty();
                                                             });
                                                         $suggestions.append($item);
@@ -463,6 +531,7 @@
                                                 width: calc(100% - 30px);
                                                 margin-top: -8px;
                                                 box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+                                                background: white;
                                             }
 
                                             #vn-suggestions .list-group-item {
@@ -473,14 +542,17 @@
                                             #vn-suggestions .list-group-item:hover {
                                                 background-color: #f0f0f0;
                                             }
+
+                                            #vn-suggestions .badge {
+                                                font-size: 0.7rem;
+                                            }
                                         </style>
                                     @endpush
+
                                     <label class="form-label">Tỉnh/Thành phố</label>
-                                    <input type="text" class="form-control mb-1" placeholder="VD: Hà Nội"
+                                    <input type="text" class="form-control mb-1" placeholder="VD: Hà Nội hoặc New York, USA"
                                         name="recruit_partner_city" required>
-
                                 </div>
-
                                 <div class="mb-3">
                                     <label class="form-label">14. Thời gian tuyển dụng</label>
                                     <input type="date" class="form-control"
@@ -731,11 +803,16 @@
                                 @foreach ($giai_phap as $index => $value)
                                     @if ($value == 'Các giải pháp khác (xin ghi rõ)')
                                         <div class="form-check mb-2">
-                                            <input class="form-check-input solutions_get_job_other" type="checkbox"
-                                                name="solutions_get_job[]" id="ht26_{{ $index }}"
-                                                value="{{ $index }}">
+                                            <input class="form-check-input solutions_get_job_other" type="checkbox" <<<<<<< HEAD
+                                                name="solutions_get_job[]" id="ht26_{{ $index }}" value="{{ $index }}">
+                                            <label class="form-check-label fw-normal" for="ht26_{{ $index }}">Các giải pháp khác
+                                                (xin ghi rõ)</label>
+                                            =======
+                                            name="solutions_get_job[]" id="ht26_{{ $index }}"
+                                            value="{{ $index }}">
                                             <label class="form-check-label fw-normal" for="ht26_{{ $index }}">Các
                                                 giải pháp khác (xin ghi rõ)</label>
+                                            >>>>>>> 8c7baf09dcae4678a72c7e3afcb579e2e058c4a9
                                         </div>
                                     @else
                                         <div class="form-check mb-2">
@@ -839,6 +916,8 @@
                         <div class="mb-3">
                             <label for="phone" class="form-label fw-semibold">Số điện thoại</label>
                             <input type="text" id="phone" name="m_phone" class="form-control rounded-3"
+                            pattern="^(0[3|5|7|8|9])([0-9]{8})$"
+                            title="Vui lòng nhập số điện thoại Việt Nam hợp lệ (10 chữ số, bắt đầu bằng 0)"
                                 placeholder="Nhập số điện thoại liên hệ">
                         </div>
 
