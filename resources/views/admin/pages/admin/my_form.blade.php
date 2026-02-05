@@ -107,8 +107,8 @@
             }
 
             /* .form-title h5 {
-                                                font-size: 0.9rem;
-                                            } */
+                                                    font-size: 0.9rem;
+                                                } */
 
             .first-line-indent {
                 text-indent: 18px;
@@ -154,8 +154,8 @@
             }
 
             /* .form-title h5 {
-                                                font-size: 0.4rem;
-                                            } */
+                                                    font-size: 0.4rem;
+                                                } */
 
             .first-line-indent {
                 text-indent: 12px;
@@ -334,7 +334,10 @@
                                     <input type="text" class="form-control" placeholder="Nhập số điện thoại"
                                         name="phone_number" pattern="^(0[3|5|7|8|9])([0-9]{8})$"
                                         title="Vui lòng nhập số điện thoại Việt Nam hợp lệ (10 chữ số, bắt đầu bằng 0)"
-                                        required>
+                                        maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '')" required>
+                                    <div class="invalid-feedback">
+                                        Số điện thoại phải có 10 chữ số và bắt đầu bằng 03, 05, 07, 08, 09
+                                    </div>
                                 </div>
                                 <div class="col-12 col-md-6 mb-3">
                                     <label class="form-label">10. Email</label>
@@ -526,7 +529,7 @@
 
                                         <style>
                                             #vn-suggestions {
-                                                position: absolute;
+                                                /* position: absolute; */
                                                 z-index: 1000;
                                                 width: calc(100% - 30px);
                                                 margin-top: -8px;
@@ -550,7 +553,7 @@
                                     @endpush
 
                                     <label class="form-label">Tỉnh/Thành phố</label>
-                                    <input type="text" class="form-control mb-1" placeholder="VD: Hà Nội hoặc New York, USA"
+                                    <input type="text" class="form-control mb-1" placeholder="VD: Hà Nội "
                                         name="recruit_partner_city" required>
                                 </div>
                                 <div class="mb-3">
@@ -803,16 +806,10 @@
                                 @foreach ($giai_phap as $index => $value)
                                     @if ($value == 'Các giải pháp khác (xin ghi rõ)')
                                         <div class="form-check mb-2">
-                                            <input class="form-check-input solutions_get_job_other" type="checkbox" <<<<<<< HEAD
+                                            <input class="form-check-input solutions_get_job_other" type="checkbox"
                                                 name="solutions_get_job[]" id="ht26_{{ $index }}" value="{{ $index }}">
                                             <label class="form-check-label fw-normal" for="ht26_{{ $index }}">Các giải pháp khác
                                                 (xin ghi rõ)</label>
-                                            =======
-                                            name="solutions_get_job[]" id="ht26_{{ $index }}"
-                                            value="{{ $index }}">
-                                            <label class="form-check-label fw-normal" for="ht26_{{ $index }}">Các
-                                                giải pháp khác (xin ghi rõ)</label>
-                                            >>>>>>> 8c7baf09dcae4678a72c7e3afcb579e2e058c4a9
                                         </div>
                                     @else
                                         <div class="form-check mb-2">
@@ -916,8 +913,8 @@
                         <div class="mb-3">
                             <label for="phone" class="form-label fw-semibold">Số điện thoại</label>
                             <input type="text" id="phone" name="m_phone" class="form-control rounded-3"
-                            pattern="^(0[3|5|7|8|9])([0-9]{8})$"
-                            title="Vui lòng nhập số điện thoại Việt Nam hợp lệ (10 chữ số, bắt đầu bằng 0)"
+                                pattern="^(0[3|5|7|8|9])([0-9]{8})$"
+                                title="Vui lòng nhập số điện thoại Việt Nam hợp lệ (10 chữ số, bắt đầu bằng 0)"
                                 placeholder="Nhập số điện thoại liên hệ">
                         </div>
 
@@ -1566,6 +1563,51 @@
                 });
 
                 toggleEmploymentDetails();
+            });
+        </script>
+
+
+        <script>
+            $(document).ready(function () {
+                $('#phone_number').on('input', function () {
+                    // Chỉ cho phép nhập số
+                    this.value = this.value.replace(/[^0-9]/g, '');
+
+                    // Validate realtime
+                    const phone = this.value;
+                    const $error = $('#phone-error');
+                    const pattern = /^(0[3|5|7|8|9])([0-9]{8})$/;
+
+                    if (phone.length === 10) {
+                        if (pattern.test(phone)) {
+                            $(this).removeClass('is-invalid').addClass('is-valid');
+                            $error.hide();
+                        } else {
+                            $(this).removeClass('is-valid').addClass('is-invalid');
+                            $error.show();
+                        }
+                    } else if (phone.length > 0) {
+                        $(this).removeClass('is-valid').addClass('is-invalid');
+                        $error.show();
+                    } else {
+                        $(this).removeClass('is-valid is-invalid');
+                        $error.hide();
+                    }
+                });
+
+                // Validate khi submit
+                $('#form-wrapper').on('submit', function (e) {
+                    const phone = $('#phone_number').val();
+                    const pattern = /^(0[3|5|7|8|9])([0-9]{8})$/;
+
+                    if (!pattern.test(phone)) {
+                        e.preventDefault();
+                        $('#phone_number').addClass('is-invalid');
+                        $('#phone-error').show();
+                        alert('Vui lòng nhập đúng định dạng số điện thoại!');
+                        return false;
+                    }
+                });
             });
         </script>
     @endpush
