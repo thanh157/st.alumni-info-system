@@ -41,7 +41,6 @@ class ReportController extends Controller
                 ->timeout(10)
                 ->get($url, ['ids' => $graduationIds])
                 ->json();
-            dd($response);
 
             if (!isset($response['data']['survey_students']) || !is_array($response['data']['survey_students'])) {
                 Log::warning('API students trả về không hợp lệ', [
