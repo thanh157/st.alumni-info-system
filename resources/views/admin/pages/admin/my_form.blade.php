@@ -921,7 +921,8 @@
                         <!-- Ngày sinh -->
                         <div class="mb-3">
                             <label for="dob" class="form-label fw-semibold">Ngày sinh</label>
-                            <input type="date" id="dob" name="m_dob" class="form-control rounded-3">
+                            <input type="text" id="dob" name="m_dob" class="form-control rounded-3" 
+                                 placeholder="DD-MM-YYYY" maxlength="10" autocomplete="off">
                         </div>
 
                         <!-- Nút xác nhận -->

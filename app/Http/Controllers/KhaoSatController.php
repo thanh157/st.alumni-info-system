@@ -73,7 +73,7 @@ class KhaoSatController extends Controller
                     $hasCondition = false;
 
                     if (!empty($full_name)) {
-                        $query->orWhere('full_name', $full_name);
+                        $query->orWhereRaw('LOWER(full_name) = ?', [mb_strtolower($full_name)]);
                         $hasCondition = true;
                     }
                     if (!empty($mssv)) {
@@ -111,7 +111,7 @@ class KhaoSatController extends Controller
                 $matchCount = 0;
 
                 // Đếm số trường khớp
-                if (!empty($full_name) && $student->full_name === $full_name) {
+                if (!empty($full_name) && mb_strtolower($student->full_name) === mb_strtolower($full_name)) {
                     $matchCount++;
                 }
                 if (!empty($mssv) && $student->code === $mssv) {
