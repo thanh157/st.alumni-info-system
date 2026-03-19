@@ -312,6 +312,11 @@
                                     "7480102": {
                                         id: 2,
                                         name: "Mạng máy tính và truyền thông dữ liệu"
+                                    },
+                                    "7480112":
+                                    {
+                                        id: 3,
+                                        name: "Khoa học dữ liệu và trí tuệ nhân tạo"
                                     }
                                 };
 

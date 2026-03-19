@@ -239,7 +239,7 @@
                         <div class="mb-3">
                             <label for="ma_nghanh_dao_tao">5. Mã ngành đào tạo</label>
                             @php
-                                $maNganh = $response->training_industry_id == 1 ? '7480201' : '7480102';
+                                $maNganh = $response->training_industry_id == 1 ? '7480201' : ($response->training_industry_id == 2 ? '7480102' : ($response->training_industry_id == 3 ? '7480112' : ''));
                             @endphp
                             <input type="text" class="form-control" value="{{ $maNganh }}" readonly>
                         </div>
