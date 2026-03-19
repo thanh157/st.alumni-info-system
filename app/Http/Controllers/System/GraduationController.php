@@ -148,6 +148,7 @@ class GraduationController extends Controller
                 Student::updateOrCreate(
                     ['code' => data_get($item, 'code')],
                     [
+                        'id'                     => data_get($item, 'id'), 
                         'full_name'              => data_get($item, 'full_name'),
                         'first_name'             => data_get($item, 'first_name'),
                         'last_name'              => data_get($item, 'last_name'),
