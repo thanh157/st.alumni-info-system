@@ -288,8 +288,10 @@
                             $maNganh = '';
                             if ($response->training_industry_id == 1) {
                                 $maNganh = '4780201';
-                            } else {
+                            } elseif ($response->training_industry_id == 2) {
                                 $maNganh = '7480102';
+                            } elseif ($response->training_industry_id == 3) {
+                                $maNganh = '7480112';
                             }
                         @endphp
                         <input type="text" class="form-control" value="{{ $maNganh }}" readonly>

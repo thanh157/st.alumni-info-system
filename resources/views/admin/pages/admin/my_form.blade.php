@@ -274,6 +274,7 @@
                                 <option value="" selected>-- Chọn mã ngành đào tạo --</option>
                                 <option value="7480201">7480201 - Công nghệ thông tin</option>
                                 <option value="7480102">7480102 - Mạng máy tính và truyền thông dữ liệu</option>
+                                <option value="7480112">7480112 - Khoa học dữ liệu và trí tuệ nhân tạo</option>
                             </select>
                         </div>
 
