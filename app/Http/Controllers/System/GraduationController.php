@@ -121,67 +121,67 @@ class GraduationController extends Controller
     }
 
     public function showStudents(Request $request, $graduationId)
-    {
-        try {
-            $graduationName = base64_decode($request->query('name'));
-            $user = auth()->user();
-    
-            // Lấy access token nếu chưa có
-            if (empty($user->st_students_token)) {
-                $tokenData = $this->studentService->getAccessTokenVerify();
-                if (!$tokenData || empty($tokenData['token'])) {
-                    throw new \Exception('Không lấy được access token của sinh viên.');
-                }
+{
+    try {
+        $graduationName = base64_decode($request->query('name'));
+        $user = auth()->user();
+
+        // Lấy access token nếu chưa có
+        if (empty($user->st_students_token)) {
+            $tokenData = $this->studentService->getAccessTokenVerify();
+            if (!$tokenData || empty($tokenData['token'])) {
+                throw new \Exception('Không lấy được access token của sinh viên.');
             }
-    
-            // Gọi API lấy danh sách sinh viên theo đợt TN
-            $apiUrl = config('auth.student.ip') . "/api/v1/external/graduation-ceremonies/{$graduationId}/students";
-    
-            $response = Http::withToken($user->st_students_token)
-                ->timeout(10)
-                ->get($apiUrl, [
-                    'page'  => $request->get('page', 1),
-                ])
-                ->json();
-    
-            if (!isset($response['data'])) {
-                throw new \Exception('API trả về dữ liệu không hợp lệ.');
-            }
-    
-            // Dữ liệu sinh viên từ API
-            $students = collect($response['data']);
-    
-            // Pagination metadata từ API
-            $meta = $response['meta'] ?? [];
-            $total = $meta['total'] ?? $students->count();
-            $perPage = $meta['per_page'] ?? 10;
-            $currentPage = $meta['current_page'] ?? 1;
-    
-            // Phân trang theo meta API
-            $studentsPaginated = new \Illuminate\Pagination\LengthAwarePaginator(
-                $students,
-                $total,
-                $perPage,
-                $currentPage,
-                ['path' => $request->url(), 'query' => $request->query()]
-            );
-    
-            return view('admin.pages.admin.graduation-students', [
-                'students' => $studentsPaginated,
-                'graduationName' => $graduationName,
-                'showPaginationInfo' => $total > $perPage,
-            ]);
-    
-        } catch (Throwable $th) {
-            Log::error("GraduationController@showStudents error", [
-                'message' => $th->getMessage(),
-                'file' => $th->getFile(),
-                'line' => $th->getLine(),
-            ]);
-    
-            return back()->with('error', 'Không thể tải dữ liệu sinh viên.');
         }
+
+        // Gọi API lấy danh sách sinh viên theo đợt TN
+        $apiUrl = config('auth.student.ip') . "/api/v1/external/graduation-ceremonies/{$graduationId}/students";
+
+        $response = Http::withToken($user->st_students_token)
+            ->timeout(10)
+            ->get($apiUrl, [
+                'page'  => $request->get('page', 1),
+            ])
+            ->json();
+
+        if (!isset($response['data'])) {
+            throw new \Exception('API trả về dữ liệu không hợp lệ.');
+        }
+
+        // Dữ liệu sinh viên từ API
+        $students = collect($response['data']);
+
+        // Pagination metadata từ API
+        $meta = $response['meta'] ?? [];
+        $total = $meta['total'] ?? $students->count();
+        $perPage = $meta['per_page'] ?? 10;
+        $currentPage = $meta['current_page'] ?? 1;
+
+        // Phân trang theo meta API
+        $studentsPaginated = new \Illuminate\Pagination\LengthAwarePaginator(
+            $students,
+            $total,
+            $perPage,
+            $currentPage,
+            ['path' => $request->url(), 'query' => $request->query()]
+        );
+
+        return view('admin.pages.admin.graduation-students', [
+            'students' => $studentsPaginated,
+            'graduationName' => $graduationName,
+            'showPaginationInfo' => $total > $perPage,
+        ]);
+
+    } catch (Throwable $th) {
+        Log::error("GraduationController@showStudents error", [
+            'message' => $th->getMessage(),
+            'file' => $th->getFile(),
+            'line' => $th->getLine(),
+        ]);
+
+        return back()->with('error', 'Không thể tải dữ liệu sinh viên.');
     }
+}
 
     // public function create()
     // {
