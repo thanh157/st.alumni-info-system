@@ -120,13 +120,12 @@ class GraduationController extends Controller
         }
     }
 
-    public function showStudents(Request $request, $graduationId)
+        public function showStudents(Request $request, $graduationId)
 {
     try {
         $graduationName = base64_decode($request->query('name'));
         $user = auth()->user();
 
-        // Lấy access token nếu chưa có
         if (empty($user->st_students_token)) {
             $tokenData = $this->studentService->getAccessTokenVerify();
             if (!$tokenData || empty($tokenData['token'])) {
@@ -134,13 +133,44 @@ class GraduationController extends Controller
             }
         }
 
-        // Gọi API lấy danh sách sinh viên theo đợt TN
         $apiUrl = config('auth.student.ip') . "/api/v1/external/graduation-ceremonies/{$graduationId}/students";
 
-        $response = Http::withToken($user->st_students_token)
+         $page = 1;
+        do {
+            $syncResponse = Http::withToken($user->st_students_token)
+                ->timeout(10)
+                ->get($apiUrl, ['page' => $page])
+                ->json();
+
+            if (!isset($syncResponse['data'])) break;
+
+            foreach (collect($syncResponse['data']) as $item) {
+                Student::updateOrCreate(
+                    ['code' => data_get($item, 'code')],
+                    [
+                        'full_name'              => data_get($item, 'full_name'),
+                        'first_name'             => data_get($item, 'first_name'),
+                        'last_name'              => data_get($item, 'last_name'),
+                        'email'                  => data_get($item, 'email'),
+                        'phone'                  => data_get($item, 'phone'),
+                        'dob'                    => data_get($item, 'dob'),
+                        'gender'                 => data_get($item, 'gender'),
+                        'citizen_identification' => data_get($item, 'citizen_identification'),
+                        'training_industry_id'   => data_get($item, 'training_industry_id'),
+                        'school_year_end'        => data_get($item, 'school_year_end'),
+                    ]
+                );
+            }
+
+            $lastPage = $syncResponse['meta']['last_page'] ?? 1;
+            $page++;
+
+        } while ($page <= $lastPage);
+
+         $response = Http::withToken($user->st_students_token)
             ->timeout(10)
             ->get($apiUrl, [
-                'page'  => $request->get('page', 1),
+                'page' => $request->get('page', 1),
             ])
             ->json();
 
@@ -148,16 +178,12 @@ class GraduationController extends Controller
             throw new \Exception('API trả về dữ liệu không hợp lệ.');
         }
 
-        // Dữ liệu sinh viên từ API
         $students = collect($response['data']);
-
-        // Pagination metadata từ API
         $meta = $response['meta'] ?? [];
         $total = $meta['total'] ?? $students->count();
         $perPage = $meta['per_page'] ?? 10;
         $currentPage = $meta['current_page'] ?? 1;
 
-        // Phân trang theo meta API
         $studentsPaginated = new \Illuminate\Pagination\LengthAwarePaginator(
             $students,
             $total,
@@ -167,16 +193,16 @@ class GraduationController extends Controller
         );
 
         return view('admin.pages.admin.graduation-students', [
-            'students' => $studentsPaginated,
-            'graduationName' => $graduationName,
+            'students'           => $studentsPaginated,
+            'graduationName'     => $graduationName,
             'showPaginationInfo' => $total > $perPage,
         ]);
 
     } catch (Throwable $th) {
         Log::error("GraduationController@showStudents error", [
             'message' => $th->getMessage(),
-            'file' => $th->getFile(),
-            'line' => $th->getLine(),
+            'file'    => $th->getFile(),
+            'line'    => $th->getLine(),
         ]);
 
         return back()->with('error', 'Không thể tải dữ liệu sinh viên.');
