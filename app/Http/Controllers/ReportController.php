@@ -29,7 +29,7 @@ class ReportController extends Controller
 
         try {
             $user = auth()->user();
-
+           
             if (empty($user->st_students_token)) {
                 $tokenData = $this->studentService->getAccessTokenVerify();
                 if (!$tokenData || empty($tokenData['token'])) {
@@ -141,6 +141,7 @@ class ReportController extends Controller
         $majorConfigs = config('survey.major_configs', [
             1 => ['code' => '7480201', 'name' => 'Công nghệ thông tin'],
             2 => ['code' => '7480102', 'name' => 'Mạng máy tính & Truyền dữ liệu'],
+            3 => ['code' => '7480112', 'name' => 'Khoa học dữ liệu & Trí tuệ nhân tạo'],
         ]);
 
         $r1Majors = [];
