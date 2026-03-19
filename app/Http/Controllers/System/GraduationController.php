@@ -168,7 +168,7 @@ class GraduationController extends Controller
         } while ($page <= $lastPage);
 
          $response = Http::withToken($user->st_students_token)
-            ->timeout(10)
+            ->timeout(60)
             ->get($apiUrl, [
                 'page' => $request->get('page', 1),
             ])
