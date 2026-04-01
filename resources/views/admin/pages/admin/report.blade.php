@@ -115,8 +115,12 @@
             @php
                 // Dữ liệu chung dùng cho nhiều tab
                 $responsesByCode = $r2->keyBy('code_student'); // dùng cho TAB 2
-                $majors = \App\Models\Major::all()->keyBy('id'); // dùng cho TAB 3 (mã ngành)
-            @endphp
+                 $majorCodeMap = [
+                    1 => '7480201',
+                    2 => '7480102',
+                    3 => '7480112',
+                ];
+             @endphp
 
             {{-- CÁC NÚT BẤM CHUNG --}}
             <div class="d-flex justify-content-end mb-3 gap-2 flex-wrap">
@@ -624,7 +628,7 @@
                                             <td>{{ !empty($item->dob) ? date('d/m/Y', strtotime($item->dob)) : '' }}</td>
                                             <td>{{ $item->gender == 'Nam' ? 'Nam' : 'Nữ' }}</td>
                                             <td>{{ $item->identification_card_number }}</td>
-                                            <td>{{ optional($majors->get($item->training_industry_id))->code }}</td>
+                                            <td>{{ $majorCodeMap[$item->training_industry_id] ?? '' }}</td>                                
                                             <td>{{ $item->phone_number }}</td>
                                             <td>{{ $item->email }}</td>
 

@@ -18,7 +18,11 @@ class ReportSheet3 implements FromCollection, WithTitle, WithStyles, WithColumnW
 {
     protected $schoolYear;
     protected $r2;
-    protected $majors;
+    protected $majorCodeMap = [
+    1 => '7480201',
+    2 => '7480102',
+    3 => '7480112',
+    ];
 
     public function __construct($schoolYear, $r2, $majors)
     {
@@ -258,7 +262,7 @@ class ReportSheet3 implements FromCollection, WithTitle, WithStyles, WithColumnW
 
         // Add response data
         foreach ($this->r2 as $index => $item) {
-            $major = $this->majors->get($item->training_industry_id);
+            $this->majorCodeMap[$item->training_industry_id] ?? '',
 
             // Parse JSON fields
             $recruitmentType = json_decode($item->recruitment_type, true);
@@ -276,6 +280,8 @@ class ReportSheet3 implements FromCollection, WithTitle, WithStyles, WithColumnW
             if (!empty($cccd)) {
                 $cccd = $cccd . ' '; 
             }
+
+            $major = $this->majors->firstWhere('id', $item->training_industry_id);
 
             $row = [
                 $index + 1,

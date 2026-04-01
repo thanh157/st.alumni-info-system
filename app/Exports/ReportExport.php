@@ -41,8 +41,7 @@ class ReportExport implements WithMultipleSheets
 
         // Prepare data for tabs
         if (in_array($type, ['all', 'tab2', 'tab3'])) {
-            $this->majors = \App\Models\Major::all()->keyBy('id');
-            $this->responsesByCode = $r2->keyBy('code_student');
+             $this->responsesByCode = $r2->keyBy('code_student');
         }
     }
 
