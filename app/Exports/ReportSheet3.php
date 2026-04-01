@@ -262,7 +262,7 @@ class ReportSheet3 implements FromCollection, WithTitle, WithStyles, WithColumnW
 
         // Add response data
         foreach ($this->r2 as $index => $item) {
-            $this->majorCodeMap[$item->training_industry_id] ?? '',
+            $this->majorCodeMap[$item->training_industry_id] ?? '';
 
             // Parse JSON fields
             $recruitmentType = json_decode($item->recruitment_type, true);
