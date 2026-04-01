@@ -227,8 +227,20 @@ class ReportController extends Controller
                 'top_city' => $topCity ?? '',
             ];
         }
-
-        return compact(
+        $r1Majors = array_values(array_filter($r1Majors, function ($major) {
+            return $major['total_student'] > 0
+                || $major['total_res'] > 0
+                || $major['dung_nganh'] > 0
+                || $major['lien_quan'] > 0
+                || $major['khong_lien_quan'] > 0
+                || $major['tiep_tuc_hoc'] > 0
+                || $major['chua_co_viec'] > 0
+                || $major['nha_nuoc'] > 0
+                || $major['tu_nhan'] > 0
+                || $major['tu_tao'] > 0
+                || $major['nuoc_ngoai'] > 0;
+        }));
+                return compact(
             'survey',
             'schoolYear',
             'r1',
