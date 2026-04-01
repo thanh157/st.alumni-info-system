@@ -19,16 +19,16 @@ class ReportSheet3 implements FromCollection, WithTitle, WithStyles, WithColumnW
     protected $schoolYear;
     protected $r2;
     protected $majorCodeMap = [
-    1 => '7480201',
-    2 => '7480102',
-    3 => '7480112',
+        1 => '7480201',
+        2 => '7480102',
+        3 => '7480112',
     ];
 
-    public function __construct($schoolYear, $r2, $majors)
+    // Bỏ $majors khỏi constructor
+    public function __construct($schoolYear, $r2)
     {
         $this->schoolYear = $schoolYear;
         $this->r2 = $r2;
-        $this->majors = $majors;
     }
 
     public function collection()
@@ -262,7 +262,8 @@ class ReportSheet3 implements FromCollection, WithTitle, WithStyles, WithColumnW
 
         // Add response data
         foreach ($this->r2 as $index => $item) {
-            $this->majorCodeMap[$item->training_industry_id] ?? '';
+            // Dùng majorCodeMap thay vì $majors
+            $majorCode = $this->majorCodeMap[$item->training_industry_id] ?? '';
 
             // Parse JSON fields
             $recruitmentType = json_decode($item->recruitment_type, true);
@@ -270,18 +271,17 @@ class ReportSheet3 implements FromCollection, WithTitle, WithStyles, WithColumnW
             $softSkills = json_decode($item->soft_skills_required, true);
             $attendedCourses = json_decode($item->must_attended_courses, true);
             $solutions = json_decode($item->solutions_get_job, true);
+
             $city = '';
             if (!empty($item->recruit_partner_address)) {
                 $parts = explode(',', $item->recruit_partner_address);
                 $city = trim(end($parts));
             }
-            
+
             $cccd = $item->identification_card_number;
             if (!empty($cccd)) {
-                $cccd = $cccd . ' '; 
+                $cccd = $cccd . ' ';
             }
-
-            $major = $this->majors->firstWhere('id', $item->training_industry_id);
 
             $row = [
                 $index + 1,
@@ -290,16 +290,16 @@ class ReportSheet3 implements FromCollection, WithTitle, WithStyles, WithColumnW
                 !empty($item->dob) ? date('d/m/Y', strtotime($item->dob)) : '',
                 $item->gender == 'Nam' ? 'Nam' : 'Nữ',
                 $cccd,
-                optional($major)->code,
+                $majorCode, // ← Dùng majorCodeMap
                 $item->phone_number,
                 $item->email,
 
-                // Tình hình việc làm - FIX EMPLOYMENT_STATUS
+                // Tình hình việc làm
                 $item->trained_field == 1 ? 'x' : '',
                 $item->trained_field == 2 ? 'x' : '',
                 $item->trained_field == 3 ? 'x' : '',
-                $item->employment_status == 2 ? 'x' : '', // FIX: 2 = tiếp tục học
-                !in_array($item->employment_status, [1, 2]) ? 'x' : '' ,// FIX: Chưa có việc
+                $item->employment_status == 2 ? 'x' : '',
+                !in_array($item->employment_status, [1, 2]) ? 'x' : '',
 
                 // Khu vực làm việc
                 $item->work_area == '1' ? 'x' : '',
@@ -380,25 +380,18 @@ class ReportSheet3 implements FromCollection, WithTitle, WithStyles, WithColumnW
     public function styles(Worksheet $sheet)
     {
         return [
-            // Header 1 - Row 1 - KHÔNG IN ĐẬM
             1 => [
                 'font' => ['size' => 14, 'bold' => false, 'name' => 'Times New Roman'],
                 'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER]
             ],
-
-            // Header 2 - Row 2 - IN ĐẬM, BỎ GẠCH CHÂN
             2 => [
                 'font' => ['size' => 14, 'bold' => true, 'name' => 'Times New Roman'],
                 'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER]
             ],
-
-            // Tiêu đề chính - Row 3
             3 => [
                 'font' => ['size' => 14, 'bold' => true, 'name' => 'Times New Roman'],
                 'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER]
             ],
-
-            // Header table - Rows 5-8 - CHỮ ĐEN, BỎ MÀU NỀN
             5 => [
                 'font' => ['bold' => true, 'size' => 12, 'name' => 'Times New Roman'],
                 'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER, 'vertical' => Alignment::VERTICAL_CENTER, 'wrapText' => true]
@@ -425,52 +418,46 @@ class ReportSheet3 implements FromCollection, WithTitle, WithStyles, WithColumnW
                 $sheet = $event->sheet->getDelegate();
                 $lastRow = $sheet->getHighestRow();
 
-                // CHỈ set Times New Roman cho toàn bộ (KHÔNG set size ở đây)
                 $sheet->getStyle('A1:BK' . $lastRow)->getFont()->setName('Times New Roman');
 
-                // Set size 11 CHỈ cho phần dữ liệu (từ row 9 trở đi)
                 if ($lastRow >= 9) {
                     $sheet->getStyle('A9:BK' . $lastRow)->getFont()->setSize(11);
                 }
 
-                // Merge cells cho header
-                $sheet->mergeCells('A1:D1'); // HỌC VIỆN NÔNG NGHIỆP VIỆT NAM
-                $sheet->mergeCells('A2:D2'); // KHOA CÔNG NGHỆ THÔNG TIN
-                $sheet->mergeCells('A3:S3'); // Tiêu đề chính
+                $sheet->mergeCells('A1:D1');
+                $sheet->mergeCells('A2:D2');
+                $sheet->mergeCells('A3:S3');
 
-                // Merge header table
-                $sheet->mergeCells('A5:A7'); // TT
-                $sheet->mergeCells('B5:B7'); // Mã sinh viên
-                $sheet->mergeCells('C5:C7'); // Họ và tên
-                $sheet->mergeCells('D5:D7'); // Ngày sinh
-                $sheet->mergeCells('E5:E7'); // Giới tính
-                $sheet->mergeCells('F5:F7'); // Số thẻ CCCD
-                $sheet->mergeCells('G5:G7'); // Mã ngành đào tạo
-                $sheet->mergeCells('H5:H7'); // Điện thoại
-                $sheet->mergeCells('I5:I7'); // Email
-                $sheet->mergeCells('J5:N5'); // Tình hình việc làm
-                $sheet->mergeCells('J6:L6'); // Có việc làm
-                $sheet->mergeCells('M6:M7'); // Tiếp tục học
-                $sheet->mergeCells('N6:N7'); // Chưa có việc làm
-                $sheet->mergeCells('O5:R6'); // Khu vực làm việc
-                $sheet->mergeCells('S5:S7'); // Nơi làm việc
-                $sheet->mergeCells('T5:W6'); // Thời gian tìm được việc làm
-                $sheet->mergeCells('X5:Z6'); // Sinh viên có học được kiến thức
-                $sheet->mergeCells('AA5:AA7'); // Mức lương khởi điểm
-                $sheet->mergeCells('AB5:AE6'); // Thu nhập bình quân
-                $sheet->mergeCells('AF5:AJ6'); // Hình thức tìm việc làm
-                $sheet->mergeCells('AK5:AP6'); // Hình thức tuyển dụng
-                $sheet->mergeCells('AQ5:AY6'); // Kỹ năng mềm
-                $sheet->mergeCells('AZ5:BE6'); // Khóa học
-                $sheet->mergeCells('BF5:BK6'); // Giải pháp
+                $sheet->mergeCells('A5:A7');
+                $sheet->mergeCells('B5:B7');
+                $sheet->mergeCells('C5:C7');
+                $sheet->mergeCells('D5:D7');
+                $sheet->mergeCells('E5:E7');
+                $sheet->mergeCells('F5:F7');
+                $sheet->mergeCells('G5:G7');
+                $sheet->mergeCells('H5:H7');
+                $sheet->mergeCells('I5:I7');
+                $sheet->mergeCells('J5:N5');
+                $sheet->mergeCells('J6:L6');
+                $sheet->mergeCells('M6:M7');
+                $sheet->mergeCells('N6:N7');
+                $sheet->mergeCells('O5:R6');
+                $sheet->mergeCells('S5:S7');
+                $sheet->mergeCells('T5:W6');
+                $sheet->mergeCells('X5:Z6');
+                $sheet->mergeCells('AA5:AA7');
+                $sheet->mergeCells('AB5:AE6');
+                $sheet->mergeCells('AF5:AJ6');
+                $sheet->mergeCells('AK5:AP6');
+                $sheet->mergeCells('AQ5:AY6');
+                $sheet->mergeCells('AZ5:BE6');
+                $sheet->mergeCells('BF5:BK6');
 
-                // Borders
                 $sheet->getStyle('A5:BK' . $lastRow)->applyFromArray([
                     'borders' => ['allBorders' => ['borderStyle' => Border::BORDER_THIN, 'color' => ['rgb' => '000000']]],
                     'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER, 'vertical' => Alignment::VERTICAL_CENTER, 'wrapText' => true]
                 ]);
 
-                // Set row height
                 $sheet->getRowDimension(1)->setRowHeight(20);
                 $sheet->getRowDimension(2)->setRowHeight(20);
                 $sheet->getRowDimension(3)->setRowHeight(25);
@@ -479,14 +466,10 @@ class ReportSheet3 implements FromCollection, WithTitle, WithStyles, WithColumnW
                 $sheet->getRowDimension(7)->setRowHeight(90);
                 $sheet->getRowDimension(8)->setRowHeight(25);
 
-                // Set chiều cao cho các dòng dữ liệu (từ row 9 trở đi)
                 for ($row = 9; $row <= $lastRow; $row++) {
                     $sheet->getRowDimension($row)->setRowHeight(30);
                 }
 
-                // BỎ MÀU ĐỎ - GIỮ MÀU ĐEN HẾT
-
-                // Chữ ký
                 $signatureRow = $lastRow + 4;
                 $richText = new RichText();
                 $year = date('Y');
@@ -497,8 +480,7 @@ class ReportSheet3 implements FromCollection, WithTitle, WithStyles, WithColumnW
                 $sheet->setCellValue('K' . $signatureRow, $richText);
                 $sheet->mergeCells('K' . $signatureRow . ':R' . ($signatureRow + 4));
                 $sheet->getStyle('K' . $signatureRow)->getAlignment()->setVertical(Alignment::VERTICAL_TOP)->setHorizontal(Alignment::HORIZONTAL_CENTER)->setWrapText(true);
-                
-                // Căn trái cột họ tên (C) với indent
+
                 $sheet->getStyle('C9:C' . $lastRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
                 $sheet->getStyle('C9:C' . $lastRow)->getAlignment()->setIndent(1);
             },
