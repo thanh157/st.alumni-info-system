@@ -3,6 +3,8 @@
 @section('title', 'Form-student')
 
 @section('content')
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <style>
         body {
             background-color: #f1f3f4;

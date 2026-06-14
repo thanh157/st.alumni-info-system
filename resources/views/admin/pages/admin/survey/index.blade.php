@@ -454,6 +454,16 @@
                                                     </a>
                                                 </li>
 
+                                                <!-- Tải dữ liệu -->
+                                                <li>
+                                                    <a class="dropdown-item"
+                                                        href="{{ route('surveys.export', ['survey_id' => $item->id, 'type' => 'tab3']) }}"
+                                                        download>
+                                                        <i class="bi bi-download text-primary"></i>
+                                                        <span>Tải dữ liệu</span>
+                                                    </a>
+                                                </li>
+
                                                 <li>
                                                     <hr class="dropdown-divider">
                                                 </li>
