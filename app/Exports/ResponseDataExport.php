@@ -14,10 +14,16 @@ class ResponseDataExport implements FromCollection, WithHeadings, WithTitle, Wit
 {
     protected $r2;
 
-    protected $majorMap = [
-        1 => '7480201 - Công nghệ thông tin',
-        2 => '7480102 - Mạng máy tính và truyền thông dữ liệu',
-        3 => '7480112 - Hệ thống thông tin',
+    protected $majorCodeMap = [
+        1 => '7480201',
+        2 => '7480102',
+        3 => '7480112',
+    ];
+
+    protected $majorNameMap = [
+        1 => 'Công nghệ thông tin',
+        2 => 'Mạng máy tính và truyền thông dữ liệu',
+        3 => 'Hệ thống thông tin',
     ];
 
     public function __construct($r2)
@@ -37,10 +43,11 @@ class ResponseDataExport implements FromCollection, WithHeadings, WithTitle, Wit
                 !empty($item->dob) ? date('d/m/Y', strtotime($item->dob)) : '',
                 $item->gender == 'Nam' ? 'Nam' : 'Nữ',
                 $item->identification_card_number,
-                $item->identification_card_number_update,
                 $item->identification_issuance_place,
                 !empty($item->identification_issuance_date) ? date('d/m/Y', strtotime($item->identification_issuance_date)) : '',
-                $this->majorMap[$item->training_industry_id] ?? '',
+                'Công nghệ thông tin',
+                $this->majorCodeMap[$item->training_industry_id] ?? '',
+                $this->majorNameMap[$item->training_industry_id] ?? '',
                 $item->course,
                 $item->phone_number,
                 $item->email,
@@ -61,7 +68,6 @@ class ResponseDataExport implements FromCollection, WithHeadings, WithTitle, Wit
                 $this->labelList('soft_skills_required', $item->soft_skills_required),
                 $this->labelList('must_attended_courses', $item->must_attended_courses),
                 $this->labelList('solutions_get_job', $item->solutions_get_job),
-                $item->city_work_id,
             ]);
         }
 
@@ -77,10 +83,11 @@ class ResponseDataExport implements FromCollection, WithHeadings, WithTitle, Wit
             'Ngày sinh',
             'Giới tính',
             'Số CCCD/CMTND',
-            'Số CCCD/CMTND (cập nhật)',
             'Nơi cấp CCCD/CMTND',
             'Ngày cấp CCCD/CMTND',
-            'Ngành đào tạo',
+            'Khoa',
+            'Mã ngành',
+            'Tên ngành',
             'Khóa học',
             'Điện thoại',
             'Email',
@@ -101,7 +108,6 @@ class ResponseDataExport implements FromCollection, WithHeadings, WithTitle, Wit
             'Kỹ năng mềm cần thiết cho công việc',
             'Khóa học cần tham gia thêm sau tốt nghiệp',
             'Giải pháp tăng tỷ lệ sinh viên có việc làm đúng ngành',
-            'Mã tỉnh/thành làm việc',
         ];
     }
 
@@ -113,10 +119,10 @@ class ResponseDataExport implements FromCollection, WithHeadings, WithTitle, Wit
     public function columnWidths(): array
     {
         return [
-            'A' => 5, 'B' => 12, 'C' => 22, 'D' => 12, 'E' => 8, 'F' => 18, 'G' => 18, 'H' => 25, 'I' => 15,
-            'J' => 35, 'K' => 15, 'L' => 15, 'M' => 25, 'N' => 18, 'O' => 25, 'P' => 30, 'Q' => 15,
-            'R' => 22, 'S' => 18, 'T' => 25, 'U' => 25, 'V' => 25, 'W' => 30, 'X' => 18, 'Y' => 20,
-            'Z' => 30, 'AA' => 25, 'AB' => 35, 'AC' => 35, 'AD' => 40, 'AE' => 15,
+            'A' => 5, 'B' => 12, 'C' => 22, 'D' => 12, 'E' => 8, 'F' => 18, 'G' => 25, 'H' => 15,
+            'I' => 18, 'J' => 12, 'K' => 35, 'L' => 15, 'M' => 15, 'N' => 25, 'O' => 18, 'P' => 25,
+            'Q' => 30, 'R' => 15, 'S' => 22, 'T' => 18, 'U' => 25, 'V' => 25, 'W' => 25, 'X' => 30,
+            'Y' => 18, 'Z' => 20, 'AA' => 30, 'AB' => 25, 'AC' => 35, 'AD' => 35, 'AE' => 40,
         ];
     }
 
