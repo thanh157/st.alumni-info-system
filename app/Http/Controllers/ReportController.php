@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Exports\ReportExport;
+use App\Exports\ResponseDataExport;
 use App\Models\EmploymentSurveyResponse;
 use App\Models\Survey;
 use App\Models\GraduationSurvey;
@@ -358,9 +359,14 @@ class ReportController extends Controller
             'tab3' => 'mau-bao-cao-3',
             'tab4' => 'mau-bao-cao-4',
             'all' => 'bao-cao-tong-hop',
+            'data' => 'du-lieu-khao-sat',
         ];
 
         $fileName = ($fileNames[$type] ?? 'bao-cao') . '-' . date('Y-m-d-His') . '.xlsx';
+
+        if ($type === 'data') {
+            return Excel::download(new ResponseDataExport($r2), $fileName);
+        }
 
         return Excel::download(
             new ReportExport(

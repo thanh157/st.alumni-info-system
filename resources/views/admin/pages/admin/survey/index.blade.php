@@ -457,7 +457,7 @@
                                                 <!-- Tải dữ liệu -->
                                                 <li>
                                                     <a class="dropdown-item"
-                                                        href="{{ route('surveys.export', ['survey_id' => $item->id, 'type' => 'all']) }}"
+                                                        href="{{ route('surveys.export', ['survey_id' => $item->id, 'type' => 'data']) }}"
                                                         download>
                                                         <i class="bi bi-download text-primary"></i>
                                                         <span>Tải dữ liệu</span>
