@@ -2,6 +2,7 @@
 
 namespace App\Exports;
 
+use Carbon\Carbon;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithTitle;
@@ -12,7 +13,8 @@ use PhpOffice\PhpSpreadsheet\Style\Alignment;
 
 class ResponseDataExport implements FromCollection, WithHeadings, WithTitle, WithStyles, WithColumnWidths
 {
-    protected $r2;
+    protected $studentTab2;
+    protected $responsesByCode;
 
     protected $majorCodeMap = [
         1 => '7480201',
@@ -26,48 +28,74 @@ class ResponseDataExport implements FromCollection, WithHeadings, WithTitle, Wit
         3 => 'Hệ thống thông tin',
     ];
 
-    public function __construct($r2)
+    public function __construct($studentTab2, $responsesByCode)
     {
-        $this->r2 = $r2;
+        $this->studentTab2 = $studentTab2;
+        $this->responsesByCode = $responsesByCode;
     }
 
     public function collection()
     {
         $data = collect();
 
-        foreach ($this->r2 as $index => $item) {
+        foreach ($this->studentTab2 as $index => $student) {
+            $code = $student->code ?? '';
+            $response = $this->responsesByCode->get($code);
+            $hasResponse = !is_null($response);
+
+            $dob = $response->dob ?? ($student->dob ?? null);
+            $gender = $hasResponse
+                ? ($response->gender == 'Nam' ? 'Nam' : 'Nữ')
+                : (($student->gender ?? '') == 'female' ? 'Nữ' : (($student->gender ?? '') == 'male' ? 'Nam' : ''));
+
+            $cccd = $response->identification_card_number ?? ($student->citizen_identification ?? '');
+            $issuancePlace = $response->identification_issuance_place ?? '';
+            $issuanceDate = $response->identification_issuance_date ?? null;
+
+            $majorCode = $hasResponse
+                ? ($this->majorCodeMap[$response->training_industry_id] ?? ($student->industry_code ?? ''))
+                : ($student->industry_code ?? '');
+            $majorName = $hasResponse
+                ? ($this->majorNameMap[$response->training_industry_id] ?? ($student->industry_name ?? ''))
+                : ($student->industry_name ?? '');
+
+            $course = $response->course ?? '';
+            $phone = $response->phone_number ?? ($student->phone ?? '');
+            $email = $response->email ?? ($student->email ?? '');
+
             $data->push([
                 $index + 1,
-                $item->code_student,
-                $item->full_name,
-                !empty($item->dob) ? date('d/m/Y', strtotime($item->dob)) : '',
-                $item->gender == 'Nam' ? 'Nam' : 'Nữ',
-                $item->identification_card_number,
-                $item->identification_issuance_place,
-                !empty($item->identification_issuance_date) ? date('d/m/Y', strtotime($item->identification_issuance_date)) : '',
+                $code,
+                $response->full_name ?? ($student->full_name ?? ''),
+                !empty($dob) ? date('d/m/Y', strtotime($dob)) : '',
+                $gender,
+                $cccd,
+                $issuancePlace,
+                !empty($issuanceDate) ? date('d/m/Y', strtotime($issuanceDate)) : '',
                 'Công nghệ thông tin',
-                $this->majorCodeMap[$item->training_industry_id] ?? '',
-                $this->majorNameMap[$item->training_industry_id] ?? '',
-                $item->course,
-                $item->phone_number,
-                $item->email,
-                $this->label('employment_status', $item->employment_status),
-                $item->recruit_partner_name,
-                $item->recruit_partner_address,
-                !empty($item->recruit_partner_date) ? date('d/m/Y', strtotime($item->recruit_partner_date)) : '',
-                $item->recruit_partner_position,
-                $this->label('work_area', $item->work_area),
-                $this->label('employed_since', $item->employed_since),
-                $this->label('trained_field', $item->trained_field),
-                $this->label('professional_qualification_field', $item->professional_qualification_field),
-                $this->label('level_knowledge_acquired', $item->level_knowledge_acquired),
-                $item->starting_salary,
-                $this->label('average_income', $item->average_income),
-                $this->labelList('recruitment_type', $item->recruitment_type),
-                $this->labelList('job_search_method', $item->job_search_method),
-                $this->labelList('soft_skills_required', $item->soft_skills_required),
-                $this->labelList('must_attended_courses', $item->must_attended_courses),
-                $this->labelList('solutions_get_job', $item->solutions_get_job),
+                $majorCode,
+                $majorName,
+                $course,
+                $phone,
+                $email,
+                $hasResponse ? 'Đã khảo sát' : 'Chưa khảo sát',
+                $hasResponse ? $this->label('employment_status', $response->employment_status) : '',
+                $hasResponse ? $response->recruit_partner_name : '',
+                $hasResponse ? $response->recruit_partner_address : '',
+                $hasResponse && !empty($response->recruit_partner_date) ? date('d/m/Y', strtotime($response->recruit_partner_date)) : '',
+                $hasResponse ? $response->recruit_partner_position : '',
+                $hasResponse ? $this->label('work_area', $response->work_area) : '',
+                $hasResponse ? $this->label('employed_since', $response->employed_since) : '',
+                $hasResponse ? $this->label('trained_field', $response->trained_field) : '',
+                $hasResponse ? $this->label('professional_qualification_field', $response->professional_qualification_field) : '',
+                $hasResponse ? $this->label('level_knowledge_acquired', $response->level_knowledge_acquired) : '',
+                $hasResponse ? $response->starting_salary : '',
+                $hasResponse ? $this->label('average_income', $response->average_income) : '',
+                $hasResponse ? $this->labelList('recruitment_type', $response->recruitment_type) : '',
+                $hasResponse ? $this->labelList('job_search_method', $response->job_search_method) : '',
+                $hasResponse ? $this->labelList('soft_skills_required', $response->soft_skills_required) : '',
+                $hasResponse ? $this->labelList('must_attended_courses', $response->must_attended_courses) : '',
+                $hasResponse ? $this->labelList('solutions_get_job', $response->solutions_get_job) : '',
             ]);
         }
 
@@ -91,6 +119,7 @@ class ResponseDataExport implements FromCollection, WithHeadings, WithTitle, Wit
             'Khóa học',
             'Điện thoại',
             'Email',
+            'Trạng thái khảo sát',
             'Tình trạng việc làm',
             'Tên đơn vị tuyển dụng',
             'Địa chỉ đơn vị tuyển dụng',
@@ -120,9 +149,9 @@ class ResponseDataExport implements FromCollection, WithHeadings, WithTitle, Wit
     {
         return [
             'A' => 5, 'B' => 12, 'C' => 22, 'D' => 12, 'E' => 8, 'F' => 18, 'G' => 25, 'H' => 15,
-            'I' => 18, 'J' => 12, 'K' => 35, 'L' => 15, 'M' => 15, 'N' => 25, 'O' => 18, 'P' => 25,
-            'Q' => 30, 'R' => 15, 'S' => 22, 'T' => 18, 'U' => 25, 'V' => 25, 'W' => 25, 'X' => 30,
-            'Y' => 18, 'Z' => 20, 'AA' => 30, 'AB' => 25, 'AC' => 35, 'AD' => 35, 'AE' => 40,
+            'I' => 18, 'J' => 12, 'K' => 35, 'L' => 15, 'M' => 15, 'N' => 25, 'O' => 15, 'P' => 18,
+            'Q' => 25, 'R' => 30, 'S' => 15, 'T' => 22, 'U' => 18, 'V' => 25, 'W' => 25, 'X' => 25,
+            'Y' => 30, 'Z' => 18, 'AA' => 20, 'AB' => 30, 'AC' => 25, 'AD' => 35, 'AE' => 35, 'AF' => 40,
         ];
     }
 

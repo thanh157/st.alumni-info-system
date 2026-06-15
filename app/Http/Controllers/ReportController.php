@@ -365,7 +365,8 @@ class ReportController extends Controller
         $fileName = ($fileNames[$type] ?? 'bao-cao') . '-' . date('Y-m-d-His') . '.xlsx';
 
         if ($type === 'data') {
-            return Excel::download(new ResponseDataExport($r2), $fileName);
+            $responsesByCode = $r2->keyBy('code_student');
+            return Excel::download(new ResponseDataExport($studentTab2, $responsesByCode), $fileName);
         }
 
         return Excel::download(
