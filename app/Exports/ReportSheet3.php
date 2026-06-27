@@ -110,8 +110,7 @@ class ReportSheet3 implements FromCollection, WithTitle, WithStyles, WithColumnW
                 '',
                 '',
                 '',
-                '',
-                'Ngày tuyển dụng'
+                ''
             ],
 
             // Row 6: Header Level 2
@@ -178,8 +177,7 @@ class ReportSheet3 implements FromCollection, WithTitle, WithStyles, WithColumnW
                 'Đơn vị sử dụng lao động tham gia vào quá trình đào tạo',
                 'Chương trình đào tạo được điều chỉnh và cập nhật theo nhu cầu của thị trường lao động',
                 'Tăng cường các hoạt động thực hành và chuyên môn tại cơ sở',
-                'Giải pháp khác',
-                ''
+                'Giải pháp khác'
             ],
 
             // Row 7: Header Level 3
@@ -246,8 +244,7 @@ class ReportSheet3 implements FromCollection, WithTitle, WithStyles, WithColumnW
                 'Đơn vị sử dụng lao động tham gia vào quá trình đào tạo',
                 'Chương trình đào tạo được điều chỉnh và cập nhật theo nhu cầu của thị trường lao động',
                 'Tăng cường các hoạt động thực hành và chuyên môn tại cơ sở',
-                'Giải pháp khác',
-                ''
+                'Giải pháp khác'
             ],
 
             // Row 8: Dòng số thứ tự (1), (2), (3)...
@@ -258,7 +255,7 @@ class ReportSheet3 implements FromCollection, WithTitle, WithStyles, WithColumnW
                 '(32)', '(33)', '(34)', '(35)', '(36)', '(37)', '(38)', '(39)', '(40)', '(41)', '(42)',
                 '(43)', '(44)', '(45)', '(46)', '(47)', '(48)', '(49)', '(50)', '(51)',
                 '(52)', '(53)', '(54)', '(55)', '(56)', '(57)',
-                '(58)', '(59)', '(60)', '(61)', '(62)', '(63)', '(64)'
+                '(58)', '(59)', '(60)', '(61)', '(62)', '(63)'
             ],
         ]);
 
@@ -355,9 +352,6 @@ class ReportSheet3 implements FromCollection, WithTitle, WithStyles, WithColumnW
                 $row[] = in_array($k, data_get($solutions, 'value', [])) ? 'x' : '';
             }
 
-            // Ngày tuyển dụng
-            $row[] = !empty($item->recruit_partner_date) ? date('d/m/Y', strtotime($item->recruit_partner_date)) : '';
-
             $data->push($row);
         }
 
@@ -379,7 +373,6 @@ class ReportSheet3 implements FromCollection, WithTitle, WithStyles, WithColumnW
             'AK' => 10, 'AL' => 10, 'AM' => 10, 'AN' => 10, 'AO' => 10, 'AP' => 10, 'AQ' => 10, 'AR' => 10, 'AS' => 10,
             'AT' => 12, 'AU' => 10, 'AV' => 10, 'AW' => 10, 'AX' => 10, 'AY' => 10, 'AZ' => 12, 'BA' => 12, 'BB' => 12,
             'BC' => 12, 'BD' => 12, 'BE' => 12, 'BF' => 15, 'BG' => 15, 'BH' => 15, 'BI' => 15, 'BJ' => 15, 'BK' => 12,
-            'BL' => 15,
         ];
     }
 
@@ -424,10 +417,10 @@ class ReportSheet3 implements FromCollection, WithTitle, WithStyles, WithColumnW
                 $sheet = $event->sheet->getDelegate();
                 $lastRow = $sheet->getHighestRow();
 
-                $sheet->getStyle('A1:BL' . $lastRow)->getFont()->setName('Times New Roman');
+                $sheet->getStyle('A1:BK' . $lastRow)->getFont()->setName('Times New Roman');
 
                 if ($lastRow >= 9) {
-                    $sheet->getStyle('A9:BL' . $lastRow)->getFont()->setSize(11);
+                    $sheet->getStyle('A9:BK' . $lastRow)->getFont()->setSize(11);
                 }
 
                 $sheet->mergeCells('A1:D1');
@@ -458,9 +451,8 @@ class ReportSheet3 implements FromCollection, WithTitle, WithStyles, WithColumnW
                 $sheet->mergeCells('AQ5:AY6');
                 $sheet->mergeCells('AZ5:BE6');
                 $sheet->mergeCells('BF5:BK6');
-                $sheet->mergeCells('BL5:BL7');
 
-                $sheet->getStyle('A5:BL' . $lastRow)->applyFromArray([
+                $sheet->getStyle('A5:BK' . $lastRow)->applyFromArray([
                     'borders' => ['allBorders' => ['borderStyle' => Border::BORDER_THIN, 'color' => ['rgb' => '000000']]],
                     'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER, 'vertical' => Alignment::VERTICAL_CENTER, 'wrapText' => true]
                 ]);
